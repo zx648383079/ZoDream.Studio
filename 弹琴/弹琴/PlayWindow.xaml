@@ -1,0 +1,28 @@
+﻿<Window x:Class="弹琴.PlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:弹琴"
+        mc:Ignorable="d"
+        Title="曲谱" Height="300" Width="500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Name="PlayBtn" Content="开始" Click="PlayBtn_Click"/>
+            <TextBlock Text="速度:" Grid.Column="1"/>
+            <Slider Name="TimeSlider" Grid.Column="2" Minimum="0.1" Value="1" Maximum="10" 
+                    SmallChange="0.1" LargeChange="5" ToolTip="{Binding ElementName=TimeSlider,Path=Value}"
+                    ValueChanged="TimeSlider_ValueChanged"/>
+        </Grid>
+        <TextBox Name="ScoreTb" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" Grid.Row="1"/>
+    </Grid>
+</Window>

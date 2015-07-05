@@ -1,0 +1,227 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>弹琴</name>
+    </assembly>
+    <members>
+        <member name="T:弹琴.App">
+            <summary>
+            App.xaml 的交互逻辑
+            </summary>
+            <summary>
+            App
+            </summary>
+        </member>
+        <member name="M:弹琴.App.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="M:弹琴.App.Main">
+            <summary>
+            Application Entry Point.
+            </summary>
+        </member>
+        <member name="T:弹琴.MainWindow">
+            <summary>
+            MainWindow.xaml 的交互逻辑
+            </summary>
+            <summary>
+            MainWindow
+            </summary>
+        </member>
+        <member name="M:弹琴.MainWindow.Up">
+            <summary>
+            取消发音
+            </summary>
+        </member>
+        <member name="M:弹琴.MainWindow.Down(System.Windows.Shapes.Rectangle)">
+            <summary>
+            鼠标按下
+            </summary>
+            <param name="rect"></param>
+        </member>
+        <member name="M:弹琴.MainWindow.MidiTypeCb_SelectionChanged(System.Object,System.Windows.Controls.SelectionChangedEventArgs)">
+            <summary>
+            更改乐器
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:弹琴.MainWindow.VolumeSlider_ValueChanged(System.Object,System.Windows.RoutedPropertyChangedEventArgs{System.Double})">
+            <summary>
+            改变音量
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:弹琴.MainWindow.KeyGrid_MouseLeave(System.Object,System.Windows.Input.MouseEventArgs)">
+            <summary>
+            为防止鼠标移出控件后返回出现依旧能执行 move
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:弹琴.MainWindow.Play(System.Int32)">
+            <summary>
+            播放
+            </summary>
+            <param name="num"></param>
+        </member>
+        <member name="M:弹琴.MainWindow.PlayBtn_Click(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            弹出窗口，注册委托
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:弹琴.MainWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:弹琴.MidiToneType">
+            <summary>
+            乐器音色列表
+            </summary>
+        </member>
+        <member name="T:弹琴.MidiBase">
+            <summary>
+            连接WINMM.DLL库
+            </summary>
+        </member>
+        <member name="P:弹琴.MidiBase.Volume">
+            <summary>
+            音量信息（0-127）
+            </summary>
+        </member>
+        <member name="P:弹琴.MidiBase.IsOpen">
+            <summary>
+            是否已经打开通道
+            </summary>
+        </member>
+        <member name="M:弹琴.MidiBase.#ctor">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="M:弹琴.MidiBase.Finalize">
+            <summary>
+            析构时关闭winmm.dll的调用
+            </summary>
+        </member>
+        <member name="M:弹琴.MidiBase.SendMesssage(System.UInt32)">
+            <summary>
+            直接发送消息
+            </summary>
+            <param name="dwMsg">消息的内容</param>
+        </member>
+        <member name="M:弹琴.MidiBase.KeyDown(System.Byte,System.Byte,System.Byte)">
+            <summary>
+            按键按下
+            </summary>
+            <param name="chn">频道</param>
+            <param name="vol">音量</param>
+            <param name="scl">音阶</param>
+        </member>
+        <member name="M:弹琴.MidiBase.KeyDown(System.Byte)">
+            <summary>
+            按键按下
+            </summary>
+            <param name="scl">音阶</param>
+        </member>
+        <member name="M:弹琴.MidiBase.KeyDown(System.Byte,System.Byte)">
+            <summary>
+            按键按下
+            </summary>
+            <param name="chn">频道</param>
+            <param name="scl">音阶</param>
+        </member>
+        <member name="M:弹琴.MidiBase.KeyUp(System.Byte,System.Byte)">
+            <summary>
+            取消发音
+            </summary>
+            <param name="chn">频道</param>
+            <param name="scl">音阶</param>
+        </member>
+        <member name="M:弹琴.MidiBase.KeyUp(System.Byte)">
+            <summary>
+            取消发音
+            </summary>
+            <param name="scl">音阶</param>
+        </member>
+        <member name="M:弹琴.MidiBase.SetTimber(System.Byte,System.Byte)">
+            <summary>
+            设定乐器音色
+            </summary>
+            <param name="timber">音色</param>
+            <param name="chn">频道</param>
+        </member>
+        <member name="M:弹琴.MidiBase.SetTimber(System.Byte)">
+            <summary>
+            设定乐器音色
+            </summary>
+            <param name="timber">音色</param>
+        </member>
+        <member name="T:弹琴.PlayWindow">
+            <summary>
+            PlayWindow.xaml 的交互逻辑
+            </summary>
+            <summary>
+            PlayWindow
+            </summary>
+        </member>
+        <member name="M:弹琴.PlayWindow.#ctor">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="T:弹琴.PlayWindow.PlayDelegate">
+            <summary>
+            播放的委托
+            </summary>
+            <param name="num"></param>
+        </member>
+        <member name="E:弹琴.PlayWindow.PlayEvent">
+            <summary>
+            播放的事件
+            </summary>
+        </member>
+        <member name="T:弹琴.PlayWindow.StopDelegate">
+            <summary>
+            停止的委托
+            </summary>
+        </member>
+        <member name="E:弹琴.PlayWindow.StopEvent">
+            <summary>
+            停止的事件
+            </summary>
+        </member>
+        <member name="M:弹琴.PlayWindow.GetTime">
+            <summary>
+            设置定时器的时间
+            </summary>
+        </member>
+        <member name="M:弹琴.PlayWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:弹琴.Properties.Resources">
+            <summary>
+              一个强类型的资源类，用于查找本地化的字符串等。
+            </summary>
+        </member>
+        <member name="P:弹琴.Properties.Resources.ResourceManager">
+            <summary>
+              返回此类使用的、缓存的 ResourceManager 实例。
+            </summary>
+        </member>
+        <member name="P:弹琴.Properties.Resources.Culture">
+            <summary>
+              为所有资源查找重写当前线程的 CurrentUICulture 属性，
+              方法是使用此强类型资源类。
+            </summary>
+        </member>
+    </members>
+</doc>
