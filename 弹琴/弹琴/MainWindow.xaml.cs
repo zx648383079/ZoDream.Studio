@@ -20,6 +20,9 @@ namespace 弹琴
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// 主窗体
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
@@ -28,7 +31,9 @@ namespace 弹琴
 
         MidiBase midiBase;
         Rectangle indexRect;     //当前发音位置
-
+        /// <summary>
+        /// 画界面
+        /// </summary>
         public void Init()
         {
             midiBase = new MidiBase();

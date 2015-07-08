@@ -15,3 +15,24 @@ E:\visual studio 2015\Projects\弹琴\弹琴\obj\Debug\弹琴.pdb
 E:\visual studio 2015\Projects\弹琴\弹琴\obj\Debug\PlayWindow.g.cs
 E:\visual studio 2015\Projects\弹琴\弹琴\obj\Debug\PlayWindow.baml
 E:\visual studio 2015\Projects\弹琴\弹琴\bin\Debug\弹琴.XML
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\bin\Debug\弹琴.exe.config
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\bin\Debug\弹琴.XML
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\obj\Debug\弹琴.exe
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\obj\Debug\弹琴.pdb
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\bin\Debug\弹琴.exe
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\bin\Debug\弹琴.pdb
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\obj\Debug\弹琴.csprojResolveAssemblyReference.cache
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\obj\Debug\MainWindow.g.cs
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\obj\Debug\PlayWindow.g.cs
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\obj\Debug\App.g.cs
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\obj\Debug\弹琴_MarkupCompile.cache
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\obj\Debug\弹琴_MarkupCompile.lref
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\obj\Debug\MainWindow.baml
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\obj\Debug\PlayWindow.baml
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\obj\Debug\弹琴.g.resources
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\obj\Debug\弹琴.Properties.Resources.resources
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\弹琴\obj\Debug\弹琴.csproj.GenerateResource.Cache
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\Output\弹琴.exe.config
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\Output\弹琴.XML
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\Output\弹琴.exe
+D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\Output\弹琴.pdb

@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Midi</name>
+    </assembly>
+    <members>
+        <member name="T:Midi.MidiTime">
+            <summary>
+            单个音节的数据
+            </summary>
+        </member>
+        <member name="P:Midi.MidiTime.Midi">
+            <summary>
+            音阶
+            </summary>
+        </member>
+        <member name="P:Midi.MidiTime.Time">
+            <summary>
+            时间
+            </summary>
+        </member>
+        <member name="M:Midi.MidiTime.#ctor">
+            <summary>
+            无数据构造函数
+            </summary>
+        </member>
+        <member name="M:Midi.MidiTime.#ctor(System.Int32,System.Double)">
+            <summary>
+            有数据构造函数
+            </summary>
+            <param name="midi">音阶</param>
+            <param name="time">时间</param>
+        </member>
+        <member name="T:Midi.StringToInt">
+            <summary>
+            文本转换为音阶
+            </summary>
+        </member>
+        <member name="P:Midi.StringToInt.Text">
+            <summary>
+            MIDI内容
+            </summary>
+        </member>
+        <member name="M:Midi.StringToInt.#ctor(System.String)">
+            <summary>
+            构造函数
+            </summary>
+            <param name="text">MIDI文件</param>
+        </member>
+        <member name="M:Midi.StringToInt.GetMidi">
+            <summary>
+            转换成音阶：时间
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

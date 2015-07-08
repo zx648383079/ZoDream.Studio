@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Midi;
 
 namespace 弹琴
 {
@@ -29,7 +30,7 @@ namespace 弹琴
         }
 
         DispatcherTimer timer;
-        int[] scores;
+        List<Midi.MidiTime> _midiTimes;
         int index;
         /// <summary>
         /// 播放的委托
@@ -51,27 +52,48 @@ namespace 弹琴
 
         private void PlayBtn_Click(object sender, RoutedEventArgs e)
         {
-            Char[] chars = ScoreTb.Text.Trim().ToCharArray();
-            scores = new int[chars.Length];
-            for (int i = 0; i < chars.Length; i++)
-            {
-                scores[i] = int.Parse(chars[i].ToString())+12;
-            }
+            StringToInt midi = new StringToInt(ScoreTb.Text);
+
+            _midiTimes = midi.GetMidi();
+
             index = 0;
-            timer = new DispatcherTimer();
-            GetTime();
-            timer.Tick += Timer_Tick;
-            timer.Start();
+            if (_midiTimes.Count>0)
+            {
+                timer = new DispatcherTimer();
+                timer.Interval = TimeSpan.FromMilliseconds(500);
+                timer.Tick += Timer_Tick;
+                timer.Start();
+            }
+            
             //PlayEvent(int.Parse(ScoreTb.Text)+12);
             
+        }
+        /// <summary>
+        /// 设置时间
+        /// </summary>
+        private void SetTime()
+        {
+            double time = _midiTimes[index].Time*TimeSlider.Value;
+            timer.Interval = TimeSpan.FromSeconds(time);
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
             StopEvent();
-            if (index<scores.Length)
+            if (index<_midiTimes.Count)
             {
-                PlayEvent(scores[index]);
+                //解决0
+                if (_midiTimes[index].Midi<-12)
+                {
+
+                }
+                else
+                {
+                      PlayEvent(_midiTimes[index].Midi+12);
+                }
+
+                
+                SetTime();
             }
             else
             {
@@ -84,17 +106,8 @@ namespace 弹琴
         {
             if (timer !=null)
             {
-                GetTime();
+                
             }
-        }
-        /// <summary>
-        /// 设置定时器的时间
-        /// </summary>
-        private void GetTime()
-        {
-            int sec = (int)TimeSlider.Value;
-            int mi = (int)(((Double)TimeSlider.Value - sec) * 1000);
-            timer.Interval = new TimeSpan(0, 0, 0, sec, mi);
         }
     }
 }

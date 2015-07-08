@@ -30,6 +30,16 @@
             MainWindow
             </summary>
         </member>
+        <member name="M:弹琴.MainWindow.#ctor">
+            <summary>
+            主窗体
+            </summary>
+        </member>
+        <member name="M:弹琴.MainWindow.Init">
+            <summary>
+            画界面
+            </summary>
+        </member>
         <member name="M:弹琴.MainWindow.Up">
             <summary>
             取消发音
@@ -197,9 +207,9 @@
             停止的事件
             </summary>
         </member>
-        <member name="M:弹琴.PlayWindow.GetTime">
+        <member name="M:弹琴.PlayWindow.SetTime">
             <summary>
-            设置定时器的时间
+            设置时间
             </summary>
         </member>
         <member name="M:弹琴.PlayWindow.InitializeComponent">
