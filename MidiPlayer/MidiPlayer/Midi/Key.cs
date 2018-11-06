@@ -55,6 +55,25 @@ namespace MidiPlayer.Midi
             Beat = Convert.ToInt16(code % 12 - 4);
         }
 
+        public byte ToKey127()
+        {
+            var code = (Beat + 4) * 12;
+            if (Code < 3) {
+                code += Code * 2 + Scale - 1;
+            } else if (Code == 3) {
+                code += 5;
+            } else {
+                code += 2 * Code - 2 + Scale;
+            }
+            return code;
+        }
+        
+        public Tuple ToTuple(Score score)
+        {
+            var bar = 60000 / score.Tempo * Speed;
+            return new Tuple<byte, int>(ToKey127(), bar);
+        }
+
         public Key() { }
 
         public Key(ushort code)

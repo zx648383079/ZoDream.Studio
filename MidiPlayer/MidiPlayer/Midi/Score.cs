@@ -101,25 +101,33 @@ namespace MidiPlayer.Midi
             TimeSignaturePerTime = Convert.ToUInt16(note);
         }
 
-        public void AppendKey(int code)
+        public void Append(Key item)
         {
-
+            Tracks.Add(item);
         }
+
+        public void AppendKey(int code) => Append(new Key(code));
 
         public void AppendKey12(int code)
         {
-
+            var item = new Key();
+            item.SetKeyBy12(code);
+            Append(item);
         }
 
         public void AppendKey127(int code)
         {
-
+            var item = new Key();
+            item.SetKeyBy127(code);
+            Append(item);
         }
 
         public void AppendPrevious()
         {
-
+            if (Tracks.Count < 1) {
+                return;
+            }
+            Tracks[Tracks.Count - 1].Speed ++;
         }
-
     }
 }
