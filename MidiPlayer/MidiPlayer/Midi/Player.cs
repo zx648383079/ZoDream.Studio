@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Midi;
-using System.Threading.Tasks;
 
 namespace MidiPlayer.Midi
 {
@@ -13,7 +12,7 @@ namespace MidiPlayer.Midi
         public MidiSynthesizer Driver { get; set; }
         public byte Channel { get; set; }
 
-        public byte Velocity { get; set; }
+        public byte Velocity { get; set; } = 127;
 
         private MidiNoteOnMessage current;
 
@@ -23,16 +22,27 @@ namespace MidiPlayer.Midi
             Send(message);
         }
 
-        public async void Play(Key item, Score score)
+        public async Task Play(Key item, Score score)
         {
             var note = item.ToTuple(score);
-            var noteOn = new MidiNoteOnMessage(Channel, note.Item1, Velocity);
+            await Play(note.Item1, note.Item2);
+        }
+
+        public async Task Play(byte note, int time)
+        {
+            var noteOn = new MidiNoteOnMessage(Channel, note, Velocity);
             Play(noteOn);
-            await Task.Delay(note.Item2);
+            await Task.Delay(time);
             Stop();
         }
 
-        public async void Play(Score score)
+        public void Play(byte note)
+        {
+            var noteOn = new MidiNoteOnMessage(Channel, note, Velocity);
+            Play(noteOn);
+        }
+
+        public async Task Play(Score score)
         {
             foreach (Key item in score)
             {
@@ -42,7 +52,7 @@ namespace MidiPlayer.Midi
 
         public void Stop()
         {
-            if (!current) {
+            if (current == null) {
                 return;
             }
             var noteOff = new MidiNoteOffMessage(current.Channel, current.Note, current.Velocity);

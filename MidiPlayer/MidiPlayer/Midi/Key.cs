@@ -27,32 +27,28 @@ namespace MidiPlayer.Midi
         /// </summary>
         public float Speed { get; set; } = 1;
 
-        public void SetKeyBy12(ushort code)
+        public void SetKeyBy12(int code)
         {
+            if (code == 5)
+            {
+                Code = 3;
+                Scale = 0;
+                return;
+            }
             if (code < 6)
             {
-                Code = Convert.ToUInt16(code / 2);
-                Scale = Convert.ToByte(code % 2);
+                Code = Convert.ToUInt16((code + 1) / 2);
+                Scale = Convert.ToByte(1 - code % 2);
                 return;
             }
             Code = Convert.ToUInt16(code / 2 + 1);
-            Scale = Convert.ToByte(1 - code % 2);
-        }
-
-        public void SetKeyBy12(int code)
-        {
-            SetKeyBy12(Convert.ToInt16(code));
+            Scale = Convert.ToByte(code % 2);
         }
 
         public void SetKeyBy127(int code)
         {
-            SetKeyBy127(Convert.ToInt16(code));
-        }
-
-        public void SetKeyBy127(ushort code)
-        {
-            SetKeyBy12(code / 12 + 1);
-            Beat = Convert.ToInt16(code % 12 - 4);
+            SetKeyBy12(code % 12 + 1);
+            Beat = Convert.ToInt16(code / 12 - 4);
         }
 
         public byte ToKey127()
@@ -65,12 +61,20 @@ namespace MidiPlayer.Midi
             } else {
                 code += 2 * Code - 2 + Scale;
             }
-            return code;
+            return Convert.ToByte(code);
+        }
+        /// <summary>
+        /// 获取白键的序号 0 开始
+        /// </summary>
+        /// <returns></returns>
+        public int GetWhiteCount()
+        {
+            return (Beat + 4) * 7 + Code - 1;
         }
         
-        public Tuple ToTuple(Score score)
+        public Tuple<byte, int> ToTuple(Score score)
         {
-            var bar = 60000 / score.Tempo * Speed;
+            var bar = Convert.ToInt32(60000 / score.Tempo * Speed);
             return new Tuple<byte, int>(ToKey127(), bar);
         }
 
@@ -105,6 +109,13 @@ namespace MidiPlayer.Midi
             Scale = scale;
             Speed = speed;
             Beat = beat;
+        }
+
+        public static Key Create127(int code)
+        {
+            var key = new Key();
+            key.SetKeyBy127(code);
+            return key;
         }
     }
 }

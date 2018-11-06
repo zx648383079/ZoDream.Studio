@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MidiPlayer.Midi;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,9 +23,23 @@ namespace MidiPlayer
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        Piano piano;
+
         public MainPage()
         {
             this.InitializeComponent();
+        }
+
+        
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            piano = new Piano(DrawerBox);
+            piano.Refresh();
+        }
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            piano?.Dispose();
         }
     }
 }
