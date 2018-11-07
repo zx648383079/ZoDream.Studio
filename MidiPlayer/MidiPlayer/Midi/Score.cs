@@ -12,6 +12,9 @@ namespace MidiPlayer.Midi
     /// </summary>
     public class Score : IEnumerator, IEnumerable
     {
+
+        const string CHUNK_ID = "MThd";
+
         #region 属性
         /// <summary>
         /// 曲名
@@ -31,25 +34,17 @@ namespace MidiPlayer.Midi
         public string Singer { get; set; }
 
         /// <summary>
-        /// 节奏 60 / 每拍
+        /// 每一拍经过的Tick数，范围从48到960
         /// </summary>
-        public int Tempo { get; set; }
+        public ushort TicksPerBeat { get; set; } = 960;
         /// <summary>
-        /// 调号 1= C
+        /// 文件的格式 0－单轨 1－多规，同步 2－多规，异步
         /// </summary>
-        public string KeySignature { get; set; }
+        public ushort FormatType { get; set; } = 0;
         /// <summary>
-        /// 拍号中多少拍为一小节，分子
+        /// 轨道列表
         /// </summary>
-        public ushort TimeSignaturePerBar { get; set; }
-        /// <summary>
-        /// 拍号中多少音符为一拍，分母
-        /// </summary>
-        public ushort TimeSignaturePerTime { get; set; }
-        /// <summary>
-        /// 内容
-        /// </summary>
-        public IList<Key> Tracks { get; set; } = new List<Key>();
+        public IList<Track> TrackList { get; set; } = new List<Track>();
         #endregion
 
         #region 支持循环
@@ -62,7 +57,7 @@ namespace MidiPlayer.Midi
 
                 try
                 {
-                    return Tracks[position];
+                    return TrackList[position];
                 }
                 catch (IndexOutOfRangeException)
                 {
@@ -74,13 +69,13 @@ namespace MidiPlayer.Midi
 
         public IEnumerator GetEnumerator()
         {
-            return ((IEnumerable)Tracks).GetEnumerator();
+            return ((IEnumerable)TrackList).GetEnumerator();
         }
 
         public bool MoveNext()
         {
             position++;
-            return (position < Tracks.Count);
+            return (position < TrackList.Count);
         }
 
         public void Reset()
@@ -89,45 +84,9 @@ namespace MidiPlayer.Midi
         }
         #endregion
 
-
-        /// <summary>
-        /// 设置拍号
-        /// </summary>
-        /// <param name="time">多少拍为一小节</param>
-        /// <param name="note">多少音符为一拍</param>
-        public void SetTimeSignature(int time, int note)
+        public void Append(Track item)
         {
-            TimeSignaturePerBar = Convert.ToUInt16(time);
-            TimeSignaturePerTime = Convert.ToUInt16(note);
-        }
-
-        public void Append(Key item)
-        {
-            Tracks.Add(item);
-        }
-
-        public void AppendKey(int code) => Append(new Key(code));
-
-        public void AppendKey12(int code)
-        {
-            var item = new Key();
-            item.SetKeyBy12(code);
-            Append(item);
-        }
-
-        public void AppendKey127(int code)
-        {
-            var item = new Key();
-            item.SetKeyBy127(code);
-            Append(item);
-        }
-
-        public void AppendPrevious()
-        {
-            if (Tracks.Count < 1) {
-                return;
-            }
-            Tracks[Tracks.Count - 1].Speed ++;
+            TrackList.Add(item);
         }
     }
 }
