@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net6.0-windows</TargetFramework>
+	  <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
+	  <UseWPF>true</UseWPF>
+	  <Version>1.0</Version>
+	  <Authors>zodream</Authors>
+	  <Company>zodream.cn</Company>
+	  <Copyright>copyright © 2020-2022 zodream.cn</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Themes\HyperlinkButton.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\IconButton.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+</Project>

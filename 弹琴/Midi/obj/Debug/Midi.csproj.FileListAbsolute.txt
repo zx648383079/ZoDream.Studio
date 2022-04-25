@@ -1,5 +1,0 @@
-D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\Output\Midi.XML
-D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\Output\Midi.dll
-D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\Output\Midi.pdb
-D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\Midi\obj\Debug\Midi.dll
-D:\Documents\GitHub\WPF-Midi-And-Player\弹琴\Midi\obj\Debug\Midi.pdb
