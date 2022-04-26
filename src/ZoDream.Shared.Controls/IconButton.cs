@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -44,7 +45,7 @@ namespace ZoDream.Shared.Controls
     ///     <MyNamespace:IconButton/>
     ///
     /// </summary>
-    public class IconButton : Control
+    public class IconButton : ButtonBase
     {
         static IconButton()
         {
@@ -103,18 +104,10 @@ namespace ZoDream.Shared.Controls
             DependencyProperty.Register("IconSize", typeof(double), typeof(IconButton), new PropertyMetadata(30.0));
 
 
-        public event RoutedEventHandler? Click;
-
-        protected override void OnMouseDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseDown(e);
-            Click?.Invoke(this, new RoutedEventArgs());
-        }
-
         protected override void OnMouseEnter(MouseEventArgs e)
         {
             base.OnMouseEnter(e);
-            VisualStateManager.GoToState(this, "PointerOver", true);
+            VisualStateManager.GoToState(this, string.IsNullOrWhiteSpace(Label) ? "PointerOver2" : "PointerOver", true);
         }
 
         protected override void OnMouseLeave(MouseEventArgs e)

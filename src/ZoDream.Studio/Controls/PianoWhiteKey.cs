@@ -75,7 +75,6 @@ namespace ZoDream.Studio.Controls
             DependencyProperty.Register("Value", typeof(PianoKey), typeof(PianoWhiteKey), new PropertyMetadata(PianoKey.Create127(60)));
 
 
-
         public event PianoKeyEventHandler? OnPress;
         public event PianoKeyEventHandler? OnRelease;
 

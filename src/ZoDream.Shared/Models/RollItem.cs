@@ -9,7 +9,17 @@ namespace ZoDream.Shared.Models
     /// </summary>
     public class RollItem
     {
+        public int Offset { get; set; }
 
-        public List<NoteItem> Items { get; set; } = new();
+        public int Begin { get; set; }
+
+        public int End { get; set; }
+
+        public NoteItem Data { get; set; }
+
+        public RollItem(NoteItem data)
+        {
+            Data = data;
+        }
     }
 }

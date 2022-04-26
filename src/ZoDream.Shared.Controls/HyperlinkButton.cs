@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -44,7 +46,7 @@ namespace ZoDream.Shared.Controls
     ///     <MyNamespace:HyperlinkButton/>
     ///
     /// </summary>
-    public class HyperlinkButton : Control
+    public class HyperlinkButton : ButtonBase
     {
         static HyperlinkButton()
         {
@@ -63,54 +65,55 @@ namespace ZoDream.Shared.Controls
 
 
 
-
-        public object Content
+        public string TargetName
         {
-            get { return (object)GetValue(ContentProperty); }
-            set { SetValue(ContentProperty, value); }
+            get { return (string)GetValue(TargetNameProperty); }
+            set { SetValue(TargetNameProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Content.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ContentProperty =
-            DependencyProperty.Register("Content", typeof(object), typeof(HyperlinkButton), new PropertyMetadata(0));
+        // Using a DependencyProperty as the backing store for TargetName.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TargetNameProperty =
+            DependencyProperty.Register("TargetName", typeof(string), typeof(HyperlinkButton), new PropertyMetadata(string.Empty));
 
 
 
 
-        public event RoutedEventHandler? Click;
-
-
-        protected override void OnMouseDown(MouseButtonEventArgs e)
+        public bool UseSystemFocusVisuals
         {
-            base.OnMouseDown(e);
-            var args = new RoutedEventArgs();
-            Click?.Invoke(this, args);
-            if (args.Handled || NavigateUri == null)
+            get { return (bool)GetValue(UseSystemFocusVisualsProperty); }
+            set { SetValue(UseSystemFocusVisualsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for UseSystemFocusVisuals.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty UseSystemFocusVisualsProperty =
+            DependencyProperty.Register("UseSystemFocusVisuals", typeof(bool), typeof(HyperlinkButton), new PropertyMetadata(true));
+
+
+
+        public Thickness FocusVisualMargin
+        {
+            get { return (Thickness)GetValue(FocusVisualMarginProperty); }
+            set { SetValue(FocusVisualMarginProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for FocusVisualMargin.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty FocusVisualMarginProperty =
+            DependencyProperty.Register("FocusVisualMargin", typeof(Thickness), typeof(HyperlinkButton), new PropertyMetadata(new Thickness()));
+
+
+
+        protected override void OnClick()
+        {
+            
+            if (NavigateUri.IsAbsoluteUri && NavigateUri.Scheme.Contains("http", StringComparison.OrdinalIgnoreCase))
             {
-                return;
+                Process.Start(new ProcessStartInfo(NavigateUri.ToString())
+                {
+                    UseShellExecute = true
+                });
             }
-            System.Diagnostics.Process.Start("explorer.exe", NavigateUri.ToString());
+            base.OnClick();
         }
 
-        protected override void OnMouseEnter(MouseEventArgs e)
-        {
-            base.OnMouseEnter(e);
-            if (!IsEnabled)
-            {
-                return;
-            }
-            VisualStateManager.GoToState(this, "PointerOver", true);
-        }
-
-        protected override void OnMouseLeave(MouseEventArgs e)
-        {
-            base.OnMouseLeave(e);
-            if (!IsEnabled)
-            {
-                VisualStateManager.GoToState(this, "Disabled", true);
-                return;
-            }
-            VisualStateManager.GoToState(this, "Normal", true);
-        }
     }
 }

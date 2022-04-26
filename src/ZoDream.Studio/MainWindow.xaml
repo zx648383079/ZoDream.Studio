@@ -5,15 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ZoDream.Studio"
         xmlns:ctl="clr-namespace:ZoDream.Studio.Controls"
+        xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Unloaded="Window_Unloaded"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="48"/>
             <RowDefinition Height="200"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <ctl:PianoPanel x:Name="PianoTb" OnPress="PianoTb_OnPress" OnRelease="PianoTb_OnRelease"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <sctl:IconButton x:Name="PlayBtn" Icon="&#xE102;" Label="回放"/>
+            <sctl:IconButton x:Name="StopBtn" Icon="&#xE103;" Label="停止"/>
+            <sctl:IconButton x:Name="OptionBtn" Icon="&#xE115;" Label="设置"/>
+        </StackPanel>
+        <ctl:PianoPanel x:Name="PianoTb" Background="#fff" OnPress="PianoTb_OnPress" OnRelease="PianoTb_OnRelease"/>
+        <ctl:TrackPanel Grid.Row="1"/>
     </Grid>
 </Window>

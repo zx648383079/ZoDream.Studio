@@ -5,5 +5,11 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Themes/Piano.xaml"/>
+        <ResourceDictionary Source="/Themes/TrackPanel.xaml"/>
+        <ResourceDictionary Source="/Themes/RulePanel.xaml"/>
     </ResourceDictionary.MergedDictionaries>
+
+
+
+    
 </ResourceDictionary>

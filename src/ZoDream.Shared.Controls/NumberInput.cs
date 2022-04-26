@@ -182,8 +182,11 @@ namespace ZoDream.Shared.Controls
             {
                 val = Max;
             }
-            Value = val;
-            ValueTb!.Text = val.ToString();
+            SetCurrentValue(ValueProperty, val);
+            if (!ValueTb!.IsFocused)
+            {
+                ValueTb!.Text = val.ToString();
+            }
             ValueChanged?.Invoke(this, new RoutedPropertyChangedEventArgs<long>(oldVal, Value));
         }
 

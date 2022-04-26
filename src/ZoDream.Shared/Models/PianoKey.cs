@@ -183,5 +183,27 @@ namespace ZoDream.Shared.Models
             key.SetKey(code);
             return key;
         }
+
+        public static PianoKey Create(object key)
+        {
+            if (key is null)
+            {
+                return Create127(0);
+            }
+            if (key is PianoKey k)
+            {
+                return k;
+            }
+            var s = key.ToString();
+            if (s == null)
+            {
+                return Create127(0);
+            }
+            if (Regex.IsMatch(s, @"^([CDEFGAB])(#?)(\d+)$"))
+            {
+                return Create(s!);
+            }
+            return Create127(Convert.ToInt32(s));
+        }
     }
 }

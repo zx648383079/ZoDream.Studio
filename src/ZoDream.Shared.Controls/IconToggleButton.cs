@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -41,41 +42,19 @@ namespace ZoDream.Shared.Controls
     /// 步骤 2)
     /// 继续操作并在 XAML 文件中使用控件。
     ///
-    ///     <MyNamespace:SwitchInput/>
+    ///     <MyNamespace:IconToggleButton/>
     ///
     /// </summary>
-    [TemplatePart(Name = InnerBgName, Type = typeof(Border))]
-    [TemplatePart(Name = CircleBtnName, Type = typeof(Ellipse))]
     [TemplatePart(Name = LabelTbName, Type = typeof(TextBlock))]
-    public class SwitchInput : Control
+    public class IconToggleButton : ButtonBase
     {
-        public const string InnerBgName = "PART_InnerBg";
-        public const string CircleBtnName = "PART_CircleBtn";
         public const string LabelTbName = "PART_LabelTb";
-        static SwitchInput()
+        static IconToggleButton()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(SwitchInput), new FrameworkPropertyMetadata(typeof(SwitchInput)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(IconToggleButton), new FrameworkPropertyMetadata(typeof(IconToggleButton)));
         }
 
-        private Border? InnerBg;
-        private Ellipse? CircleBtn;
         private TextBlock? LabelTb;
-
-        public new double FontSize
-        {
-            get { return (double)GetValue(FontSizeProperty); }
-            set { SetValue(FontSizeProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for FontSize.  This enables animation, styling, binding, etc...
-        public new static readonly DependencyProperty FontSizeProperty =
-            DependencyProperty.Register("FontSize", typeof(double), typeof(SwitchInput), new PropertyMetadata(30.0, OnSizeChanged));
-
-        private static void OnSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as SwitchInput)?.UpdateSize();
-            
-        }
 
         public bool Value
         {
@@ -85,12 +64,12 @@ namespace ZoDream.Shared.Controls
 
         // Using a DependencyProperty as the backing store for Value.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ValueProperty =
-            DependencyProperty.Register("Value", typeof(bool), typeof(SwitchInput), new PropertyMetadata(false, OnValueChanged));
+            DependencyProperty.Register("Value", typeof(bool), typeof(IconToggleButton), new PropertyMetadata(false, OnValueChanged));
 
         private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as SwitchInput)?.UpdateValue();
-            
+            (d as IconToggleButton)?.UpdateLabel();
+
         }
 
         public string OffLabel
@@ -101,7 +80,7 @@ namespace ZoDream.Shared.Controls
 
         // Using a DependencyProperty as the backing store for OffLabel.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty OffLabelProperty =
-            DependencyProperty.Register("OffLabel", typeof(string), typeof(SwitchInput),
+            DependencyProperty.Register("OffLabel", typeof(string), typeof(IconToggleButton),
                 new PropertyMetadata(string.Empty, OnLabelChanged));
 
         public string OnLabel
@@ -112,26 +91,24 @@ namespace ZoDream.Shared.Controls
 
         // Using a DependencyProperty as the backing store for OnLabel.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty OnLabelProperty =
-            DependencyProperty.Register("OnLabel", typeof(string), typeof(SwitchInput), new PropertyMetadata(string.Empty, OnLabelChanged));
+            DependencyProperty.Register("OnLabel", typeof(string), typeof(IconToggleButton), new PropertyMetadata(string.Empty, OnLabelChanged));
 
         public event RoutedPropertyChangedEventHandler<bool>? ValueChanged;
 
         private static void OnLabelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as SwitchInput)?.UpdateLabel();
+            (d as IconToggleButton)?.UpdateLabel();
         }
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            InnerBg = GetTemplateChild(InnerBgName) as Border;
-            CircleBtn = GetTemplateChild(CircleBtnName) as Ellipse;
             LabelTb = GetTemplateChild(LabelTbName) as TextBlock;
         }
 
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        protected override void OnClick()
         {
-            base.OnMouseLeftButtonDown(e);
+            base.OnClick();
             var val = !Value;
             SetCurrentValue(ValueProperty, val);
             ValueChanged?.Invoke(this, new RoutedPropertyChangedEventArgs<bool>(!val, val));
@@ -144,49 +121,6 @@ namespace ZoDream.Shared.Controls
                 return;
             }
             LabelTb.Text = Value ? OnLabel : OffLabel;
-        }
-
-        private void UpdateSize()
-        {
-            if (InnerBg == null)
-            {
-                return;
-            }
-            var size = FontSize;
-            var padding = Math.Floor((size - 2) / 5);
-            InnerBg.Width = size * 2 - 1;
-            InnerBg.Padding = new Thickness(padding);
-            InnerBg.Height = size;
-            if (CircleBtn == null)
-            {
-                return;
-            }
-            CircleBtn.Width = CircleBtn.Height = size - 2 * padding - 2;
-        }
-
-        private void UpdateValue()
-        {
-            if (InnerBg == null || CircleBtn == null)
-            {
-                return;
-            }
-            if (Value)
-            {
-                var color = new SolidColorBrush(Color.FromArgb(255, 0, 105, 186));
-                InnerBg.BorderBrush = color;
-                InnerBg.Background = color;
-                CircleBtn.Fill = new SolidColorBrush(Colors.White);
-                CircleBtn.HorizontalAlignment = HorizontalAlignment.Right;
-            }
-            else
-            {
-                var color = new SolidColorBrush(Color.FromArgb(255, 90, 90, 90));
-                InnerBg.BorderBrush = color;
-                InnerBg.Background = new SolidColorBrush(Colors.Transparent);
-                CircleBtn.Fill = color;
-                CircleBtn.HorizontalAlignment = HorizontalAlignment.Left;
-            }
-            UpdateLabel();
         }
     }
 }
