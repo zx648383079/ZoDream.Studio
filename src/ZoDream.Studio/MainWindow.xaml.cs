@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ZoDream.Shared.Players;
+using ZoDream.Studio.Pages;
+using ZoDream.Studio.ViewModels;
 
 namespace ZoDream.Studio
 {
@@ -24,8 +26,10 @@ namespace ZoDream.Studio
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = ViewModel;
         }
 
+        public MainViewModel ViewModel = new();
         private IPlayer? Player;
 
         private void PianoTb_OnPress(object sender, Controls.PianoKeyEventArgs e)
@@ -46,6 +50,27 @@ namespace ZoDream.Studio
         private void Window_Unloaded(object sender, RoutedEventArgs e)
         {
             Player?.Dispose();
+        }
+
+        private void PlayBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.Paused = false;
+        }
+
+        private void StopBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.Paused = true;
+        }
+
+        private void OptionBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var model = new SettingViewModel();
+            var page = new SettingWindow(model);
+            page.Show();
+            model.PropertyChanged += (_, e) =>
+            {
+
+            };
         }
     }
 }

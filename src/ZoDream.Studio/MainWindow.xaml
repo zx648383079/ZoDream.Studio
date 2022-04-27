@@ -17,11 +17,11 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <sctl:IconButton x:Name="PlayBtn" Icon="&#xE102;" Label="回放"/>
-            <sctl:IconButton x:Name="StopBtn" Icon="&#xE103;" Label="停止"/>
-            <sctl:IconButton x:Name="OptionBtn" Icon="&#xE115;" Label="设置"/>
+            <sctl:IconButton x:Name="PlayBtn" Click="PlayBtn_Click" Icon="&#xE102;" Label="播放" Visibility="{Binding Paused, Converter={StaticResource ToggleConverter}}"/>
+            <sctl:IconButton x:Name="StopBtn" Click="StopBtn_Click" Icon="&#xE103;" Label="停止" Visibility="{Binding Paused, Converter={StaticResource ToggleConverter}, ConverterParameter=false}"/>
+            <sctl:IconButton x:Name="OptionBtn" Click="OptionBtn_Click" Icon="&#xE115;" Label="设置"/>
         </StackPanel>
-        <ctl:PianoPanel x:Name="PianoTb" Background="#fff" OnPress="PianoTb_OnPress" OnRelease="PianoTb_OnRelease"/>
-        <ctl:TrackPanel Grid.Row="1"/>
+        <ctl:PianoPanel x:Name="PianoTb" Background="#fff" Grid.Row="1" OnPress="PianoTb_OnPress" OnRelease="PianoTb_OnRelease"/>
+        <ctl:TrackPanel Grid.Row="2"/>
     </Grid>
 </Window>

@@ -41,16 +41,57 @@ namespace ZoDream.Studio.Controls
     /// 步骤 2)
     /// 继续操作并在 XAML 文件中使用控件。
     ///
-    ///     <MyNamespace:TrackHeader/>
+    ///     <MyNamespace:NoteBar/>
     ///
     /// </summary>
-    public class TrackHeader : Control
+    [TemplatePart(Name = BorderName, Type = typeof(FrameworkElement))]
+    public class NoteBar : Control
     {
-        static TrackHeader()
+        public const string BorderName = "PART_Border";
+        static NoteBar()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(TrackHeader), new FrameworkPropertyMetadata(typeof(TrackHeader)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(NoteBar), new FrameworkPropertyMetadata(typeof(NoteBar)));
         }
 
-        public int RowIndex { get; set; }
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            var border = GetTemplateChild(BorderName) as FrameworkElement;
+            if (border != null)
+            {
+                border.MouseEnter += Border_MouseEnter;
+                border.MouseLeave += Border_MouseLeave;
+                border.MouseLeftButtonDown += Border_MouseLeftButtonDown;
+            }
+        }
+
+        private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            
+        }
+
+        private void Border_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                return;
+            }
+            Cursor = Cursors.Arrow;
+        }
+
+        private void Border_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Border border = (Border)sender;
+            var rightLimit = border.ActualWidth - border.Padding.Right;
+            var x = Mouse.GetPosition((IInputElement)sender).X;
+            if (x > rightLimit || x < border.Padding.Left)
+            {
+                Cursor = Cursors.SizeWE;
+            } else
+            {
+                Cursor = Cursors.SizeAll;
+            }
+            
+        }
     }
 }

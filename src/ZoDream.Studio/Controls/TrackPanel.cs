@@ -70,7 +70,7 @@ namespace ZoDream.Studio.Controls
 
         // Using a DependencyProperty as the backing store for RowHeight.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RowHeightProperty =
-            DependencyProperty.Register("RowHeight", typeof(double), typeof(TrackPanel), new PropertyMetadata(50.0));
+            DependencyProperty.Register("RowHeight", typeof(double), typeof(TrackPanel), new PropertyMetadata(30.0));
 
 
 
@@ -101,37 +101,42 @@ namespace ZoDream.Studio.Controls
             }
             if (VerticalBar != null)
             {
+                VerticalBar.Maximum = 100;
                 VerticalBar.ValueChanged += VerticalBar_ValueChanged;
             }
             for (int i = 0; i < 1; i++)
             {
-                //Add(i);
+                Add(i);
             }
         }
 
         private void VerticalBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             VerticalOffset = e.NewValue;
+            UpdateSize();
         }
 
         private void HorizontalBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             HorizontalOffset = e.NewValue;
             Ruler!.Offset = e.NewValue;
+            UpdateSize();
         }
 
         private void Ruler_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             HeaderWidth = BoxPanel!.ActualWidth - Ruler!.ActualWidth;
+            UpdateSize();
         }
 
         private void Add(int index)
         {
-            var y = index * RowHeight + VerticalOffset;
+            var y = index * RowHeight - VerticalOffset;
             var header = new TrackHeader
             {
                 Width = HeaderWidth,
-                Height = RowHeight
+                Height = RowHeight,
+                RowIndex = index,
             };
             Panel.SetZIndex(header, 66);
             Canvas.SetLeft(header, 0);
@@ -140,12 +145,39 @@ namespace ZoDream.Studio.Controls
             var row = new TrackBar()
             {
                 Height = RowHeight,
-                Width = 200
+                Width = 200,
+                RowIndex = index,
             };
             Panel.SetZIndex(row, 0);
-            Canvas.SetLeft(row, HeaderWidth + HorizontalOffset);
+            Canvas.SetLeft(row, HeaderWidth - HorizontalOffset);
             Canvas.SetTop(row, y);
             BoxPanel!.Children.Add(row);
+        }
+
+        private void UpdateSize()
+        {
+            if (BoxPanel == null)
+            {
+                return;
+            }
+            foreach (var item in BoxPanel.Children)
+            {
+                if (item == null)
+                {
+                    continue;
+                }
+                if (item is TrackHeader header)
+                {
+                    header.Width = HeaderWidth;
+                    Canvas.SetTop(header, header.RowIndex * RowHeight - VerticalOffset);
+                    continue;
+                }
+                if (item is TrackBar row)
+                {
+                    Canvas.SetLeft(row, HeaderWidth - HorizontalOffset);
+                    Canvas.SetTop(row, row.RowIndex * RowHeight - VerticalOffset);
+                }
+            }
         }
     }
 }

@@ -5,12 +5,12 @@
 
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Themes/BaseStyle.xaml"/>
-        <ResourceDictionary Source="/Themes/HyperlinkButton.xaml"/>
-        <ResourceDictionary Source="/Themes/IconButton.xaml"/>
-        <ResourceDictionary Source="/Themes/SwitchInput.xaml"/>
-        <ResourceDictionary Source="/Themes/ContentDialog.xaml"/>
-        <ResourceDictionary Source="/Themes/IconToggleButton.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/ZoDream.Shared.Controls;component/Themes/BaseStyle.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/ZoDream.Shared.Controls;component/Themes/HyperlinkButton.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/ZoDream.Shared.Controls;component/Themes/IconButton.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/ZoDream.Shared.Controls;component/Themes/SwitchInput.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/ZoDream.Shared.Controls;component/Themes/ContentDialog.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/ZoDream.Shared.Controls;component/Themes/IconToggleButton.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

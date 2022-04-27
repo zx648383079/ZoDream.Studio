@@ -7,9 +7,6 @@
         <ResourceDictionary Source="/Themes/Piano.xaml"/>
         <ResourceDictionary Source="/Themes/TrackPanel.xaml"/>
         <ResourceDictionary Source="/Themes/RulePanel.xaml"/>
+        <ResourceDictionary Source="/Themes/Roll.xaml"/>
     </ResourceDictionary.MergedDictionaries>
-
-
-
-    
 </ResourceDictionary>

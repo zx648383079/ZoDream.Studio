@@ -54,17 +54,6 @@ namespace ZoDream.Studio.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(PianoPanel), new FrameworkPropertyMetadata(typeof(PianoPanel)));
         }
 
-        public int KeyWidth
-        {
-            get { return (int)GetValue(KeyWidthProperty); }
-            set { SetValue(KeyWidthProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for KeyWidth.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty KeyWidthProperty =
-            DependencyProperty.Register("KeyWidth", typeof(int), typeof(PianoPanel), new PropertyMetadata(0));
-
-
 
         public int WhiteKeyWidth
         {
@@ -139,10 +128,6 @@ namespace ZoDream.Studio.Controls
             {
                 return BlackKeyWidth;
             }
-            if (KeyWidth > 0)
-            {
-                return KeyWidth * .6;
-            }
             return GetWhiteKeyWidth() *.6;
         }
 
@@ -152,9 +137,9 @@ namespace ZoDream.Studio.Controls
             {
                 return WhiteKeyWidth;
             }
-            if (KeyWidth > 0)
+            if (BlackKeyWidth > 0)
             {
-                return KeyWidth;
+                return BlackKeyWidth * 2;
             }
             return Math.Max(
                 Math.Min((Orientation == Orientation.Horizontal ? ActualWidth : ActualHeight) / 7, 

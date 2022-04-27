@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ZoDream.Shared.Storage
 {
-    public static class File
+    public static class LocationStorage
     {
         /// <summary>
         /// 读文本文件

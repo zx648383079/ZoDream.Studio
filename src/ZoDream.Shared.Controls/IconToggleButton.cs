@@ -104,6 +104,7 @@ namespace ZoDream.Shared.Controls
         {
             base.OnApplyTemplate();
             LabelTb = GetTemplateChild(LabelTbName) as TextBlock;
+            UpdateLabel();
         }
 
         protected override void OnClick()

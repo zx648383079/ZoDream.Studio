@@ -44,11 +44,11 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <StackPanel Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center">
-                        <TextBlock Text="Keyboard Simulator" FontSize="30"/>
-                        <TextBlock Text="v1.3"/>
+                        <TextBlock Text="ZoDream Studio" FontSize="30"/>
+                        <TextBlock Text="v1.0"/>
                         <ctl:HyperlinkButton Content="Copyright © 2022 zodream.cn" 
                                              NavigateUri="https://github.com/zx648383079/ZoDream.Studio"
-                                             HorizontalAlignment="Left"/>
+                                             />
                     </StackPanel>
                 </Grid>
             </TabItem>

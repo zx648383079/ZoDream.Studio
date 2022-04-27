@@ -41,16 +41,14 @@ namespace ZoDream.Studio.Controls
     /// 步骤 2)
     /// 继续操作并在 XAML 文件中使用控件。
     ///
-    ///     <MyNamespace:TrackHeader/>
+    ///     <MyNamespace:WordRollPanel/>
     ///
     /// </summary>
-    public class TrackHeader : Control
+    public class WordRollPanel : Control
     {
-        static TrackHeader()
+        static WordRollPanel()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(TrackHeader), new FrameworkPropertyMetadata(typeof(TrackHeader)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(WordRollPanel), new FrameworkPropertyMetadata(typeof(WordRollPanel)));
         }
-
-        public int RowIndex { get; set; }
     }
 }

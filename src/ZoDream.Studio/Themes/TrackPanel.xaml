@@ -12,7 +12,7 @@
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
-                                <RowDefinition Height="60"/>
+                                <RowDefinition Height="30"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
@@ -25,7 +25,6 @@
                             <ScrollBar x:Name="PART_VerticalBar" Grid.Column="2" Grid.Row="2" Orientation="Vertical"/>
                             <local:RulePanel x:Name="PART_Rule" Grid.Column="1" Grid.Row="1"/>
                             <Canvas x:Name="PART_TrackPanel" ClipToBounds="True" Grid.Row="2" Grid.ColumnSpan="2"/>
-                            
                         </Grid>
                     </Border>
                 </ControlTemplate>
@@ -49,13 +48,13 @@
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="音乐"/>
+                            <TextBlock Text="音乐" VerticalAlignment="Center"/>
                             <ctl:IconToggleButton Grid.Column="1" OnLabel="&#xE72E;" 
-                                                  OffLabel="&#xE785;" ToolTip="锁定"/>
-                            <ctl:IconToggleButton Grid.Column="2" OnLabel="&#xE7B3;" 
-                                                  OffLabel="&#xE871;" ToolTip="显示隐藏"/>
-                            <ctl:IconButton Grid.Column="3" Icon="&#xE104;"/>
-                            <ctl:IconButton Grid.Column="4" Icon="&#xE107;"/>
+                                                  OffLabel="&#xE785;" ToolTip="锁定" Width="{TemplateBinding Height}"/>
+                            <ctl:IconToggleButton Grid.Column="2" OnLabel="&#xE9A9;" 
+                                                  OffLabel="&#xE9A8;" ToolTip="显示隐藏" Width="{TemplateBinding Height}"/>
+                            <ctl:IconButton Grid.Column="3" Icon="&#xE104;" Width="{TemplateBinding Height}"/>
+                            <ctl:IconButton Grid.Column="4" Icon="&#xE107;" Width="{TemplateBinding Height}"/>
                         </Grid>
                     </Border>
                 </ControlTemplate>
@@ -64,15 +63,32 @@
     </Style>
 
     <Style TargetType="{x:Type local:TrackBar}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="{StaticResource {x:Static SystemColors.ControlColorKey}}"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Foreground">
+            <Setter.Value>
+                <SolidColorBrush Color="{StaticResource {x:Static SystemColors.ScrollBarColorKey}}"/>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:TrackBar}">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
+                    <Border>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground">
+                    <Setter.Value>
+                        <SolidColorBrush Color="{StaticResource {x:Static SystemColors.ActiveBorderColorKey}}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

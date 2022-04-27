@@ -50,5 +50,18 @@ namespace ZoDream.Studio.Controls
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(TrackBar), new FrameworkPropertyMetadata(typeof(TrackBar)));
         }
+
+        public int RowIndex { get; set; }
+
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            base.OnRender(drawingContext);
+            var pen = new Pen(BorderBrush, BorderThickness.Top);
+            drawingContext.DrawRectangle(Background, pen, new Rect(0, 0, ActualWidth, ActualHeight));
+            var begin = 30;
+            var end = 120;
+            drawingContext.DrawRectangle(Foreground, pen, new Rect(begin, 0, end, ActualHeight));
+        }
+
     }
 }
