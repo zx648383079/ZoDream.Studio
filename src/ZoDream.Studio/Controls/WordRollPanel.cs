@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -44,11 +45,22 @@ namespace ZoDream.Studio.Controls
     ///     <MyNamespace:WordRollPanel/>
     ///
     /// </summary>
+    [TemplatePart(Name = TrackPanel.TrackPanelName, Type = typeof(Canvas))]
+    [TemplatePart(Name = TrackPanel.RuleName, Type = typeof(RulePanel))]
+    [TemplatePart(Name = TrackPanel.HorizontalBarName, Type = typeof(ScrollBar))]
+    [TemplatePart(Name = TrackPanel.VerticalBarName, Type = typeof(ScrollBar))]
     public class WordRollPanel : Control
     {
         static WordRollPanel()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(WordRollPanel), new FrameworkPropertyMetadata(typeof(WordRollPanel)));
+        }
+
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+
         }
     }
 }

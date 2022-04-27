@@ -102,14 +102,74 @@ namespace ZoDream.Studio.Controls
         public static readonly DependencyProperty BeginKeyProperty =
             DependencyProperty.Register("BeginKey", typeof(object), typeof(PianoPanel), new PropertyMetadata(60, (d, e) =>
             {
+                (d as PianoPanel)?.UpdateBeginKey();
+            }));
+
+
+
+        public double Offset
+        {
+            get { return (double)GetValue(OffsetProperty); }
+            set { SetValue(OffsetProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Offset.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty OffsetProperty =
+            DependencyProperty.Register("Offset", typeof(double), typeof(PianoPanel), new PropertyMetadata(.0, (d, e) =>
+            {
                 (d as PianoPanel)?.UpdateKey();
             }));
 
+
+
+
+
+        public object Min
+        {
+            get { return GetValue(MinProperty); }
+            set { SetValue(MinProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Min.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MinProperty =
+            DependencyProperty.Register("Min", typeof(object), typeof(PianoPanel), new PropertyMetadata(0, (d, e) =>
+            {
+                (d as PianoPanel)?.DrawKey();
+            }));
+
+
+
+
+        public object Max
+        {
+            get { return GetValue(MaxProperty); }
+            set { SetValue(MaxProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Max.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MaxProperty =
+            DependencyProperty.Register("Max", typeof(object), typeof(PianoPanel), new PropertyMetadata(131, (d, e) =>
+            {
+                (d as PianoPanel)?.DrawKey();
+            }));
+
         private Canvas? BoxPanel;
+        private bool IsLazy = true;
         public readonly PianoKey DefaultBeginKey = PianoKey.Create127(60);
 
+        public event RoutedPropertyChangedEventHandler<double>? OnScroll;
         public event PianoKeyEventHandler? OnPress;
         public event PianoKeyEventHandler? OnRelease;
+
+        private void UpdateBeginKey()
+        {
+            if (GetWhiteKeyWidth() <= 0)
+            {
+                IsLazy = true;
+                return;
+            }
+            Offset = -GetOffset(GetBeginKey(), GetMin());
+        }
 
         private PianoKey GetBeginKey()
         {
@@ -121,6 +181,35 @@ namespace ZoDream.Studio.Controls
             SetCurrentValue(BeginKeyProperty, k);
             return k;
         }
+
+        private PianoKey GetMin()
+        {
+            var k = PianoKey.Create(Min);
+            k.Scale = 0;
+            if (Min == k)
+            {
+                return k;
+            }
+            SetCurrentValue(MinProperty, k);
+            return k;
+        }
+
+        private PianoKey GetMax()
+        {
+            var k = PianoKey.Create(Max);
+            if (k.Scale > 0)
+            {
+                k += 1;
+            }
+            if (Max == k)
+            {
+                return k;
+            }
+            SetCurrentValue(MaxProperty, k);
+            return k;
+        }
+
+
 
         private double GetBlackKeyWidth()
         {
@@ -160,6 +249,36 @@ namespace ZoDream.Studio.Controls
         {
             return Convert.ToInt32(Math.Min((Orientation == Orientation.Horizontal ? ActualWidth : ActualHeight) / GetWhiteKeyWidth() * 1.5, 4));
         }
+
+        public PianoKey Get(double offset)
+        {
+            var w = GetWhiteKeyWidth();
+            var min = GetMin();
+            if (Orientation == Orientation.Vertical)
+            {
+                offset = offset + GetOffset(GetMax(), min) - ActualHeight
+                    + w;
+
+            }
+            var index = (offset -= Offset) / w;
+            var key = new PianoKey
+            {
+                Beat = Convert.ToInt16(index / 7 - 4),
+                Code = Convert.ToUInt16(index % 7)
+            };
+            var pre = key - 1;
+            if (pre.Scale > 0 && GetOffset(pre, min) + GetBlackKeyWidth() > offset)
+            {
+                return pre;
+            }
+            var next = key + 1;
+            if (next.Scale > 0 && GetOffset(next, min) > offset)
+            {
+                return next;
+            }
+            return key;
+        }
+
 
         public void Press(PianoKey key)
         {
@@ -227,23 +346,32 @@ namespace ZoDream.Studio.Controls
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
+            if (IsLazy)
+            {
+                SetCurrentValue(OffsetProperty, -GetOffset(GetBeginKey(), GetMin()));
+                IsLazy = false;
+            }
             UpdateKey();
         }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
             base.OnMouseWheel(e);
-            var key = PianoKey.Create127((int)Math.Max(Math.Min(GetBeginKey().ToKey127() 
-                 + (Orientation == Orientation.Horizontal ? -1 : 1) * 
-                 Math.Floor(e.Delta / 60.0), 127 - PreCollumnCount()
-                 ), 0));
-            SetCurrentValue(BeginKeyProperty, key);
-            UpdateKey(key);
+            var offset = e.Delta * (Orientation == Orientation.Horizontal ? 1 : -1);// / 60;
+            var args = new RoutedPropertyChangedEventArgs<double>(0, offset);
+            OnScroll?.Invoke(this, args);
+            if (args.Handled == true)
+            {
+                return;
+            }
+            Offset = Math.Max(Math.Min(0, Offset + offset), - GetOffset(GetMax() + 1, GetMin()) + 
+                (Orientation == Orientation.Horizontal ? ActualWidth : ActualHeight));
+            
         }
 
         private void DrawKey()
         {
-            DrawKey(GetBeginKey(), 0);
+            DrawKey(Offset);
         }
 
         private void DrawKey(PianoKey beginKey, double offset = 0)
@@ -258,7 +386,7 @@ namespace ZoDream.Studio.Controls
                 return;
             }
             BoxPanel.Children.Clear();
-            for (int i = 0; i <= 127; i++)
+            for (int i = GetMin().ToKey127(); i <= GetMax().ToKey127(); i++)
             {
                 var key = PianoKey.Create127(i);
                 var keyBtn = key.Scale > 0 ? new PianoBlackKey() : new PianoWhiteKey();
@@ -284,7 +412,7 @@ namespace ZoDream.Studio.Controls
                 return;
             }
             var key = item.Value;
-            var x = Get127Offset(key);
+            var x = GetOffset(key, GetMin());
             var y = .0;
             var w = key.Scale > 0 ? GetBlackKeyWidth() : GetWhiteKeyWidth();
             var h = key.Scale > 0 ? GetBlackKeyHeight() : GetWhiteKeyHeight();
@@ -346,9 +474,25 @@ namespace ZoDream.Studio.Controls
             }
         }
 
+        private void UpdateKey(double offset)
+        {
+            if (BoxPanel == null)
+            {
+                return;
+            }
+            foreach (PianoWhiteKey item in BoxPanel.Children)
+            {
+                if (item == null)
+                {
+                    continue;
+                }
+                UpdateKeyRect(item, offset);
+            }
+        }
+
         private void UpdateKey()
         {
-            UpdateKey(GetBeginKey());
+            UpdateKey(Offset);
         }
     }
 

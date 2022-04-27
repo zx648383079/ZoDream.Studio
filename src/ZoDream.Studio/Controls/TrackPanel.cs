@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ZoDream.Shared.Models;
 
 namespace ZoDream.Studio.Controls
 {
@@ -74,6 +75,17 @@ namespace ZoDream.Studio.Controls
 
 
 
+        public IList<TrackItem> ItemsSource
+        {
+            get { return (IList<TrackItem>)GetValue(ItemsSourceProperty); }
+            set { SetValue(ItemsSourceProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ItemsSource.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ItemsSourceProperty =
+            DependencyProperty.Register("ItemsSource", typeof(IList<TrackItem>), typeof(TrackPanel), new PropertyMetadata(null));
+
+
         private Canvas? BoxPanel;
         private RulePanel? Ruler;
         private ScrollBar? HorizontalBar;
@@ -81,6 +93,8 @@ namespace ZoDream.Studio.Controls
         private double HeaderWidth = 200.0;
         private double HorizontalOffset = .0;
         private double VerticalOffset = .0;
+        private TrackBar? MoveBar;
+        private Point MoveLast = new();
 
 
         public override void OnApplyTemplate()
@@ -152,7 +166,45 @@ namespace ZoDream.Studio.Controls
             Canvas.SetLeft(row, HeaderWidth - HorizontalOffset);
             Canvas.SetTop(row, y);
             BoxPanel!.Children.Add(row);
+            row.MouseLeftButtonDown += Row_MouseLeftButtonDown;
+            row.MouseMove += Row_MouseMove;
+            row.MouseLeftButtonUp += Row_MouseLeftButtonUp;
         }
+
+        private void Row_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (MoveBar == null)
+            {
+                return;
+            }
+            Cursor = Cursors.Arrow;
+            MoveBar.Opacity = 1;
+            MoveRow(MoveBar.RowIndex, Canvas.GetLeft(MoveBar), Canvas.GetTop(MoveBar));
+            MoveBar = null;
+        }
+
+        private void Row_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (MoveBar == null)
+            {
+                return;
+            }
+            var x = Canvas.GetLeft(MoveBar);
+            var y = Canvas.GetTop(MoveBar);
+            var p = e.GetPosition(this);
+            Canvas.SetLeft(MoveBar, p.X - MoveLast.X + x);
+            Canvas.SetTop(MoveBar, p.Y - MoveLast.Y + y);
+            MoveLast = p;
+        }
+
+        private void Row_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            MoveBar = (TrackBar)sender;
+            MoveLast = e.GetPosition(this);
+            Cursor = Cursors.SizeAll;
+            MoveBar.Opacity = .5;
+        }
+
 
         private void UpdateSize()
         {
@@ -168,16 +220,76 @@ namespace ZoDream.Studio.Controls
                 }
                 if (item is TrackHeader header)
                 {
-                    header.Width = HeaderWidth;
-                    Canvas.SetTop(header, header.RowIndex * RowHeight - VerticalOffset);
+                    UpdateRow(header);
                     continue;
                 }
                 if (item is TrackBar row)
                 {
-                    Canvas.SetLeft(row, HeaderWidth - HorizontalOffset);
-                    Canvas.SetTop(row, row.RowIndex * RowHeight - VerticalOffset);
+                    UpdateRow(row);
                 }
             }
+        }
+
+        private void UpdateRow(TrackHeader header)
+        {
+            header.Width = HeaderWidth;
+            Canvas.SetTop(header, header.RowIndex * RowHeight - VerticalOffset);
+        }
+
+        private void UpdateRow(TrackBar row)
+        {
+            Canvas.SetLeft(row, HeaderWidth - HorizontalOffset);
+            Canvas.SetTop(row, row.RowIndex * RowHeight - VerticalOffset);
+        }
+
+        private void MoveRow(int index, double x, double y)
+        {
+            var to = (int)Math.Max(Math.Floor((y + VerticalOffset) / RowHeight), 0);
+            var toY = y + HorizontalOffset - HeaderWidth;
+            foreach (var item in BoxPanel!.Children)
+            {
+                if (item is TrackHeader header)
+                {
+                    if (header.RowIndex == index)
+                    {
+                        header.RowIndex = to;
+                    } else if (InRange(header.RowIndex, index, to))
+                    {
+                        header.RowIndex += (index < to ? -1 : 1);
+                    } else
+                    {
+                        continue;
+                    }
+                    UpdateRow(header);
+                    continue;
+                }
+                if (item is TrackBar row)
+                {
+                    if (row.RowIndex == index)
+                    {
+                        row.RowIndex = to;
+                        // row.y = toY;
+                    }
+                    else if (InRange(row.RowIndex, index, to))
+                    {
+                        row.RowIndex += (index < to ? -1 : 1);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                    UpdateRow(row);
+                }
+            }
+        }
+
+        private bool InRange(int i, int min, int max)
+        {
+            if (min > max)
+            {
+                return i < min && i > max;
+            }
+            return i < max && i > min;
         }
     }
 }

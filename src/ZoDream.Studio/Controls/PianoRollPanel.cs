@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -44,6 +45,10 @@ namespace ZoDream.Studio.Controls
     ///     <MyNamespace:PianoRollPanel/>
     ///
     /// </summary>
+    [TemplatePart(Name = TrackPanel.TrackPanelName, Type = typeof(Canvas))]
+    [TemplatePart(Name = TrackPanel.RuleName, Type = typeof(RulePanel))]
+    [TemplatePart(Name = TrackPanel.HorizontalBarName, Type = typeof(ScrollBar))]
+    [TemplatePart(Name = TrackPanel.VerticalBarName, Type = typeof(ScrollBar))]
     public class PianoRollPanel : Control
     {
         static PianoRollPanel()

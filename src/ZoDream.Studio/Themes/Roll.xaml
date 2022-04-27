@@ -23,7 +23,7 @@
                             <ScrollBar x:Name="PART_HorizontalBar" Grid.Column="1" Orientation="Horizontal"/>
                             <ScrollBar x:Name="PART_VerticalBar" Grid.Column="2" Grid.Row="2" Orientation="Vertical"/>
                             <local:RulePanel x:Name="PART_Rule" Grid.Column="1" Grid.Row="1"/>
-                            <local:PianoPanel x:Name="PART_Piano" Orientation="Vertical" BlackKeyWidth="30" Grid.Row="1"/>
+                            <local:PianoPanel x:Name="PART_Piano" Orientation="Vertical" BlackKeyWidth="30" Grid.Row="2"/>
                             <Canvas x:Name="PART_RollPanel" ClipToBounds="True" Grid.Row="2" Grid.Column="1"/>
                         </Grid>
                     </Border>
@@ -39,14 +39,21 @@
                 <SolidColorBrush Color="{StaticResource {x:Static SystemColors.ScrollBarColorKey}}"/>
             </Setter.Value>
         </Setter>
+        <Setter Property="Padding" Value="2"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:NoteBar}">
                     <Border x:Name="PART_Border"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
-                        <Rectangle x:Name="PART_Inner" Fill="{TemplateBinding Foreground}"/>
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}">
+                        <Grid x:Name="PART_Inner" Background="{TemplateBinding Background}">
+                            <TextBlock Text="{TemplateBinding Label}" 
+                                       FontSize="{TemplateBinding FontSize}"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

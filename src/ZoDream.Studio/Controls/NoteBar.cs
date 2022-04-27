@@ -53,6 +53,19 @@ namespace ZoDream.Studio.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(NoteBar), new FrameworkPropertyMetadata(typeof(NoteBar)));
         }
 
+
+
+        public string Label
+        {
+            get { return (string)GetValue(LabelProperty); }
+            set { SetValue(LabelProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Label.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty LabelProperty =
+            DependencyProperty.Register("Label", typeof(string), typeof(NoteBar), new PropertyMetadata(string.Empty));
+
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();

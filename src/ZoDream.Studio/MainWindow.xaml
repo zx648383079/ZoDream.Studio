@@ -22,6 +22,6 @@
             <sctl:IconButton x:Name="OptionBtn" Click="OptionBtn_Click" Icon="&#xE115;" Label="设置"/>
         </StackPanel>
         <ctl:PianoPanel x:Name="PianoTb" Background="#fff" Grid.Row="1" OnPress="PianoTb_OnPress" OnRelease="PianoTb_OnRelease"/>
-        <ctl:TrackPanel Grid.Row="2"/>
+        <ctl:PianoRollPanel Grid.Row="2"/>
     </Grid>
 </Window>
