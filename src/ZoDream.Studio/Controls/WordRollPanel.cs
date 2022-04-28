@@ -56,10 +56,60 @@ namespace ZoDream.Studio.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(WordRollPanel), new FrameworkPropertyMetadata(typeof(WordRollPanel)));
         }
 
+        private Canvas? BoxPanel;
+        private RulePanel? Ruler;
+        private ScrollBar? HorizontalBar;
+        private ScrollBar? VerticalBar;
+        private double HeaderWidth = 200.0;
+        private double HorizontalOffset = .0;
+        private double VerticalOffset = .0;
+        private TrackBar? MoveBar;
+        private Point MoveLast = new();
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
+            BoxPanel = GetTemplateChild(TrackPanel.TrackPanelName) as Canvas;
+            Ruler = GetTemplateChild(TrackPanel.RuleName) as RulePanel;
+            HorizontalBar = GetTemplateChild(TrackPanel.HorizontalBarName) as ScrollBar;
+            VerticalBar = GetTemplateChild(TrackPanel.VerticalBarName) as ScrollBar;
+            if (Ruler != null)
+            {
+                Ruler.SizeChanged += Ruler_SizeChanged;
+            }
+            if (HorizontalBar != null)
+            {
+                HorizontalBar.Maximum = 100;
+                HorizontalBar.ValueChanged += HorizontalBar_ValueChanged;
+            }
+            if (VerticalBar != null)
+            {
+                VerticalBar.Maximum = 100;
+                VerticalBar.ValueChanged += VerticalBar_ValueChanged;
+            }
+        }
+
+        private void VerticalBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            VerticalOffset = e.NewValue;
+            UpdateSize();
+        }
+
+        private void HorizontalBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            HorizontalOffset = e.NewValue;
+            Ruler!.Offset = e.NewValue;
+            UpdateSize();
+        }
+
+        private void Ruler_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            HeaderWidth = BoxPanel!.ActualWidth - Ruler!.ActualWidth;
+            UpdateSize();
+        }
+
+        private void UpdateSize()
+        {
 
         }
     }

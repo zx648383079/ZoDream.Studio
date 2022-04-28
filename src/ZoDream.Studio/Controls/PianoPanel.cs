@@ -125,6 +125,18 @@ namespace ZoDream.Studio.Controls
 
 
 
+        public bool IsSameGap
+        {
+            get { return (bool)GetValue(IsSameGapProperty); }
+            set { SetValue(IsSameGapProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsSameGap.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsSameGapProperty =
+            DependencyProperty.Register("IsSameGap", typeof(bool), typeof(PianoPanel), new PropertyMetadata(false));
+
+
+
 
         public object Min
         {
@@ -174,6 +186,7 @@ namespace ZoDream.Studio.Controls
             SyncSize();
             PianoHelper.Begin(GetBeginKey());
             Offset = PianoHelper.Offset;
+            OnScroll?.Invoke(this, new RoutedPropertyChangedEventArgs<double>(0, Offset));
         }
 
         private PianoKey GetBeginKey()
@@ -247,7 +260,7 @@ namespace ZoDream.Studio.Controls
 
         private double GetBlackKeyHeight()
         {
-            return GetWhiteKeyHeight() * .6;
+            return GetWhiteKeyHeight() * .618;
         }
 
         private int PreCollumnCount()
@@ -331,6 +344,7 @@ namespace ZoDream.Studio.Controls
             {
                 PianoHelper.Begin(GetBeginKey());
                 SetCurrentValue(OffsetProperty, PianoHelper.Offset);
+                OnScroll?.Invoke(this, new RoutedPropertyChangedEventArgs<double>(0, Offset));
                 IsLazy = false;
             }
             UpdateKey();
@@ -361,6 +375,7 @@ namespace ZoDream.Studio.Controls
             PianoHelper.WhiteKeyWidth = GetWhiteKeyWidth();
             PianoHelper.WhiteKeyHeight = GetWhiteKeyHeight();
             PianoHelper.IsHorizontal = Orientation == Orientation.Horizontal;
+            PianoHelper.IsSameGap = IsSameGap;
         }
 
         private void DrawKey()
@@ -433,19 +448,5 @@ namespace ZoDream.Studio.Controls
         }
     }
 
-    public delegate void PianoKeyEventHandler(object sender, PianoKeyEventArgs e);
-
-    public class PianoKeyEventArgs
-    {
-        public PianoKeyEventArgs(PianoKey key, bool isPressed)
-        {
-            Key = key;
-            IsPressed = isPressed;
-        }
-
-        public PianoKey Key { get; private set; }
-
-        public bool IsPressed { get; private set; }
-        public bool Handle { get; set; } = false;
-    }
+    
 }

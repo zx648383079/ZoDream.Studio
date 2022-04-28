@@ -69,42 +69,8 @@ namespace ZoDream.Studio.Controls
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            var border = GetTemplateChild(BorderName) as FrameworkElement;
-            if (border != null)
-            {
-                border.MouseEnter += Border_MouseEnter;
-                border.MouseLeave += Border_MouseLeave;
-                border.MouseLeftButtonDown += Border_MouseLeftButtonDown;
-            }
+            // var border = GetTemplateChild(BorderName) as FrameworkElement;
         }
 
-        private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            
-        }
-
-        private void Border_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                return;
-            }
-            Cursor = Cursors.Arrow;
-        }
-
-        private void Border_MouseEnter(object sender, MouseEventArgs e)
-        {
-            Border border = (Border)sender;
-            var rightLimit = border.ActualWidth - border.Padding.Right;
-            var x = Mouse.GetPosition((IInputElement)sender).X;
-            if (x > rightLimit || x < border.Padding.Left)
-            {
-                Cursor = Cursors.SizeWE;
-            } else
-            {
-                Cursor = Cursors.SizeAll;
-            }
-            
-        }
     }
 }

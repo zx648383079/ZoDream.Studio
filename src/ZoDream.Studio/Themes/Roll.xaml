@@ -23,8 +23,11 @@
                             <ScrollBar x:Name="PART_HorizontalBar" Grid.Column="1" Orientation="Horizontal"/>
                             <ScrollBar x:Name="PART_VerticalBar" Grid.Column="2" Grid.Row="2" Orientation="Vertical"/>
                             <local:RulePanel x:Name="PART_Rule" Grid.Column="1" Grid.Row="1"/>
-                            <local:PianoPanel x:Name="PART_Piano" Orientation="Vertical" BlackKeyWidth="30" Grid.Row="2"/>
-                            <Canvas x:Name="PART_RollPanel" ClipToBounds="True" Grid.Row="2" Grid.Column="1"/>
+                            <local:PianoPanel x:Name="PART_Piano" IsSameGap="True" Orientation="Vertical" BlackKeyWidth="30" Grid.Row="2"/>
+                            <Canvas x:Name="PART_TrackPanel"
+                                    ClipToBounds="True" 
+                                    Background="#fff"
+                                    Grid.Row="2" Grid.Column="1"/>
                         </Grid>
                     </Border>
                 </ControlTemplate>
@@ -34,7 +37,7 @@
 
     <Style TargetType="{x:Type local:NoteBar}">
         <Setter Property="BorderThickness" Value="2"/>
-        <Setter Property="Foreground">
+        <Setter Property="Background">
             <Setter.Value>
                 <SolidColorBrush Color="{StaticResource {x:Static SystemColors.ScrollBarColorKey}}"/>
             </Setter.Value>
@@ -82,7 +85,7 @@
                             <ScrollBar x:Name="PART_HorizontalBar" Grid.Column="1" Orientation="Horizontal"/>
                             <ScrollBar x:Name="PART_VerticalBar" Grid.Column="2" Grid.Row="2" Orientation="Vertical"/>
                             <local:RulePanel x:Name="PART_Rule" Grid.Column="1" Grid.Row="1"/>
-                            <Canvas x:Name="PART_RollPanel" ClipToBounds="True" Grid.Row="2" Grid.ColumnSpan="2"/>
+                            <Canvas x:Name="PART_TrackPanel" ClipToBounds="True" Grid.Row="2" Grid.ColumnSpan="2"/>
                         </Grid>
                     </Border>
                 </ControlTemplate>

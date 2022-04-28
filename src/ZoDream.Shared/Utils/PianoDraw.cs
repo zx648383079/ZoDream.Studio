@@ -23,7 +23,9 @@ namespace ZoDream.Shared.Utils
                 IsHorizontal = !value;
             }
         }
-
+        /// <summary>
+        /// 全部为正数，为距离top 的距离
+        /// </summary>
         public double Offset { get; set; }
 
         private double whiteKeyWidth;
@@ -45,6 +47,10 @@ namespace ZoDream.Shared.Utils
         public double BlackKeyHeight { get; set; }
 
         public double WhiteKeyHeight { get; set; }
+        /// <summary>
+        /// 是否是等间距以黑键为基准，白键自适应
+        /// </summary>
+        public bool IsSameGap { get; set; } = false;
 
         /// <summary>
         ///  88 键是从 21开始
@@ -62,71 +68,72 @@ namespace ZoDream.Shared.Utils
 
         public void Begin(PianoKey key)
         {
-            Offset = - GetOffsetFromMin(key);
+            if (IsVertical)
+            {
+                Offset = BarLength - GetOffsetFromZero(key) - BoxHeight;
+                return;
+            }
+            Offset = GetOffsetFromMin(key);
         }
 
         /// <summary>
         /// 移动距离
         /// </summary>
-        /// <param name="offset"></param>
+        /// <param name="offset">负数往前</param>
         /// <returns>真实移动距离</returns>
         public double Move(double offset)
         {
             Invalidate();
-            if (IsHorizontal)
-            {
-                offset *= -1;
-            }
-            var val = Math.Max(Math.Min(0, Offset + offset), - BarLength +
+            var val = Math.Min(Math.Max(0, Offset + offset), BarLength -
                 (IsHorizontal ? BoxWidth : BoxHeight));
             var diff = val - val;
             Offset = val;
             return diff;
         }
 
-        public PianoKey Get(double offset)
+        /// <summary>
+        /// 这是获取当前位置
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="isRelative">是否是相对坐标</param>
+        /// <returns></returns>
+        public PianoKey Get(double offset, bool isRelative = true)
         {
-            var w = WhiteKeyWidth;
-            var min = Min;
+            Invalidate();
+            if (isRelative)
+            {
+                offset += Offset;
+            }
             if (IsVertical)
             {
-                offset = offset + MaxToMin - BoxHeight
-                    + w;
-
+                offset = BarLength - offset;
             }
-            var index = (offset -= Offset) / w;
+            if (IsSameGap)
+            {
+                return PianoKey.Create127(Convert.ToInt32(offset / BlackKeyWidth) 
+                    - (IsVertical ? 1 : 0));
+            }
+            var w = WhiteKeyWidth;
+            var index = offset / w;
             var key = new PianoKey
             {
                 Beat = Convert.ToInt16(index / 7 - 4),
-                Code = Convert.ToUInt16(index % 7)
+                Code = Convert.ToUInt16(index % 7 + 1)
             };
-            var pre = key - 1;
-            if (pre.Scale > 0 && GetOffsetFromMin(pre) + BlackKeyWidth > offset)
+            if (key.ToKey127() > 0)
             {
-                return pre;
+                var pre = key - 1;
+                if (pre.Scale > 0 && GetOffsetFromMin(pre) + BlackKeyWidth > offset)
+                {
+                    return pre;
+                }
             }
             var next = key + 1;
-            if (next.Scale > 0 && GetOffsetFromMin(next) > offset)
+            if (next.Scale > 0 && GetOffsetFromMin(next) <= offset)
             {
                 return next;
             }
             return key;
-        }
-
-        /// <summary>
-        /// 初始化数值，
-        /// </summary>
-        private void Invalidate()
-        {
-            if (IsInvalidated)
-            {
-                return;
-            }
-            MinOffset = GetOffsetFromZero(Min);
-            MaxOffset = GetOffsetFromZero(Max);
-            MaxToMin = MaxOffset - MinOffset;
-            BarLength = MaxToMin + (Max.Scale > 0 ? BlackKeyWidth : WhiteKeyWidth);
-            IsInvalidated = true;
         }
 
         /// <summary>
@@ -139,34 +146,80 @@ namespace ZoDream.Shared.Utils
             Invalidate();
             var x = GetOffsetFromMin(key);
             var y = .0;
-            var w = key.Scale > 0 ? BlackKeyWidth : WhiteKeyWidth;
+            var w = GetKeyWidth(key);
             var h = key.Scale > 0 ? BlackKeyHeight : WhiteKeyHeight;
             if (IsHorizontal)
             {
-                return new double[] { x + Offset, y, w, h };
+                return new double[] { x - Offset, y, w, h };
             }
-            return new double[] {y, BoxHeight - x - w - Offset, h, w};
+            return new double[] {y, BarLength - Offset - x - w, h, w};
         }
 
         #region 计算方法
-        private double GetOffset(PianoKey key, PianoKey baseKey)
+
+
+        /// <summary>
+        /// 初始化数值，
+        /// </summary>
+        public void Invalidate()
+        {
+            if (IsInvalidated)
+            {
+                return;
+            }
+            MinOffset = GetOffsetFromZero(Min);
+            MaxOffset = GetOffsetFromZero(Max);
+            MaxToMin = MaxOffset - MinOffset;
+            BarLength = MaxToMin + GetKeyWidth(Max);
+            IsInvalidated = true;
+        }
+
+        public double GetKeyWidth(PianoKey key)
+        {
+            if (key.Scale > 0)
+            {
+                return BlackKeyWidth;
+            }
+            if (!IsSameGap)
+            {
+                return WhiteKeyWidth;
+            }
+            return (IsLargeWhiteKey(key) ? 2 : 1.5) * BlackKeyWidth;
+        }
+
+        /// <summary>
+        /// 是否是居中的白键
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public bool IsLargeWhiteKey(PianoKey key)
+        {
+            return key.Scale == 0 && (key.Code == 2 || key.Code == 5 || key.Code == 6);
+        }
+
+        public double GetOffset(PianoKey key, PianoKey baseKey)
         {
             return GetOffsetFromZero(key) - GetOffsetFromZero(baseKey);
         }
 
-        private double GetOffsetFromMin(PianoKey key)
+        public double GetOffsetFromMin(PianoKey key)
         {
             return GetOffsetFromZero(key) - MinOffset;
         }
 
-        private double GetOffsetToMax(PianoKey key)
+        public double GetOffsetToMax(PianoKey key)
         {
             return MaxOffset - GetOffsetFromZero(key);
         }
 
-        private double GetOffsetFromZero(PianoKey key)
+        public double GetOffsetFromZero(PianoKey key)
         {
             var bw = BlackKeyWidth;
+            if (IsSameGap)
+            {
+                return key.ToKey127() * BlackKeyWidth - 
+                    (key.Scale == 0 && key.Code != 1 && key.Code != 4 ? .5 * bw : 0);
+            }
             var ww = WhiteKeyWidth;
             return ((key.Beat + 4) * 7 + key.Code - 1) * ww + (key.Scale > 0 ? (ww - bw / 2) : 0);
         }

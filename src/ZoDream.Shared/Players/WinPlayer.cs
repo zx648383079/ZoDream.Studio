@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 using ZoDream.Shared.Models;
 
 namespace ZoDream.Shared.Players
@@ -34,25 +35,24 @@ namespace ZoDream.Shared.Players
             return midiOutShortMsg(hMidiOut, (uint)((status << 4) | channel | (scl << 8) | (volume << 16)));
         }
 
-        public WinPlayer()
-        {
-            Ready();
-        }
 
         private IntPtr Driver  = IntPtr.Zero;
-
+        public string[] ChannelItems => Enum.GetNames(typeof(MidiChannel));
         public byte Volume { get; set; } = 127;
 
         public bool IsReady => Driver != IntPtr.Zero;
 
 
-        private void Ready()
+        public Task ReadyAsync()
         {
-            uint r = midiOutOpen(out Driver, 0, 0, 0, 0);
-            if (r != 0)
+            return Task.Factory.StartNew(() =>
             {
-                Driver = IntPtr.Zero;
-            }
+                uint r = midiOutOpen(out Driver, 0, 0, 0, 0);
+                if (r != 0)
+                {
+                    Driver = IntPtr.Zero;
+                }
+            });
         }
 
         public void Play(byte channel, PianoKey key)
@@ -76,6 +76,13 @@ namespace ZoDream.Shared.Players
         public void Play(PianoKey key)
         {
             Play(MidiChannel.AcousticGrandPiano, key);
+        }
+
+        public async Task PlayAsync(byte channel, PianoKey key, uint ms)
+        {
+            Play(channel, key);
+            await Task.Delay((int)ms);
+            Stop(channel, key);
         }
 
         public void Stop(PianoKey key)

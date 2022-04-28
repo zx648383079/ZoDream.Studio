@@ -9,4 +9,6 @@
         <ResourceDictionary Source="/Themes/RulePanel.xaml"/>
         <ResourceDictionary Source="/Themes/Roll.xaml"/>
     </ResourceDictionary.MergedDictionaries>
+
+
 </ResourceDictionary>

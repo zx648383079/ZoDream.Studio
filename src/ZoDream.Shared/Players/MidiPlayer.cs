@@ -4,18 +4,17 @@ using Melanchall.DryWetMidi.Multimedia;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using ZoDream.Shared.Models;
 
 namespace ZoDream.Shared.Players
 {
     public class MidiPlayer : IPlayer
     {
-        public MidiPlayer()
-        {
-            Ready();
-        }
-
         public byte Volume { get; set; } = 127;
+        public string[] ChannelItems => Enum.GetNames(typeof(MidiChannel));
+
+        public bool IsReady { get; private set; } = false;
         private OutputDevice? Driver { get; set; }
 
 
@@ -32,9 +31,11 @@ namespace ZoDream.Shared.Players
             });
         }
 
-        public void Play(MidiChannel channel, PianoKey key)
+        public async Task PlayAsync(byte channel, PianoKey key, uint ms)
         {
-            Play((byte)channel, key);
+            Play(channel, key);
+            await Task.Delay((int)ms);
+            Stop(channel, key);
         }
 
         public void Stop(PianoKey key)
@@ -50,14 +51,13 @@ namespace ZoDream.Shared.Players
             });
         }
 
-        public void Stop(MidiChannel channel, PianoKey key)
+        public Task ReadyAsync()
         {
-            Stop((byte)channel, key);
-        }
-
-        private void Ready()
-        {
-            Driver = OutputDevice.GetByIndex(0);
+            return Task.Factory.StartNew(() =>
+            {
+                Driver = OutputDevice.GetByIndex(0);
+                IsReady = true;
+            });
         }
 
 

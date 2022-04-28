@@ -32,19 +32,11 @@ namespace ZoDream.Studio
         public MainViewModel ViewModel = new();
         private IPlayer? Player;
 
-        private void PianoTb_OnPress(object sender, Controls.PianoKeyEventArgs e)
-        {
-            Player?.Play(e.Key);
-        }
 
-        private void PianoTb_OnRelease(object sender, Controls.PianoKeyEventArgs e)
-        {
-            Player?.Stop(e.Key);
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Player = new MidiPlayer();
+            await Player.ReadyAsync();
         }
 
         private void Window_Unloaded(object sender, RoutedEventArgs e)
@@ -71,6 +63,18 @@ namespace ZoDream.Studio
             {
 
             };
+        }
+
+        private void PianoBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var page = new PianoWindow();
+            page.Show();
+        }
+
+        private void AddBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var page = new RollWindow();
+            page.ShowDialog();
         }
     }
 }
