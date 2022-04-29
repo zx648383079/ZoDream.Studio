@@ -73,7 +73,7 @@ namespace ZoDream.Studio
 
         private void AddBtn_Click(object sender, RoutedEventArgs e)
         {
-            var page = new RollWindow();
+            var page = new AddWindow();
             page.ShowDialog();
         }
     }

@@ -8,7 +8,7 @@
         <ResourceDictionary Source="/Themes/TrackPanel.xaml"/>
         <ResourceDictionary Source="/Themes/RulePanel.xaml"/>
         <ResourceDictionary Source="/Themes/Roll.xaml"/>
+        <ResourceDictionary Source="/Themes/Staff.xaml"/>
     </ResourceDictionary.MergedDictionaries>
-
 
 </ResourceDictionary>

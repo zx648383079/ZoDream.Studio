@@ -184,7 +184,7 @@ namespace ZoDream.Shared.Models
             return key;
         }
 
-        public static PianoKey Create(object key)
+        public static PianoKey Create(object? key)
         {
             if (key is null)
             {

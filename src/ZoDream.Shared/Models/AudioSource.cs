@@ -31,9 +31,9 @@ namespace ZoDream.Shared.Models
         /// </summary>
         public string Path { get; set; } = string.Empty;
 
-        public string BeginKey { get; set; } = string.Empty;
+        public PianoKey? BeginKey { get; set; }
 
-        public string Endkey { get; set; } = string.Empty;
+        public PianoKey? Endkey { get; set; }
 
         public uint StepKey { get; set; }
 
@@ -47,9 +47,9 @@ namespace ZoDream.Shared.Models
         /// </summary>
         public string Name { get; set; } = string.Empty;
 
-        public string BeginKey { get; set; } = string.Empty;
+        public PianoKey? BeginKey { get; set; }
 
-        public string Endkey { get; set; } = string.Empty;
+        public PianoKey? Endkey { get; set; }
 
         public uint Position { get; set; }
         public uint End { get; set; }

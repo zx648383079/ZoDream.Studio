@@ -36,6 +36,24 @@
                     </GroupBox>
                 </ScrollViewer>
             </TabItem>
+            <TabItem Header="音源">
+                <ScrollViewer>
+                    <GroupBox Header="音源管理">
+                        <StackPanel>
+
+                        </StackPanel>
+                    </GroupBox>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="插件">
+                <ScrollViewer>
+                    <GroupBox Header="插件管理">
+                        <StackPanel>
+
+                        </StackPanel>
+                    </GroupBox>
+                </ScrollViewer>
+            </TabItem>
             <TabItem Header="关于">
                 <Grid>
                     <Grid.RowDefinitions>
