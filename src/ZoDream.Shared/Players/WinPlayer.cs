@@ -7,7 +7,7 @@ using ZoDream.Shared.Models;
 
 namespace ZoDream.Shared.Players
 {
-    public class WinPlayer : IPlayer
+    public class WinPlayer : IPlayer<PianoKey>
     {
         [DllImport("winmm.dll")]
         private static extern uint midiOutShortMsg(IntPtr hMidiOut, uint dwMsg);

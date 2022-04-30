@@ -70,7 +70,7 @@ namespace ZoDream.Shared.Storage
             return SaveAsync(DefaultFileName, data);
         }
 
-        private static async Task SaveXml<T>(string file, T data)
+        private static async Task SaveXmlAsync<T>(string file, T data)
         {
             await Task.Factory.StartNew(() =>
             {
@@ -80,7 +80,7 @@ namespace ZoDream.Shared.Storage
             });
         }
 
-        private static async Task<T?> LoadXml<T>(string file)
+        private static async Task<T?> LoadXmlAsync<T>(string file)
         {
             return await Task.Factory.StartNew(() =>
             {

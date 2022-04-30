@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
         xmlns:local="clr-namespace:ZoDream.Studio.Pages"
         mc:Ignorable="d"
         Title="添加" Height="450" Width="800" WindowStartupLocation="CenterScreen">
@@ -28,13 +29,24 @@
         </Grid.RowDefinitions>
         <TabControl>
             <TabItem Header="乐器">
-
+                <StackPanel>
+                    <TextBlock Text="通道" Style="{StaticResource HeaderTb}"/>
+                    <ComboBox/>
+                </StackPanel>
             </TabItem>
             <TabItem Header="文字转语音">
-
+                <StackPanel>
+                    <TextBlock Text="声音" Style="{StaticResource HeaderTb}"/>
+                    <ComboBox/>
+                    <TextBlock Text="内容" Style="{StaticResource HeaderTb}"/>
+                    <TextBox AcceptsReturn="True" AcceptsTab="True" Height="100"/>
+                </StackPanel>
             </TabItem>
             <TabItem Header="音源">
-
+                <StackPanel>
+                    <TextBlock Text="文件" Style="{StaticResource HeaderTb}"/>
+                    <sctl:FileInput/>
+                </StackPanel>
             </TabItem>
         </TabControl>
         <StackPanel Orientation="Horizontal" 

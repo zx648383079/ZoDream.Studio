@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ZoDream.Shared.Models;
 using ZoDream.Shared.Players;
 using ZoDream.Studio.Pages;
 using ZoDream.Studio.ViewModels;
@@ -30,7 +31,7 @@ namespace ZoDream.Studio
         }
 
         public MainViewModel ViewModel = new();
-        private IPlayer? Player;
+        private IPlayer<PianoKey>? Player;
 
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)

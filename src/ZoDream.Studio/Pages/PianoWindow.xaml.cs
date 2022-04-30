@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ZoDream.Shared.Models;
 using ZoDream.Shared.Players;
 
 namespace ZoDream.Studio.Pages
@@ -25,7 +26,7 @@ namespace ZoDream.Studio.Pages
             InitializeComponent();
         }
 
-        private IPlayer? Player;
+        private IPlayer<PianoKey>? Player;
         private byte PlayerChanel  = 0;
 
         private void PianoTb_OnPress(object sender, Controls.PianoKeyEventArgs e)

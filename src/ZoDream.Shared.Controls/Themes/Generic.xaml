@@ -11,6 +11,8 @@
         <ResourceDictionary Source="pack://application:,,,/ZoDream.Shared.Controls;component/Themes/SwitchInput.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/ZoDream.Shared.Controls;component/Themes/ContentDialog.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/ZoDream.Shared.Controls;component/Themes/IconToggleButton.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/ZoDream.Shared.Controls;component/Themes/FileInput.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/ZoDream.Shared.Controls;component/Themes/ProgressBar.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

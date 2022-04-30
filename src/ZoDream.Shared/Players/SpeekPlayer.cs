@@ -8,7 +8,7 @@ using ZoDream.Shared.Models;
 
 namespace ZoDream.Shared.Players
 {
-    public class SpeekPlayer : IPlayer
+    public class SpeekPlayer : IPlayer<string>
     {
 
         private SpeechSynthesizer? Driver;
@@ -21,46 +21,37 @@ namespace ZoDream.Shared.Players
 
         public bool IsReady { get; private set; } = false;
 
-        public void Play(PianoKey key)
+        public void Play(string key)
         {
             Play((byte)0, key);
         }
 
-        public void Play(byte channel, PianoKey key)
+        public void Play(byte channel, string key)
         {
             if (Driver == null)
             {
                 return;
             }
             Driver.SelectVoice(channelItems[channel]);
-            Driver.Speak(key.Code.ToString());
+            Driver.Speak(key);
         }
 
-        public void Play(MidiChannel channel, PianoKey key)
-        {
-            Play((byte)channel, key);
-        }
 
-        public async Task PlayAsync(byte channel, PianoKey key, uint ms)
+        public async Task PlayAsync(byte channel, string key, uint ms)
         {
             Play(channel, key);
             await Task.Delay((int)ms);
             Stop(channel, key);
         }
 
-        public void Stop(PianoKey key)
+        public void Stop(string key)
         {
             Driver?.Pause();
         }
 
-        public void Stop(byte channel, PianoKey key)
+        public void Stop(byte channel, string key)
         {
             Driver?.Pause();
-        }
-
-        public void Stop(MidiChannel channel, PianoKey key)
-        {
-            Stop((byte)channel, key);
         }
 
         public void Dispose()

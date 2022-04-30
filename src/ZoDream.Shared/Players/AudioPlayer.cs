@@ -10,7 +10,7 @@ using ZoDream.Shared.Storage;
 
 namespace ZoDream.Shared.Players
 {
-    public class AudioPlayer : IPlayer
+    public class AudioPlayer : IPlayer<PianoKey>
     {
         private List<AudioSource> channelItems = new();
         public string[] ChannelItems => channelItems.Select(i => i.Name).ToArray();

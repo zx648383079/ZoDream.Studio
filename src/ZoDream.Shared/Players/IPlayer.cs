@@ -6,7 +6,7 @@ using ZoDream.Shared.Models;
 
 namespace ZoDream.Shared.Players
 {
-    public interface IPlayer: IDisposable
+    public interface IPlayer<T>: IDisposable
     {
         public string[] ChannelItems { get; }
 
@@ -26,13 +26,13 @@ namespace ZoDream.Shared.Players
         /// 按下键，播放按键对应声音
         /// </summary>
         /// <param name="key"></param>
-        public void Play(PianoKey key);
+        public void Play(T key);
         /// <summary>
         /// 按下键，播放按键对应声音
         /// </summary>
         /// <param name="channel"></param>
         /// <param name="key"></param>
-        public void Play(byte channel, PianoKey key);
+        public void Play(byte channel, T key);
         /// <summary>
         /// 播放多久自动停止
         /// </summary>
@@ -40,17 +40,17 @@ namespace ZoDream.Shared.Players
         /// <param name="key"></param>
         /// <param name="ms"></param>
         /// <returns></returns>
-        public Task PlayAsync(byte channel, PianoKey key, uint ms);
+        public Task PlayAsync(byte channel, T key, uint ms);
         /// <summary>
         /// 释放键，停止播放按键对应声音
         /// </summary>
         /// <param name="key"></param>
-        public void Stop(PianoKey key);
+        public void Stop(T key);
         /// <summary>
         /// 释放键，停止播放按键对应声音
         /// </summary>
         /// <param name="channel"></param>
         /// <param name="key"></param>
-        public void Stop(byte channel, PianoKey key);
+        public void Stop(byte channel, T key);
     }
 }

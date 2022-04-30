@@ -23,5 +23,7 @@
             <sctl:IconButton x:Name="OptionBtn" Click="OptionBtn_Click" Icon="&#xE115;" Label="设置"/>
         </StackPanel>
         <ctl:TrackPanel Grid.Row="1"/>
+
+        <sctl:ProgressBar Grid.Row="1" Value="50"/>
     </Grid>
 </Window>

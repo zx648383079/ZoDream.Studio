@@ -9,7 +9,7 @@ using ZoDream.Shared.Models;
 
 namespace ZoDream.Shared.Players
 {
-    public class MidiPlayer : IPlayer
+    public class MidiPlayer : IPlayer<PianoKey>
     {
         public byte Volume { get; set; } = 127;
         public string[] ChannelItems => Enum.GetNames(typeof(MidiChannel));
