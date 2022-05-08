@@ -88,7 +88,7 @@ namespace ZoDream.Studio.Controls
             }
             if (VerticalBar != null)
             {
-                VerticalBar.Maximum = 100;
+                VerticalBar.Maximum = 132;
                 VerticalBar.ValueChanged += VerticalBar_ValueChanged;
             }
             if (BoxPanel != null)
@@ -108,6 +108,7 @@ namespace ZoDream.Studio.Controls
         private void Piano_OnScroll(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             VerticalOffset = e.NewValue;
+            VerticalBar!.Value = e.NewValue / 30;
             UpdateSize();
         }
 
@@ -173,7 +174,8 @@ namespace ZoDream.Studio.Controls
 
         private void VerticalBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            VerticalOffset = e.NewValue;
+            VerticalOffset = Math.Min(e.NewValue * 30, 134 * 30 - ActualHeight);
+            Piano!.Offset = VerticalOffset;
             UpdateSize();
         }
 

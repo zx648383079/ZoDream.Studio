@@ -50,6 +50,7 @@ namespace ZoDream.Studio.Commands
             }
             command.Undo();
             reverseItems.Push(command);
+            UndoStateChanged?.Invoke(undoItems.Count > 0);
             ReverseUndoStateChanged?.Invoke(reverseItems.Count > 0);
         }
     }

@@ -61,6 +61,7 @@ namespace ZoDream.Studio.Controls
         private ScrollBar? HorizontalBar;
         private ScrollBar? VerticalBar;
         private double HeaderWidth = 200.0;
+        private double RowHeight = 30.0;
         private double HorizontalOffset = .0;
         private double VerticalOffset = .0;
         private TrackBar? MoveBar;
@@ -73,6 +74,10 @@ namespace ZoDream.Studio.Controls
             Ruler = GetTemplateChild(TrackPanel.RuleName) as RulePanel;
             HorizontalBar = GetTemplateChild(TrackPanel.HorizontalBarName) as ScrollBar;
             VerticalBar = GetTemplateChild(TrackPanel.VerticalBarName) as ScrollBar;
+            if (BoxPanel != null)
+            {
+                InitVolumLine();
+            }
             if (Ruler != null)
             {
                 Ruler.SizeChanged += Ruler_SizeChanged;
@@ -84,14 +89,14 @@ namespace ZoDream.Studio.Controls
             }
             if (VerticalBar != null)
             {
-                VerticalBar.Maximum = 100;
+                VerticalBar.Maximum = 127;
                 VerticalBar.ValueChanged += VerticalBar_ValueChanged;
             }
         }
 
         private void VerticalBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            VerticalOffset = e.NewValue;
+            VerticalOffset = Math.Min(e.NewValue * RowHeight, 130 * RowHeight - ActualHeight);
             UpdateSize();
         }
 
@@ -108,9 +113,56 @@ namespace ZoDream.Studio.Controls
             UpdateSize();
         }
 
+        public void InitVolumLine()
+        {
+            for (int i = 127; i >= 0; i--)
+            {
+                var item = new Label()
+                {
+                    Content = i,
+                    Height = RowHeight,
+                    HorizontalContentAlignment = HorizontalAlignment.Center,
+                    VerticalContentAlignment = VerticalAlignment.Center
+                };
+                UpdateRow(item);
+                BoxPanel!.Children.Add(item);
+            }
+        }
+
         private void UpdateSize()
         {
+            if (BoxPanel == null)
+            {
+                return;
+            }
+            foreach (var item in BoxPanel.Children)
+            {
+                if (item == null)
+                {
+                    continue;
+                }
+                if (item is Label header)
+                {
+                    UpdateRow(header);
+                    continue;
+                }
+                if (item is NoteBar row)
+                {
+                    UpdateRow(row);
+                }
+            }
+        }
 
+        private void UpdateRow(Label header)
+        {
+            header.Width = HeaderWidth;
+            Canvas.SetTop(header, (127 - (int)header.Content) * RowHeight - VerticalOffset);
+        }
+
+        private void UpdateRow(NoteBar row)
+        {
+            Canvas.SetLeft(row, HeaderWidth - HorizontalOffset);
+            // Canvas.SetTop(row, row.RowIndex * RowHeight - VerticalOffset);
         }
     }
 }

@@ -27,7 +27,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
-        <TabControl>
+        <TabControl x:Name="TabBox">
             <TabItem Header="乐器">
                 <StackPanel>
                     <TextBlock Text="通道" Style="{StaticResource HeaderTb}"/>
@@ -51,8 +51,8 @@
         </TabControl>
         <StackPanel Orientation="Horizontal" 
                     HorizontalAlignment="Right" Grid.Row="1">
-            <Button Content="确定" Width="100"/>
-            <Button Content="取消" Width="100"/>
+            <Button x:Name="OkBtn" Click="OkBtn_Click" Content="确定" Width="100"/>
+            <Button x:Name="NoBtn" Click="NoBtn_Click" Content="取消" Width="100"/>
         </StackPanel>
     </Grid>
 </Window>

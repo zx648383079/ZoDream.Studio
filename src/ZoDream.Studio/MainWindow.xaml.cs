@@ -75,7 +75,22 @@ namespace ZoDream.Studio
         private void AddBtn_Click(object sender, RoutedEventArgs e)
         {
             var page = new AddWindow();
-            page.ShowDialog();
+            if (page.ShowDialog() != true)
+            {
+                return;
+            }
+            switch (page.SelectedIndex)
+            {
+                case 1:
+                    new SpeekWindow().ShowDialog();
+                    break;
+                case 2:
+                    break;
+                default:
+                    new RollWindow().ShowDialog();
+                    break;
+            }
+
         }
     }
 }

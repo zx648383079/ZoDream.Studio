@@ -354,7 +354,7 @@ namespace ZoDream.Studio.Controls
         {
             base.OnMouseWheel(e);
             var offset = PianoHelper.Move(-e.Delta);
-            var args = new RoutedPropertyChangedEventArgs<double>(0, offset);
+            var args = new RoutedPropertyChangedEventArgs<double>(0, PianoHelper.Offset);
             OnScroll?.Invoke(this, args);
             if (args.Handled == true)
             {

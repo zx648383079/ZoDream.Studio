@@ -23,5 +23,17 @@ namespace ZoDream.Studio.Pages
         {
             InitializeComponent();
         }
+
+        public int SelectedIndex => TabBox.SelectedIndex;
+
+        private void OkBtn_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+        }
+
+        private void NoBtn_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+        }
     }
 }

@@ -132,6 +132,7 @@ namespace ZoDream.Shared.Controls
             {
                 ValueTb.TextChanged += ValueTb_TextChanged;
             }
+            UpdateValue(Value);
         }
 
         private void UpdateValue(object val)
