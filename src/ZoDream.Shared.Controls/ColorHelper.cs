@@ -53,7 +53,11 @@ namespace ZoDream.Shared.Controls
             }
             if (!val.Contains(','))
             {
-                return FromHtml("#" + val, def);
+                if (Regex.IsMatch(val, @"^[\da-fA-F]+$"))
+                {
+                    return FromHtml("#" + val, def);
+                }
+                return FromHtml(val, def);
             }
             var ms = Regex.Matches(val, @"[\d\.]+");
             return ms.Count switch

@@ -159,7 +159,7 @@ namespace ZoDream.Shared.Controls
                 );
         }
 
-        private double ToDeg(double a)
+        private static double ToDeg(double a)
         {
             return a * Math.PI / 180;
         }
