@@ -48,6 +48,12 @@
                     <sctl:FileInput/>
                 </StackPanel>
             </TabItem>
+            <TabItem Header="视频">
+                <StackPanel>
+                    <TextBlock Text="文件" Style="{StaticResource HeaderTb}"/>
+                    <sctl:FileInput/>
+                </StackPanel>
+            </TabItem>
         </TabControl>
         <StackPanel Orientation="Horizontal" 
                     HorizontalAlignment="Right" Grid.Row="1">

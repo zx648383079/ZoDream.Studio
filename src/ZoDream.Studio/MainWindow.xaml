@@ -6,22 +6,12 @@
         xmlns:local="clr-namespace:ZoDream.Studio"
         xmlns:ctl="clr-namespace:ZoDream.Studio.Controls"
         xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
+        xmlns:vm="clr-namespace:ZoDream.Studio.ViewModels"
         mc:Ignorable="d"
-        Loaded="Window_Loaded"
-        Unloaded="Window_Unloaded"
-        Title="ZoDream Studio" Height="450" Width="800">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="48"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <sctl:IconButton x:Name="PlayBtn" Click="PlayBtn_Click" Icon="&#xE102;" Label="播放" Visibility="{Binding Paused, Converter={StaticResource ToggleConverter}}"/>
-            <sctl:IconButton x:Name="StopBtn" Click="StopBtn_Click" Icon="&#xE103;" Label="停止" Visibility="{Binding Paused, Converter={StaticResource ToggleConverter}, ConverterParameter=false}"/>
-            <sctl:IconButton x:Name="AddBtn" Click="AddBtn_Click" Icon="&#xE109;" Label="添加"  Visibility="{Binding Paused, Converter={StaticResource ToggleConverter}}"/>
-            <sctl:IconButton x:Name="PianoBtn" Click="PianoBtn_Click" Icon="&#xE087;" Label="钢琴" />
-            <sctl:IconButton x:Name="OptionBtn" Click="OptionBtn_Click" Icon="&#xE115;" Label="设置"/>
-        </StackPanel>
-        <ctl:TrackPanel Grid.Row="1"/>
+        Title="ZoDream Studio" Height="450" Width="800" 
+        WindowStartupLocation="CenterScreen">
+
+    <Grid Background="{DynamicResource BodyBrush}">
+        <Frame Source="/Pages/StartupPage.xaml"/>
     </Grid>
 </Window>

@@ -32,7 +32,7 @@ namespace ZoDream.Shared.Readers
                     0,
                     tempoMap);
                 var note = new Melanchall.DryWetMidi.Interaction.Note(NoteName.A, 4, length);
-                notesManager.Notes.Add(note);
+                notesManager.Objects.Add(note);
             }
 
             midiFile.Chunks.Add(trackChunk);

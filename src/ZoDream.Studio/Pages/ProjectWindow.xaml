@@ -1,0 +1,35 @@
+﻿<Window x:Class="ZoDream.Studio.Pages.ProjectWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
+        mc:Ignorable="d"
+        Title="ProjectWindow" 
+        Height="200" Width="240" Style="{StaticResource CustomWindow}" 
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <TextBlock Text="新建/打开项目"/>
+            <TextBlock Text=""/>
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <sctl:IconButton IconSize="40" Icon="&#xE160;" Label="新建项目"/>
+            <sctl:IconButton IconSize="40" Icon="&#xE197;" Label="打开项目" Grid.Column="1"/>
+        </Grid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Right">
+            <Button Content="取消"/>
+        </StackPanel>
+    </Grid>
+</Window>

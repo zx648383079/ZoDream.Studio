@@ -10,26 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ZoDream.Shared.Models;
-using ZoDream.Shared.Players;
-using ZoDream.Studio.Pages;
-using ZoDream.Studio.ViewModels;
 
-namespace ZoDream.Studio
+namespace ZoDream.Studio.Pages
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// ProjectWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ProjectWindow : Window
     {
-        public MainWindow()
+        public ProjectWindow()
         {
             InitializeComponent();
         }
-
-        public MainViewModel ViewModel => (MainViewModel)DataContext;
-        
     }
 }

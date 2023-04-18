@@ -4,11 +4,15 @@
     xmlns:local="clr-namespace:ZoDream.Studio">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Themes/Piano.xaml"/>
-        <ResourceDictionary Source="/Themes/TrackPanel.xaml"/>
-        <ResourceDictionary Source="/Themes/RulePanel.xaml"/>
-        <ResourceDictionary Source="/Themes/Roll.xaml"/>
-        <ResourceDictionary Source="/Themes/Staff.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/ZoDream.Studio;component/Themes/Component.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/ZoDream.Studio;component/Themes/Piano.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/ZoDream.Studio;component/Themes/TrackPanel.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/ZoDream.Studio;component/Themes/RulePanel.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/ZoDream.Studio;component/Themes/Roll.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/ZoDream.Studio;component/Themes/Staff.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/ZoDream.Studio;component/Themes/StoragePicker.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
+
+    
 </ResourceDictionary>

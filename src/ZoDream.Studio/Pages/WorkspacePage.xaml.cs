@@ -12,24 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ZoDream.Shared.Models;
-using ZoDream.Shared.Players;
-using ZoDream.Studio.Pages;
-using ZoDream.Studio.ViewModels;
 
-namespace ZoDream.Studio
+namespace ZoDream.Studio.Pages
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// WorkspacePage.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class WorkspacePage : Page
     {
-        public MainWindow()
+        public WorkspacePage()
         {
             InitializeComponent();
         }
-
-        public MainViewModel ViewModel => (MainViewModel)DataContext;
-        
     }
 }
