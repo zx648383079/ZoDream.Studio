@@ -12,6 +12,7 @@
 	  <Product>ZoDream Studio</Product>
 	  <ApplicationIcon>studio.ico</ApplicationIcon>
 	  <Copyright>copyright © 2020-2023 zodream.cn</Copyright>
+	  <UseWindowsForms>True</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>

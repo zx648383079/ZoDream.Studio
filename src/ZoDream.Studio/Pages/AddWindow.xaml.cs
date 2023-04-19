@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ZoDream.Studio.ViewModels;
 
 namespace ZoDream.Studio.Pages
 {
@@ -22,18 +23,17 @@ namespace ZoDream.Studio.Pages
         public AddWindow()
         {
             InitializeComponent();
+            ViewModel.FinishFn = res => {
+                DialogResult = res;
+            };
         }
 
-        public int SelectedIndex => TabBox.SelectedIndex;
+        private AddTrackViewModel ViewModel => (AddTrackViewModel)DataContext;
 
-        private void OkBtn_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = true;
-        }
-
-        private void NoBtn_Click(object sender, RoutedEventArgs e)
+        private void CloseBtn_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
         }
+
     }
 }

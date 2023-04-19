@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using ZoDream.Studio.ViewModels;
 
 namespace ZoDream.Studio
 {
@@ -13,5 +14,13 @@ namespace ZoDream.Studio
     /// </summary>
     public partial class App : Application
     {
+
+        public App()
+        {
+            InitializeComponent();
+            ViewModel = new();
+        }
+
+        internal static MainViewModel? ViewModel { get; set; }
     }
 }

@@ -5,8 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Input;
 using ZoDream.Shared.Models;
+using ZoDream.Shared.ViewModel;
+using ZoDream.Studio.Routes;
 
 namespace ZoDream.Studio.ViewModels
 {
@@ -18,11 +21,13 @@ namespace ZoDream.Studio.ViewModels
             NewCommand = new RelayCommand(TapNew);
             HistoryDeleteCommand = new RelayCommand(TapHistoryDelete);
             HistoryOpenCommand = new RelayCommand(TapHistoryOpen);
-            HistoryItems.Add(new HistoryItem()
+            if (App.ViewModel != null)
             {
-                Name = "Home",
-                FileName = "Home",
-            });
+                foreach (var item in App.ViewModel.Option.Histories)
+                {
+                    HistoryItems.Add(item);
+                }
+            }
         }
 
 
@@ -44,28 +49,23 @@ namespace ZoDream.Studio.ViewModels
 
         private void TapOpen(object? _)
         {
-            var picker = new Microsoft.Win32.OpenFileDialog
-            {
-                Title = "选择项目文件",
-                RestoreDirectory = true,
-            };
-            if (picker.ShowDialog() != true)
-            {
-                return;
-            }
-            HistoryItems.Add(new HistoryItem()
-            {
-                Name = Path.GetFileNameWithoutExtension(picker.FileName),
-                FileName = picker.FileName,
-            });
+            OpenPicker();
         }
 
         private void TapNew(object? _)
         {
-
+            EnterNew();
         }
 
         private void TapHistoryOpen(object? arg) 
+        {
+            if (arg is HistoryItem item)
+            {
+                _ = App.ViewModel?.LoadProjectAsync(item.FileName);
+            }
+        }
+
+        private void TapHistoryDelete(object? arg)
         {
             if (arg is HistoryItem item)
             {
@@ -73,9 +73,36 @@ namespace ZoDream.Studio.ViewModels
             }
         }
 
-        private void TapHistoryDelete(object? arg)
+        public static bool OpenPicker()
         {
+            var picker = new Microsoft.Win32.OpenFileDialog
+            {
+                Title = "选择项目文件",
+                RestoreDirectory = true,
+                Filter = "项目文件|*.json|所有文件|*.*",
+            };
+            if (picker.ShowDialog() != true)
+            {
+                return false;
+            }
+            _ = App.ViewModel?.LoadProjectAsync(picker.FileName);
+            return true;
+        }
 
+        public static void EnterNew()
+        {
+            
+            var project = new ProjectItem();
+            if (Screen.PrimaryScreen is not null)
+            {
+                var bound = Screen.PrimaryScreen!.Bounds;
+                project.ScreenWidth = bound.Width;
+                project.ScreenHeight = bound.Height;
+            }
+            ShellManager.GoToAsync("workspace", new Dictionary<string, object>
+            {
+                {"project", project}
+            });
         }
     }
 }

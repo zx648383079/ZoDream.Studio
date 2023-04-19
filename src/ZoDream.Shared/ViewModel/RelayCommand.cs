@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace ZoDream.Studio.ViewModels
+namespace ZoDream.Shared.ViewModel
 {
     public class RelayCommand : ICommand
     {

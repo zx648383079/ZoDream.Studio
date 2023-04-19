@@ -105,7 +105,7 @@ namespace ZoDream.Shared.Storage
             var str = await LocationStorage.ReadAsync(file);
             if (string.IsNullOrWhiteSpace(str))
             {
-                return default(T);
+                return default;
             }
             return JsonConvert.DeserializeObject<T>(file);
         }

@@ -5,29 +5,166 @@
         <Setter Property="Height" Value="80"/>
         <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ctl:LargeMenuItem}">
-                    <Border Background="{TemplateBinding Background}"
+                    <Border x:Name="border" Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="5,5,5,5">
+                            CornerRadius="{TemplateBinding CornerRadius}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="80"/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Text="{TemplateBinding Icon}" Grid.RowSpan="2" 
+                            <TextBlock Text="{TemplateBinding Icon}"
                                        Foreground="{TemplateBinding Foreground}"
                                        FontSize="40"
                                        FontFamily="{DynamicResource IconFontFamily}"
                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <TextBlock Text="{TemplateBinding Title}" FontSize="18" FontWeight="Bold" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" Grid.Column="1"/>
-                            <TextBlock Text="{TemplateBinding Remark}" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" Grid.Column="1"  Grid.Row="1"/>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{TemplateBinding Title}" FontSize="18" FontWeight="Bold" Foreground="{TemplateBinding Foreground}"/>
+                                <TextBlock Text="{TemplateBinding Remark}" Foreground="{DynamicResource SecondTextBrush}"/>
+
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="UIElement.IsMouseOver" Value="True">
+                            <Setter Property="Panel.Background" TargetName="border" Value="{DynamicResource HoverBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type ctl:InputCard}">
+        <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Height" Value="60"/>
+        <Setter Property="Margin" Value="10,5,10,5"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ctl:InputCard}">
+                    <Border x:Name="border" Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{TemplateBinding Icon}" 
+                                       FontSize="30"
+                                       Margin="10,0,0,0"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       FontFamily="{DynamicResource IconFontFamily}"
+                                       HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                       Visibility="{TemplateBinding IconVisible}"/>
+                            <StackPanel Grid.Column="1" 
+                                        Margin="10,0,0,0"
+                                        VerticalAlignment="Center">
+                                <TextBlock Text="{TemplateBinding Header}"
+                                           Foreground="{TemplateBinding Foreground}"/>
+                                <TextBlock Text="{TemplateBinding Description}" 
+                                           Visibility="{TemplateBinding MetaVisible}"
+                                           Foreground="{DynamicResource SecondTextBrush}"/>
+                            </StackPanel>
+                            <ContentPresenter Grid.Column="2"
+                                              HorizontalAlignment="Right"
+                                              VerticalAlignment="Center"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}"
+                                              Margin="0,0,10,0"/>
+                            <TextBlock 
+                                FontFamily="{DynamicResource IconFontFamily}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{TemplateBinding ActionIcon}"
+                                Foreground="{TemplateBinding Foreground}"
+                                Margin="0,0,10,0"
+                                Grid.Column="3" Visibility="{TemplateBinding ActionIconVisible}"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="UIElement.IsMouseOver" Value="True">
+                            <Setter Property="Panel.Background" TargetName="border" Value="{DynamicResource HoverBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type ctl:InputExpander}">
+        <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Margin" Value="10,5,10,5"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ctl:InputExpander}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Border x:Name="PART_HeaderBtn" Height="60" 
+                                    CornerRadius="{TemplateBinding HeaderCornerRadius}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{TemplateBinding Icon}" 
+                                       FontSize="30"
+                                       Margin="10,0,0,0"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       FontFamily="{DynamicResource IconFontFamily}"
+                                       HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                       Visibility="{TemplateBinding IconVisible}"/>
+                                    <StackPanel Grid.Column="1" 
+                                        Margin="10,0,0,0"
+                                        VerticalAlignment="Center">
+                                        <TextBlock Text="{TemplateBinding Header}"
+                                           Foreground="{TemplateBinding Foreground}"/>
+                                        <TextBlock Text="{TemplateBinding Description}" 
+                                           Visibility="{TemplateBinding MetaVisible}"
+                                           Foreground="{DynamicResource SecondTextBrush}"/>
+                                    </StackPanel>
+                                    <TextBlock 
+                                    FontFamily="{DynamicResource IconFontFamily}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text="{TemplateBinding ActionIcon}"
+                                    Foreground="{TemplateBinding Foreground}"
+                                    Margin="10,0"
+                                    Grid.Column="2"/>
+                                </Grid>
+                            </Border>
+
+                            <StackPanel Grid.Row="1" Visibility="{TemplateBinding ItemsVisible}">
+                                <ItemsPresenter Name="ItemsPresenter" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" KeyboardNavigation.DirectionalNavigation="Contained" />
+                            </StackPanel>
                         </Grid>
                     </Border>
                 </ControlTemplate>

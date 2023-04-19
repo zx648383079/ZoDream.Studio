@@ -3,62 +3,91 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
+        xmlns:vm="clr-namespace:ZoDream.Studio.ViewModels"
+        xmlns:ctl="clr-namespace:ZoDream.Studio.Controls"
         xmlns:local="clr-namespace:ZoDream.Studio.Pages"
         mc:Ignorable="d"
-        Title="添加" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="添加" Height="210" Width="700" WindowStartupLocation="CenterScreen"
+        Style="{StaticResource CustomWindow}">
     <Window.Resources>
-        <ResourceDictionary>
-            <Style x:Key="HeaderTb" TargetType="TextBlock">
-                <Setter Property="Padding" Value="0 8"/>
-            </Style>
-            <Style TargetType="ComboBox">
-                <Setter Property="HorizontalAlignment" Value="Left"/>
-                <Setter Property="Height" Value="30"/>
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-            </Style>
-            <Style TargetType="TabItem">
-                <Setter Property="Padding" Value="20 5"/>
-            </Style>
-        </ResourceDictionary>
+        <ResourceDictionary Source="/Themes/MainSkin.xaml"/>
     </Window.Resources>
+    <Window.DataContext>
+        <vm:AddTrackViewModel/>
+    </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
-        <TabControl x:Name="TabBox">
-            <TabItem Header="乐器">
-                <StackPanel>
-                    <TextBlock Text="通道" Style="{StaticResource HeaderTb}"/>
-                    <ComboBox/>
-                </StackPanel>
-            </TabItem>
-            <TabItem Header="文字转语音">
-                <StackPanel>
-                    <TextBlock Text="声音" Style="{StaticResource HeaderTb}"/>
-                    <ComboBox/>
-                    <TextBlock Text="内容" Style="{StaticResource HeaderTb}"/>
-                    <TextBox AcceptsReturn="True" AcceptsTab="True" Height="100"/>
-                </StackPanel>
-            </TabItem>
-            <TabItem Header="音源">
-                <StackPanel>
-                    <TextBlock Text="文件" Style="{StaticResource HeaderTb}"/>
-                    <sctl:FileInput/>
-                </StackPanel>
-            </TabItem>
-            <TabItem Header="视频">
-                <StackPanel>
-                    <TextBlock Text="文件" Style="{StaticResource HeaderTb}"/>
-                    <sctl:FileInput/>
-                </StackPanel>
-            </TabItem>
-        </TabControl>
-        <StackPanel Orientation="Horizontal" 
-                    HorizontalAlignment="Right" Grid.Row="1">
-            <Button x:Name="OkBtn" Click="OkBtn_Click" Content="确定" Width="100"/>
-            <Button x:Name="NoBtn" Click="NoBtn_Click" Content="取消" Width="100"/>
-        </StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Content="&#xE112;"
+                    Command="{Binding StepCommand}"
+                    Style="{StaticResource WindowBackIconBtn}"
+                     Visibility="{Binding Step,Converter={StaticResource ToggleConverter},ConverterParameter='^0'}"/>
+            <TextBlock Grid.Column="1" Text="添加轨道" Margin="10,0" VerticalAlignment="Center"/>
+            <Button x:Name="CloseBtn" Content="&#xE10A;" Grid.Column="2" 
+                    Click="CloseBtn_Click"
+                    Style="{StaticResource WindowIconBtn}"/>
+        </Grid>
+        <Grid Grid.Row="1" Visibility="{Binding Step,Converter={StaticResource ToggleConverter},ConverterParameter=0}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ctl:LargeMenuItem Icon="&#xE189;" Title="音源" Remark="添加音源" 
+                               Command="{Binding StepCommand}"
+                               CommandParameter="1"
+                               Style="{StaticResource LargeIconButton}"/>
+            <ctl:LargeMenuItem Icon="&#xF7B5;" Title="文字" Remark="添加文字" 
+                               Command="{Binding TextCommand}"
+                                Grid.Column="2"  Style="{StaticResource LargeIconButton}"/>
+            <ctl:LargeMenuItem Icon="&#xE8B2;" Title="视频" Remark="添加视频轨道" 
+                               Command="{Binding VideoCommand}"
+                               Grid.Column="4" Style="{StaticResource LargeIconButton}"/>
+            <ctl:LargeMenuItem Icon="&#xEB9F;" Title="图片" Remark="添加图片轨道" 
+                               Grid.Column="6"  
+                               Command="{Binding ImageCommand}"
+                               Style="{StaticResource LargeIconButton}"/>
+        </Grid>
+        <Grid Grid.Row="1" Visibility="{Binding Step,Converter={StaticResource ToggleConverter},ConverterParameter=1}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ctl:LargeMenuItem Icon="&#xE144;" Title="谱曲" Remark="使用钢琴谱曲" 
+                               Command="{Binding PianoCommand}"
+                               Style="{StaticResource LargeIconButton}"/>
+            <ctl:LargeMenuItem Icon="&#xF7B5;" Title="文字转语音" Remark="手动调节节奏朗读文字" 
+                               Command="{Binding SpeakCommand}" 
+                               Grid.Column="2"  Style="{StaticResource LargeIconButton}"/>
+            <ctl:LargeMenuItem Icon="&#xF7B5;" Title="朗读文字" Remark="使用AI语音朗读文字" 
+                                Command="{Binding AiSpeakCommand}" 
+                                Grid.Column="4"  Style="{StaticResource LargeIconButton}"/>
+            <ctl:LargeMenuItem Icon="&#xE1D6;" Title="录制" Remark="使用麦克风录制" 
+                               Command="{Binding AudioRecordCommand}"
+                               Grid.Column="6" Style="{StaticResource LargeIconButton}"/>
+            <ctl:LargeMenuItem Icon="&#xE1A5;" Title="音频文件" Remark="添加音频文件" 
+                               Grid.Column="8"  
+                               Command="{Binding AudioCommand}"
+                               Style="{StaticResource LargeIconButton}"/>
+        </Grid>
     </Grid>
 </Window>

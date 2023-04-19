@@ -10,32 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ZoDream.Studio.ViewModels;
 
 namespace ZoDream.Studio.Pages
 {
     /// <summary>
-    /// SpeekWindow.xaml 的交互逻辑
+    /// AiSpeakPage.xaml 的交互逻辑
     /// </summary>
-    public partial class SpeekWindow : Window
+    public partial class AiSpeakPage : Page
     {
-        public SpeekWindow()
+        public AiSpeakPage()
         {
             InitializeComponent();
-            DataContext = ViewModel;
-        }
-
-        public SpeekViewModel ViewModel = new();
-
-        private void PlayBtn_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.Paused = false;
-        }
-
-        private void StopBtn_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.Paused = true;
         }
     }
 }

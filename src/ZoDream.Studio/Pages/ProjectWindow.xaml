@@ -3,33 +3,44 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
+        xmlns:ctl="clr-namespace:ZoDream.Studio.Controls"
         mc:Ignorable="d"
         Title="ProjectWindow" 
-        Height="200" Width="240" Style="{StaticResource CustomWindow}" 
-        WindowStartupLocation="CenterScreen">
+        Height="210" Width="320"
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource CustomWindow}" >
+    <Window.Resources>
+        <ResourceDictionary Source="/Themes/MainSkin.xaml"/>
+    </Window.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
-            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
-        <StackPanel>
-            <TextBlock Text="新建/打开项目"/>
-            <TextBlock Text=""/>
-        </StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="新建/打开项目" Margin="10,0" VerticalAlignment="Center"/>
+            <Button x:Name="CloseBtn" Content="&#xE10A;" Grid.Column="1" 
+                    Click="CloseBtn_Click"
+                    Style="{StaticResource WindowIconBtn}"/>
+        </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
+                <ColumnDefinition Width="10"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <sctl:IconButton IconSize="40" Icon="&#xE160;" Label="新建项目"/>
-            <sctl:IconButton IconSize="40" Icon="&#xE197;" Label="打开项目" Grid.Column="1"/>
+            <ctl:LargeMenuItem x:Name="NewBtn" Icon="&#xE160;" Title="新建项目" Remark="新建项目" 
+                               Click="NewBtn_Click"
+                               Style="{StaticResource LargeIconButton}"/>
+            <ctl:LargeMenuItem x:Name="OpenBtn" Icon="&#xE197;" Title="打开项目" Remark="打开已存在的项目" 
+                               Grid.Column="2"  
+                               Click="OpenBtn_Click"
+                               Style="{StaticResource LargeIconButton}"/>
         </Grid>
-        <StackPanel Grid.Row="2" Orientation="Horizontal" 
-                    VerticalAlignment="Center" 
-                    HorizontalAlignment="Right">
-            <Button Content="取消"/>
-        </StackPanel>
     </Grid>
 </Window>

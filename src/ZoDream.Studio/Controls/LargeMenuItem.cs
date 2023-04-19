@@ -52,9 +52,6 @@ namespace ZoDream.Studio.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(LargeMenuItem), new FrameworkPropertyMetadata(typeof(LargeMenuItem)));
         }
 
-
-
-
         public string Icon {
             get { return (string)GetValue(IconProperty); }
             set { SetValue(IconProperty, value); }
@@ -85,6 +82,17 @@ namespace ZoDream.Studio.Controls
         // Using a DependencyProperty as the backing store for Remark.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RemarkProperty =
             DependencyProperty.Register("Remark", typeof(string), typeof(LargeMenuItem), new PropertyMetadata(string.Empty));
+
+
+
+        public CornerRadius CornerRadius {
+            get { return (CornerRadius)GetValue(CornerRadiusProperty); }
+            set { SetValue(CornerRadiusProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CornerRadius.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CornerRadiusProperty =
+            DependencyProperty.Register("CornerRadius", typeof(CornerRadius), typeof(LargeMenuItem), new PropertyMetadata(null));
 
 
 

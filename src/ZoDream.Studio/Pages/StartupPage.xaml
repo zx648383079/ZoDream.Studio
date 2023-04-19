@@ -21,7 +21,7 @@
     </Page.DataContext>
     
     <Grid>
-        <Grid VerticalAlignment="Center">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="300"/>
@@ -31,7 +31,10 @@
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Text="最近项目" VerticalAlignment="Center"/>
+                <TextBlock Text="最近项目"
+                           Margin="10,0"
+                           FontSize="18"
+                           VerticalAlignment="Center"/>
                 <ListBox ItemsSource="{Binding HistoryItems}" 
                          Grid.Row="1" 
                          Background="Transparent" 
@@ -63,7 +66,7 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </Grid>
-            <StackPanel Grid.Column="1">
+            <StackPanel Grid.Column="1"  VerticalAlignment="Center">
                 <ctl:LargeMenuItem Icon="&#xE1A5;" Title="打开项目" 
                                    Remark="打开已存在的项目"
                                    Command="{Binding OpenCommand}"/>

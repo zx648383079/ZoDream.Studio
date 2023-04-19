@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ZoDream.Studio.ViewModels;
 
 namespace ZoDream.Studio.Pages
 {
@@ -22,6 +23,25 @@ namespace ZoDream.Studio.Pages
         public ProjectWindow()
         {
             InitializeComponent();
+        }
+
+        private void CloseBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void NewBtn_Click(object sender, RoutedEventArgs e)
+        {
+            StartupViewModel.EnterNew();
+            Close();
+        }
+
+        private void OpenBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (StartupViewModel.OpenPicker())
+            {
+                Close();
+            }
         }
     }
 }

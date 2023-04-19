@@ -1,4 +1,4 @@
-﻿<Window x:Class="ZoDream.Studio.Pages.SpeekWindow"
+﻿<Window x:Class="ZoDream.Studio.Pages.SpeakWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,7 +7,10 @@
         xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
         xmlns:local="clr-namespace:ZoDream.Studio.Pages"
         mc:Ignorable="d"
-        Title="Speek" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="Speak" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <ResourceDictionary Source="/Themes/MainSkin.xaml"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
