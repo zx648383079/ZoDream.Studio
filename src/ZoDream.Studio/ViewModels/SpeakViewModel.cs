@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ZoDream.Shared.ViewModel;
+using ZoDream.Studio.Pages;
 using ZoDream.Studio.Routes;
 
 namespace ZoDream.Studio.ViewModels
@@ -18,6 +19,7 @@ namespace ZoDream.Studio.ViewModels
             StopCommand = new RelayCommand(TapStop);
             BackCommand = new RelayCommand(TapBack);
             ConfirmCommand = new RelayCommand(TapConfirm);
+            AddCommand = new RelayCommand(TapAdd);
         }
 
         private bool paused = true;
@@ -31,10 +33,17 @@ namespace ZoDream.Studio.ViewModels
         public ICommand StopCommand { get; private set; }
         public ICommand BackCommand { get; private set; }
         public ICommand ConfirmCommand { get; private set; }
+        public ICommand AddCommand { get; private set; }
 
         private void TapBack(object? _)
         {
             ShellManager.GoBackAsync();
+        }
+
+        private void TapAdd(object? _)
+        {
+            var page = new AddTextDialog();
+            page.ShowDialog();
         }
 
         private void TapConfirm(object? _)

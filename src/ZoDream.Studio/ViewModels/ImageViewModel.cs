@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Input;
 using ZoDream.Shared.ViewModel;
+using ZoDream.Studio.Controls;
 using ZoDream.Studio.Routes;
 
 namespace ZoDream.Studio.ViewModels
 {
-    public class ImageViewModel: BindableBase
+    public class ImageViewModel: BindableBase, IQueryAttributable
     {
 
         public ImageViewModel()
@@ -18,8 +16,20 @@ namespace ZoDream.Studio.ViewModels
             ConfirmCommand = new RelayCommand(TapConfirm);
         }
 
+        public event PreviewUpdatedEventHandler? PreviewUpdated;
+
+
+        private Bitmap? imageBitmap;
+
+        public Bitmap? ImageBitmap {
+            get => imageBitmap;
+            set => Set(ref imageBitmap, value);
+        }
+
+
         public ICommand BackCommand { get; private set; }
         public ICommand ConfirmCommand { get; private set; }
+
 
         private void TapBack(object? _)
         {
@@ -29,6 +39,24 @@ namespace ZoDream.Studio.ViewModels
         private void TapConfirm(object? _)
         {
 
+        }
+
+        public void ApplyQueryAttributes(IDictionary<string, object> queries)
+        {
+            object? arg;
+            if (queries.TryGetValue("file", out arg) && arg is string file)
+            {
+                try
+                {
+                    ImageBitmap = (Bitmap)Image.FromFile(file, true);
+                    PreviewUpdated?.Invoke();
+                }
+                catch (System.Exception)
+                {
+                    
+                }
+
+            }
         }
 
     }

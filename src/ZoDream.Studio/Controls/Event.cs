@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZoDream.Shared.Models;
+﻿using ZoDream.Shared.Models;
 
 namespace ZoDream.Studio.Controls
 {
@@ -16,6 +11,8 @@ namespace ZoDream.Studio.Controls
     }
 
     public delegate void PianoKeyEventHandler(object sender, PianoKeyEventArgs e);
+
+    public delegate void PreviewUpdatedEventHandler();
 
     public class PianoKeyEventArgs
     {

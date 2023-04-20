@@ -77,4 +77,14 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style x:Key="DialogFooter" TargetType="StackPanel">
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="Margin" Value="10,20"/>
+        <Setter Property="Orientation" Value="Horizontal"/>
+    </Style>
+    <Style x:Key="DialogFooterBtn" TargetType="Button">
+        <Setter Property="Margin" Value="10,0,0,0"/>
+        <Setter Property="Padding" Value="30,10"/>
+    </Style>
 </ResourceDictionary>

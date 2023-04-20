@@ -76,7 +76,7 @@ namespace ZoDream.Studio.Controls
             VerticalBar = GetTemplateChild(TrackPanel.VerticalBarName) as ScrollBar;
             if (BoxPanel != null)
             {
-                InitVolumLine();
+                InitVolumeLine();
             }
             if (Ruler != null)
             {
@@ -113,7 +113,7 @@ namespace ZoDream.Studio.Controls
             UpdateSize();
         }
 
-        public void InitVolumLine()
+        public void InitVolumeLine()
         {
             for (int i = 127; i >= 0; i--)
             {

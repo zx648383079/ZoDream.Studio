@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
       xmlns:vm="clr-namespace:ZoDream.Studio.ViewModels"
+      xmlns:ctl="clr-namespace:ZoDream.Studio.Controls"
       xmlns:local="clr-namespace:ZoDream.Studio.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
@@ -36,9 +37,7 @@
            
             <sctl:IconButton Grid.Column="2" Command="{Binding ConfirmCommand}" Icon="&#xE10B;" Label="确认"/>
         </Grid>
-        <Canvas Grid.Row="1" Background="Black" Width="300" Height="300">
-            <Image/>
-        </Canvas>
+        <ctl:PreviewImage ImageSource="{Binding ImageBitmap}" Grid.Row="1"/>
         <ScrollViewer Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="10">
                 <TextBlock Text="尺寸" Style="{StaticResource InputHeaderTb}"/>

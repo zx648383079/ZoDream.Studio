@@ -1,0 +1,51 @@
+﻿<Window x:Class="ZoDream.Studio.Pages.AddTextDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
+        xmlns:vm="clr-namespace:ZoDream.Studio.ViewModels"
+        xmlns:ctl="clr-namespace:ZoDream.Studio.Controls"
+        xmlns:local="clr-namespace:ZoDream.Studio.Pages"
+        mc:Ignorable="d"
+        Title="添加文字" 
+        Height="350" 
+        Width="400" WindowStartupLocation="CenterScreen"
+        Style="{StaticResource CustomWindow}">
+
+    <Window.Resources>
+        <ResourceDictionary Source="/Themes/SettingSkin.xaml"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="添加文本" Margin="10,0" VerticalAlignment="Center"/>
+            <Button x:Name="CloseBtn" Content="&#xE10A;" Grid.Column="1" 
+                    Click="CloseBtn_Click"
+                    Style="{StaticResource WindowIconBtn}"/>
+        </Grid>
+        <StackPanel Grid.Row="1" Margin="10,0">
+            <TextBox Height="120" Padding="5"/>
+            <TextBlock Text="{Binding ElementName=VolumeTb,Path=Value, StringFormat='音量({0:F0})'}" 
+                       Style="{StaticResource InputHeaderTb}"/>
+            <Slider x:Name="VolumeTb" Maximum="127" SmallChange="1" Value="100"/>
+            <TextBlock Text="持续时间/ms" Style="{StaticResource InputHeaderTb}"/>
+            <sctl:NumberInput/>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="2" 
+                    Style="{StaticResource DialogFooter}">
+            <Button Content="确定" Style="{StaticResource DialogFooterBtn}"/>
+            <Button Content="取消" Style="{StaticResource DialogFooterBtn}"/>
+        </StackPanel>
+    </Grid>
+</Window>

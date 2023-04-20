@@ -22,6 +22,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
             <RowDefinition/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="48"/>
         </Grid.RowDefinitions>
         <Grid Background="{DynamicResource PrimaryBrush}">
             <Grid.ColumnDefinitions>
@@ -33,7 +35,14 @@
 
             <sctl:IconButton Grid.Column="2" Command="{Binding ConfirmCommand}" Icon="&#xE10B;" Label="确认"/>
         </Grid>
-        
-        
+        <Canvas Grid.Row="1" Background="Black">
+            <Image/>
+        </Canvas>
+        <Slider Grid.Row="2"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="3">
+            <sctl:IconButton Icon="&#xE100;"/>
+            <sctl:IconButton Icon="&#xE102;"/>
+            <sctl:IconButton Icon="&#xE103;"/>
+        </StackPanel>
     </Grid>
 </Page>

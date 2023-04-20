@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ZoDream.Studio.Extensions;
+using ZoDream.Studio.ViewModels;
 
 namespace ZoDream.Studio.Pages
 {
@@ -23,6 +25,24 @@ namespace ZoDream.Studio.Pages
         public ImagePage()
         {
             InitializeComponent();
+            Loaded += ImagePage_Loaded;
+            Unloaded += ImagePage_Unloaded;
         }
+
+        
+        public ImageViewModel ViewModel => (ImageViewModel)DataContext;
+
+
+
+        private void ImagePage_Loaded(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void ImagePage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ImageBitmap?.Dispose();
+        }
+
     }
 }

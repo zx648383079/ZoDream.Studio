@@ -30,7 +30,6 @@
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <sctl:IconButton Command="{Binding BackCommand}" Icon="&#xE112;" Label="返回"/>
-
             <sctl:IconButton Grid.Column="2" Command="{Binding ConfirmCommand}" Icon="&#xE10B;" Label="确认"/>
         </Grid>
 

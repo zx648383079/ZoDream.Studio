@@ -51,7 +51,7 @@ namespace ZoDream.Studio.Routes
             {
                 return;
             }
-            var routeName = HistoryRoutes.Last();
+            var routeName = HistoryRoutes[HistoryRoutes.Count - 2];
             if (routeName == null)
             {
                 return;

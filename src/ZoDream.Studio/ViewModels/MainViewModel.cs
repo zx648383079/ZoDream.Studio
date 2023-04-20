@@ -20,6 +20,8 @@ namespace ZoDream.Studio.ViewModels
 
         public AppOption Option { get; private set; } = new();
 
+        public ProjectItem? Project { get; set; }
+
 
         public async Task LoadAsync()
         {

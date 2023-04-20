@@ -3,12 +3,82 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:ctl="clr-namespace:ZoDream.Studio.Controls"
+      xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
+      xmlns:vm="clr-namespace:ZoDream.Studio.ViewModels"
       xmlns:local="clr-namespace:ZoDream.Studio.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SettingPage">
+    <Page.Resources>
+        <ResourceDictionary Source="/Themes/SettingSkin.xaml"/>
+    </Page.Resources>
 
+    <Page.DataContext>
+        <vm:SettingViewModel/>
+    </Page.DataContext>
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Grid.ColumnSpan="2" Background="{DynamicResource PrimaryBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <sctl:IconButton Command="{Binding BackCommand}" Icon="&#xE112;" Label="返回"/>
+            <ctl:BreadcrumbBar Grid.Column="1" ItemsSource="{Binding BreadCrumbItems}" DisplayMemberPath="Name"/>
+            <sctl:IconButton Grid.Column="2" Command="{Binding ConfirmCommand}" Icon="&#xE10B;" Label="确认"/>
+        </Grid>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <StackPanel Visibility="{Binding Step,Converter={StaticResource ToggleConverter},ConverterParameter=0}">
+                    <ctl:InputCard Header="项目设置" Command="{Binding StepCommand}" CommandParameter="1"/>
+                    <ctl:InputCard Header="系统设置" Command="{Binding StepCommand}" CommandParameter="4"/>
+                    <ctl:InputCard Header="音源管理" Command="{Binding StepCommand}" CommandParameter="2"/>
+                    <ctl:InputCard Header="插件管理" Command="{Binding StepCommand}" CommandParameter="3"/>
+                    <ctl:InputCard Header="关于" Command="{Binding StepCommand}" CommandParameter="9"/>
+                </StackPanel>
+                <StackPanel Visibility="{Binding Step,Converter={StaticResource ToggleConverter},ConverterParameter=1}">
+                    <ctl:InputCard Header="项目名"/>
+                    <ctl:InputCard Header="画面尺寸"/>
+                </StackPanel>
+                <StackPanel Visibility="{Binding Step,Converter={StaticResource ToggleConverter},ConverterParameter=4}">
+                    <ctl:InputCard Header="缓存路径"/>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        <Grid Grid.Row="1" Visibility="{Binding Step,Converter={StaticResource ToggleConverter},ConverterParameter=2}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <ListBox/>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <Button Content="导入" Height="30"/>
+                <Button Content="删除" Height="30"/>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1" Visibility="{Binding Step,Converter={StaticResource ToggleConverter},ConverterParameter=3}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <ListBox/>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <Button Content="导入" Height="30"/>
+                <Button Content="删除" Height="30"/>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1" Visibility="{Binding Step,Converter={StaticResource ToggleConverter},ConverterParameter=9}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" MinWidth="200">
+                <TextBlock Text="ZoDream Studio" FontSize="30"/>
+                <TextBlock Text="v1.0"/>
+                <sctl:HyperlinkButton Content="Copyright © 2023 zodream.cn" 
+                                             NavigateUri="https://github.com/zx648383079/ZoDream.Studio"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Page>

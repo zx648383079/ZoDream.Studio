@@ -147,6 +147,7 @@ namespace ZoDream.Studio.ViewModels
             {
                 TrackItems.Add(item);
             }
+            App.ViewModel!.Project = Project;
             PlayVisible = true;
             Paused = true;
             PauseVisible = false;
