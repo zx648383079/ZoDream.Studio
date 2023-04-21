@@ -10,7 +10,7 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                        <Canvas x:Name="PART_PainoPanel" ClipToBounds="True"/>
+                        <Canvas x:Name="PART_PianoPanel" ClipToBounds="True"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

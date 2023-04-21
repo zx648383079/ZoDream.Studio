@@ -97,7 +97,10 @@ namespace ZoDream.Shared.Storage
 
         private static async Task SaveJsonAsync<T>(string file, T data)
         {
-            await LocationStorage.WriteAsync(file, JsonConvert.SerializeObject(data));
+            await LocationStorage.WriteAsync(file, JsonConvert.SerializeObject(data, new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+            }));
         }
 
         private static async Task<T?> LoadJsonAsync<T>(string file)
@@ -107,7 +110,10 @@ namespace ZoDream.Shared.Storage
             {
                 return default;
             }
-            return JsonConvert.DeserializeObject<T>(file);
+            return JsonConvert.DeserializeObject<T>(str, new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+            });
         }
     }
 }

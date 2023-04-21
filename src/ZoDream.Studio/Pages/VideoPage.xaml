@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
+      xmlns:ctl="clr-namespace:ZoDream.Studio.Controls"
       xmlns:vm="clr-namespace:ZoDream.Studio.ViewModels"
       xmlns:local="clr-namespace:ZoDream.Studio.Pages"
       mc:Ignorable="d" 
@@ -35,14 +36,22 @@
 
             <sctl:IconButton Grid.Column="2" Command="{Binding ConfirmCommand}" Icon="&#xE10B;" Label="确认"/>
         </Grid>
-        <Canvas Grid.Row="1" Background="Black">
-            <Image/>
-        </Canvas>
-        <Slider Grid.Row="2"/>
+        <ctl:PreviewImage ImageWidth="{Binding MediaWidth}" 
+                          ImageHeight="{Binding MediaHeight}" 
+                          ImageSource="{Binding ImageBitmap}" Grid.Row="1"/>
+        <Grid  Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Slider Maximum="{Binding FrameCount}" Value="{Binding FrameCurrent,Mode=TwoWay}"/>
+            <TextBlock Grid.Column="1" Text="{Binding TimeTip}"/>
+        </Grid>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="3">
-            <sctl:IconButton Icon="&#xE100;"/>
-            <sctl:IconButton Icon="&#xE102;"/>
-            <sctl:IconButton Icon="&#xE103;"/>
+            <sctl:IconButton Icon="&#xE100;" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter}}"/>
+            <sctl:IconButton Icon="&#xE102;" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter}}"/>
+            <sctl:IconButton Icon="&#xE103;" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter},ConverterParameter=false}"/>
+            <sctl:IconButton Icon="&#xE101;" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter}}"/>
         </StackPanel>
     </Grid>
 </Page>

@@ -48,6 +48,7 @@ namespace ZoDream.Studio.ViewModels
             {
                 try
                 {
+                    ImageBitmap?.Dispose();
                     ImageBitmap = (Bitmap)Image.FromFile(file, true);
                     PreviewUpdated?.Invoke();
                 }

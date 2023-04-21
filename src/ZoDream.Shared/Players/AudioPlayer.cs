@@ -68,7 +68,7 @@ namespace ZoDream.Shared.Players
                 {
                     continue;
                 }
-                if (item.Endkey is null)
+                if (item.EndKey is null)
                 {
                     if (key == item.BeginKey)
                     {
@@ -78,7 +78,7 @@ namespace ZoDream.Shared.Players
                     }
                     continue;
                 }
-                if (k >= item.BeginKey.ToKey127() && k <= item.Endkey.ToKey127())
+                if (k >= item.BeginKey.ToKey127() && k <= item.EndKey.ToKey127())
                 {
                     begin = item.Position;
                     end = item.End;

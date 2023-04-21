@@ -33,7 +33,7 @@ namespace ZoDream.Shared.Models
 
         public PianoKey? BeginKey { get; set; }
 
-        public PianoKey? Endkey { get; set; }
+        public PianoKey? EndKey { get; set; }
 
         public uint StepKey { get; set; }
 
@@ -49,7 +49,7 @@ namespace ZoDream.Shared.Models
 
         public PianoKey? BeginKey { get; set; }
 
-        public PianoKey? Endkey { get; set; }
+        public PianoKey? EndKey { get; set; }
 
         public uint Position { get; set; }
         public uint End { get; set; }

@@ -9,5 +9,11 @@ namespace ZoDream.Shared.Models
     /// </summary>
     public class NoteItem
     {
+
+        public PianoKey Key { get; set; } = new PianoKey();
+
+        public int Begin { get; set; }
+        public int End { get; set; }
+
     }
 }

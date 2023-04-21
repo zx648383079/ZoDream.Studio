@@ -47,6 +47,7 @@
                 </StackPanel>
                 <StackPanel Visibility="{Binding Step,Converter={StaticResource ToggleConverter},ConverterParameter=4}">
                     <ctl:InputCard Header="缓存路径"/>
+                    <ctl:InputCard Header="FFMpeg路径"/>
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

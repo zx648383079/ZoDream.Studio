@@ -47,10 +47,10 @@ namespace ZoDream.Studio.Controls
     ///     <MyNamespace:PianoPanel/>
     ///
     /// </summary>
-    [TemplatePart(Name = PainoPanelName, Type = typeof(Canvas))]
-    public class PianoPanel : Control
+    [TemplatePart(Name = PianoPanelName, Type = typeof(Canvas))]
+    public class PianoPanel : Control, IRollHeaderBar
     {
-        public const string PainoPanelName = "PART_PainoPanel";
+        public const string PianoPanelName = "PART_PianoPanel";
         static PianoPanel()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(PianoPanel), new FrameworkPropertyMetadata(typeof(PianoPanel)));
@@ -263,7 +263,7 @@ namespace ZoDream.Studio.Controls
             return GetWhiteKeyHeight() * .618;
         }
 
-        private int PreCollumnCount()
+        private int PreColumnCount()
         {
             return Convert.ToInt32(Math.Min((Orientation == Orientation.Horizontal ? ActualWidth : ActualHeight) / GetWhiteKeyWidth() * 1.5, 4));
         }
@@ -333,7 +333,7 @@ namespace ZoDream.Studio.Controls
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            BoxPanel = GetTemplateChild(PainoPanelName) as Canvas;
+            BoxPanel = GetTemplateChild(PianoPanelName) as Canvas;
             DrawKey();
         }
 
