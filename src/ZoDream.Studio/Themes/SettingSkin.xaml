@@ -17,7 +17,33 @@
         <Setter Property="Height" Value="30"/>
         <Setter Property="MaxLines" Value="1"/>
     </Style>
+
+    <Style x:Key="InputNumTb" TargetType="FrameworkElement">
+        <Setter Property="Width" Value="80"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
     <Style x:Key="InputOther" TargetType="FrameworkElement">
         <Setter Property="Margin" Value="0,5"/>
+    </Style>
+
+    <Style x:Key="SearchTb" TargetType="TextBox">
+        <Setter Property="MaxLines" Value="1"/>
+        <Setter Property="Padding" Value="5,0"/>
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style x:Key="SearchBtn" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="Width" Value="40"/>
+        <Setter Property="FontFamily" Value="{StaticResource IconFontFamily}"/>
+    </Style>
+
+    <Style x:Key="SearchList" TargetType="ListBox">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style x:Key="ListActionBtn" TargetType="Button">
+        <Setter Property="Height" Value="30"/>
     </Style>
 </ResourceDictionary>

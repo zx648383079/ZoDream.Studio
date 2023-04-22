@@ -40,6 +40,7 @@ namespace ZoDream.Studio.Pages
 
         private void ImagePage_Unloaded(object sender, RoutedEventArgs e)
         {
+            ViewModel.StopCommand.Execute(null);
             ViewModel.ImageBitmap?.Dispose();
         }
     }

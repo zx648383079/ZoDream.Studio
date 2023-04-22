@@ -47,27 +47,14 @@ namespace ZoDream.Studio.Controls
     ///     <MyNamespace:PreviewImage/>
     ///
     /// </summary>
-    [TemplatePart(Name = ImagePanelName, Type = typeof(Canvas))]
-    [TemplatePart(Name = InnerImageName, Type = typeof(Image))]
     public class PreviewImage : Control
     {
-        const string ImagePanelName = "PART_ImagePanel";
-        const string InnerImageName = "PART_InnerImage";
         
         static PreviewImage()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(PreviewImage), new FrameworkPropertyMetadata(typeof(PreviewImage)));
         }
 
-        public PreviewImage()
-        {
-            Loaded += PreviewImage_Loaded;
-        }
-
-        private void PreviewImage_Loaded(object sender, RoutedEventArgs e)
-        {
-            UpdatePreview();
-        }
 
         public object? ImageSource {
             get { return GetValue(ImageSourceProperty); }
@@ -77,7 +64,7 @@ namespace ZoDream.Studio.Controls
         // Using a DependencyProperty as the backing store for ImageSource.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ImageSourceProperty =
             DependencyProperty.Register("ImageSource", typeof(object), typeof(PreviewImage), new PropertyMetadata(null, (d,s) => {
-                (d as PreviewImage)?.UpdatePreview();
+                (d as PreviewImage)?.InvalidateVisual();
             }));
 
 
@@ -102,29 +89,51 @@ namespace ZoDream.Studio.Controls
         public static readonly DependencyProperty ImageHeightProperty =
             DependencyProperty.Register("ImageHeight", typeof(int), typeof(PreviewImage), new PropertyMetadata(0));
 
-        private Canvas? ImagePanel;
-        private Image? InnerImage;
 
-        public override void OnApplyTemplate()
-        {
-            base.OnApplyTemplate();
-            ImagePanel = GetTemplateChild(ImagePanelName) as Canvas;
-            InnerImage = GetTemplateChild(InnerImageName) as Image;
+
+
+        public Brush ImageBackground {
+            get { return (Brush)GetValue(ImageBackgroundProperty); }
+            set { SetValue(ImageBackgroundProperty, value); }
         }
 
+        // Using a DependencyProperty as the backing store for ImageBackground.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ImageBackgroundProperty =
+            DependencyProperty.Register("ImageBackground", typeof(Brush), typeof(PreviewImage), new PropertyMetadata(new SolidColorBrush(Colors.Black)));
 
-        private void UpdatePreview()
+
+
+        protected override void OnRender(DrawingContext drawingContext)
         {
-            if (ImagePanel is null || InnerImage is null)
+            base.OnRender(drawingContext);
+            if (ActualWidth == 0 || ActualHeight == 0)
             {
                 return;
             }
-            if ((ImageHeight == 0 || ImageWidth == 0) && ImageSource is System.Drawing.Bitmap bit)
+            var pen = new Pen(BorderBrush, BorderThickness.Top);
+            drawingContext.DrawRectangle(Background, pen, new Rect(0, 0, ActualWidth, ActualHeight));
+            UpdatePreview(drawingContext);
+        }
+
+
+
+        private void UpdatePreview(DrawingContext context)
+        {
+            var imageWidth = ImageWidth;
+            var imageHeight = ImageHeight;
+            if ((imageWidth == 0 || imageWidth == 0))
             {
-                ImageHeight = bit.Height;
-                ImageWidth = bit.Width;
+                if (ImageSource is System.Drawing.Bitmap bit)
+                {
+                    imageHeight = bit.Height;
+                    imageWidth = bit.Width;
+                } else if (ImageSource is BitmapSource b)
+                {
+                    imageHeight = b.PixelHeight;
+                    imageWidth = b.PixelWidth;
+                }
             }
-            if (ActualWidth == 0 || ImageHeight == 0 || ImageWidth == 0)
+            if (ActualWidth == 0 || imageHeight == 0 || imageWidth == 0)
             {
                 return;
             }
@@ -134,21 +143,31 @@ namespace ZoDream.Studio.Controls
                 return;
             }
             var (width, height) = GetSize(ActualWidth, ActualHeight, project.ScreenWidth, project.ScreenHeight);
-            ImagePanel.Width = width;
-            ImagePanel.Height = height;
-
-            var (w, h) = GetSize(width, height, ImageWidth, ImageHeight);
-            InnerImage.Width = w;
-            InnerImage.Height = h;
-            Canvas.SetTop(InnerImage, (height - h)/ 2);
-            Canvas.SetLeft(InnerImage, (width - w) / 2);
+            context.DrawRectangle(ImageBackground, new Pen(), new Rect(
+                (ActualWidth - width) / 2,
+                (ActualHeight - height) / 2,
+                width, height
+                ));
+            
+            var (w, h) = GetSize(width, height, imageWidth, imageHeight);
+            
+            ImageSource? innerImage = null;
             if (ImageSource is System.Drawing.Bitmap o)
             {
-                InnerImage.Source = o.ToBitmapSource();
+                innerImage = o.ToBitmapSource();
             } else if (ImageSource is ImageSource j)
             {
-                InnerImage.Source = j;
+                innerImage = j;
             }
+            if (innerImage is null)
+            {
+                return;
+            }
+            context.DrawImage(innerImage, new Rect(
+                (ActualWidth - w) / 2,
+                (ActualHeight - h) / 2,
+                w, h
+                ));
         }
 
         private (double, double) GetSize(double maxWidth, double maxHeight, double imageWidth, double imageHeight)

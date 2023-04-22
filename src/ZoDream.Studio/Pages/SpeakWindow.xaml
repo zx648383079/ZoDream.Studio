@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
             <sctl:IconButton x:Name="PlayBtn" Click="PlayBtn_Click" Icon="&#xE102;" Label="播放" Visibility="{Binding Paused, Converter={StaticResource ToggleConverter}}"/>
-            <sctl:IconButton x:Name="StopBtn" Click="StopBtn_Click" Icon="&#xE103;" Label="停止" Visibility="{Binding Paused, Converter={StaticResource ToggleConverter}, ConverterParameter=false}"/>
+            <sctl:IconButton x:Name="StopBtn" Click="StopBtn_Click" Icon="&#xE103;" Label="停止" Visibility="{Binding Paused, Converter={StaticResource ToggleConverter}, ConverterParameter=False}"/>
         </StackPanel>
         <ctl:WordRollPanel Grid.Row="1"/>
     </Grid>

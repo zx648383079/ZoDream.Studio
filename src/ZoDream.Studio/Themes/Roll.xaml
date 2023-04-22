@@ -28,7 +28,7 @@
                             <local:PianoPanel x:Name="PART_HeaderBar" IsSameGap="True" Orientation="Vertical" BlackKeyWidth="30" Grid.Row="2"/>
                             <Canvas x:Name="PART_TrackPanel"
                                     ClipToBounds="True" 
-                                    Background="#fff"
+                                    Background="Transparent"
                                     Grid.Row="2" Grid.Column="1"/>
                         </Grid>
                     </Border>
@@ -65,7 +65,25 @@
         </Setter>
     </Style>
 
+    <Style TargetType="{x:Type local:VolumeBar}">
+        <Setter Property="BorderBrush" Value="LightGray"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="ClipToBounds" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:VolumeBar}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="{x:Type local:WordRollPanel}">
+        <Setter Property="ItemHeight" Value="30"/>
+        <Setter Property="MaxVerticalItemCount" Value="127"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:WordRollPanel}">
@@ -79,7 +97,7 @@
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="80"/>
                                 <ColumnDefinition/>
                                 <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
@@ -87,7 +105,11 @@
                             <ScrollBar x:Name="PART_HorizontalBar" Grid.Column="1" Orientation="Horizontal"/>
                             <ScrollBar x:Name="PART_VerticalBar" Grid.Column="2" Grid.Row="2" Orientation="Vertical"/>
                             <local:RulePanel x:Name="PART_Rule" Grid.Column="1" Grid.Row="1"/>
-                            <Canvas x:Name="PART_TrackPanel" ClipToBounds="True" Grid.Row="2" Grid.ColumnSpan="2"/>
+                            <local:VolumeBar x:Name="PART_HeaderBar" Grid.Row="2"/>
+                            <Canvas x:Name="PART_TrackPanel"
+                                    ClipToBounds="True" 
+                                    Background="Transparent"
+                                    Grid.Row="2" Grid.Column="1"/>
                         </Grid>
                     </Border>
                 </ControlTemplate>

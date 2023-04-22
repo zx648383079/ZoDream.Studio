@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace ZoDream.Studio.Extensions
 {
@@ -26,6 +27,7 @@ namespace ZoDream.Studio.Extensions
             using var bitmap = new Bitmap(memoryStream);
             return bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), bitmap.PixelFormat);
         }
+
 
         public static double FrameCount(this IMediaAnalysis source)
         {

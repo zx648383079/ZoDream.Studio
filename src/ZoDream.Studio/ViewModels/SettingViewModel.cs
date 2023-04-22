@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using ZoDream.Shared.Models;
 using ZoDream.Shared.ViewModel;
+using ZoDream.Studio.Pages;
 using ZoDream.Studio.Routes;
 
 namespace ZoDream.Studio.ViewModels
@@ -19,6 +20,7 @@ namespace ZoDream.Studio.ViewModels
             BackCommand = new RelayCommand(TapBack);
             ConfirmCommand = new RelayCommand(TapConfirm);
             StepCommand = new RelayCommand(TapStep);
+            CreateVoiceCommand = new RelayCommand(TapCreateVoice);
         }
 
         private int step;
@@ -38,7 +40,13 @@ namespace ZoDream.Studio.ViewModels
         public ICommand BackCommand { get; private set; }
         public ICommand ConfirmCommand { get; private set; }
         public ICommand StepCommand { get; private set; }
+        public ICommand CreateVoiceCommand { get; private set; }
 
+        private void TapCreateVoice(object? _)
+        {
+            var page = new CreateVoiceDialog();
+            page.ShowDialog();
+        }
 
         private void TapBack(object? _)
         {

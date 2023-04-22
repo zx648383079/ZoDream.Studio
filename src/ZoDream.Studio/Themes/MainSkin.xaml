@@ -13,8 +13,6 @@
         <Setter Property="Width" Value="30"/>
         <Setter Property="FontFamily" Value="{StaticResource IconFontFamily}"/>
     </Style>
-    
-    
 
     <Style x:Key="LargeIconButton" TargetType="ctl:LargeMenuItem">
         <Setter Property="HorizontalAlignment" Value="Stretch"/>

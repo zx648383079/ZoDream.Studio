@@ -42,6 +42,8 @@
             <StackPanel Margin="10">
                 <TextBlock Text="尺寸" Style="{StaticResource InputHeaderTb}"/>
                 <ComboBox Style="{StaticResource InputCb}"/>
+                <TextBlock Text="停留时间/ms" Style="{StaticResource InputHeaderTb}"/>
+                <sctl:NumberInput Style="{StaticResource InputNumTb}"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>

@@ -39,7 +39,7 @@
             <sctl:IconButton Command="{Binding BackCommand}" Icon="&#xE112;" Label="返回"/>
             <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
                 <sctl:IconButton Command="{Binding PlayCommand}" Icon="&#xE102;" Label="播放" Visibility="{Binding Paused, Converter={StaticResource ToggleConverter}}"/>
-                <sctl:IconButton Command="{Binding StopCommand}" Icon="&#xE15B;" Label="停止" Visibility="{Binding Paused, Converter={StaticResource ToggleConverter},ConverterParameter=false}"/>
+                <sctl:IconButton Command="{Binding StopCommand}" Icon="&#xE15B;" Label="停止" Visibility="{Binding Paused, Converter={StaticResource ToggleConverter},ConverterParameter=False}"/>
             </StackPanel>
             <sctl:IconButton Grid.Column="4" Command="{Binding ConfirmCommand}" Icon="&#xE10B;" Label="确认"/>
         </Grid>
@@ -50,10 +50,6 @@
                 <TextBlock Text="语言" Style="{StaticResource InputHeaderTb}"/>
                 <ComboBox Style="{StaticResource InputCb}"/>
                 <TextBlock Text="语音" Style="{StaticResource InputHeaderTb}"/>
-                <ComboBox Style="{StaticResource InputCb}"/>
-                <TextBlock Text="说话风格" Style="{StaticResource InputHeaderTb}"/>
-                <ComboBox Style="{StaticResource InputCb}"/>
-                <TextBlock Text="角色扮演" Style="{StaticResource InputHeaderTb}"/>
                 <ComboBox Style="{StaticResource InputCb}"/>
                 <TextBlock Text="语速" Style="{StaticResource InputHeaderTb}"/>
                 <Slider/>

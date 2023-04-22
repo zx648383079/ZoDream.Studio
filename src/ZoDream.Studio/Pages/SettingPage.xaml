@@ -58,8 +58,9 @@
             </Grid.ColumnDefinitions>
             <ListBox/>
             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                <Button Content="导入" Height="30"/>
-                <Button Content="删除" Height="30"/>
+                <Button Content="创建" Command="{Binding CreateVoiceCommand}" Style="{StaticResource ListActionBtn}"/>
+                <Button Content="导入"  Style="{StaticResource ListActionBtn}"/>
+                <Button Content="删除"  Style="{StaticResource ListActionBtn}"/>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" Visibility="{Binding Step,Converter={StaticResource ToggleConverter},ConverterParameter=3}">
@@ -69,8 +70,8 @@
             </Grid.ColumnDefinitions>
             <ListBox/>
             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                <Button Content="导入" Height="30"/>
-                <Button Content="删除" Height="30"/>
+                <Button Content="导入"  Style="{StaticResource ListActionBtn}"/>
+                <Button Content="删除"  Style="{StaticResource ListActionBtn}"/>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" Visibility="{Binding Step,Converter={StaticResource ToggleConverter},ConverterParameter=9}">

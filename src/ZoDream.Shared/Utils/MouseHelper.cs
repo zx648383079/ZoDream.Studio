@@ -15,6 +15,8 @@ namespace ZoDream.Shared.Utils
         public bool IsEnd { get; private set; }
         public int EventTag { get; private set; }
 
+        public bool IsTouchMove { get; private set; }
+
         public double OffsetX => IsBegin ? CurrentX - LastX : 0;
         public double OffsetY => IsBegin ? CurrentY - LastY : 0;
         public double TotalOffsetY => IsBegin ? CurrentY - BeginY : 0;
@@ -32,6 +34,8 @@ namespace ZoDream.Shared.Utils
 
 
         public event MouseMoveEventHandler? OnMouseMove;
+        public event MouseMoveEventHandler? OnMouseUp;
+        public event MouseMoveEventHandler? OnMouseDown;
 
         public void MouseDown(double x, double y)
         {
@@ -50,6 +54,8 @@ namespace ZoDream.Shared.Utils
             CurrentY = LastY = BeginY = y;
             IsBegin = true;
             IsEnd = false;
+            IsTouchMove = false;
+            OnMouseDown?.Invoke(this, EventTag);
         }
 
         public void MouseMove(double x, double y)
@@ -58,6 +64,7 @@ namespace ZoDream.Shared.Utils
             {
                 return;
             }
+            IsTouchMove = true;
             LastX = CurrentX;
             LastY = CurrentY;
             CurrentX = x;
@@ -80,6 +87,7 @@ namespace ZoDream.Shared.Utils
                 CurrentY = y;
             }
             OnMouseMove?.Invoke(this, EventTag);
+            OnMouseUp?.Invoke(this, EventTag);
         }
 
         

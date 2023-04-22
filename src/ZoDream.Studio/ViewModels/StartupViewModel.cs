@@ -79,7 +79,7 @@ namespace ZoDream.Studio.ViewModels
             {
                 Title = "选择项目文件",
                 RestoreDirectory = true,
-                Filter = "项目文件|*.json|所有文件|*.*",
+                Filter = MainViewModel.PickerFilter,
             };
             if (picker.ShowDialog() != true)
             {
@@ -91,7 +91,6 @@ namespace ZoDream.Studio.ViewModels
 
         public static void EnterNew()
         {
-            
             var project = new ProjectItem();
             if (Screen.PrimaryScreen is not null)
             {
@@ -99,6 +98,7 @@ namespace ZoDream.Studio.ViewModels
                 project.ScreenWidth = bound.Width;
                 project.ScreenHeight = bound.Height;
             }
+            App.ViewModel?.Enter(project);
             ShellManager.GoToAsync("workspace", new Dictionary<string, object>
             {
                 {"project", project}

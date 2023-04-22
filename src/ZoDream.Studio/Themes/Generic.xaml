@@ -13,6 +13,4 @@
         <ResourceDictionary Source="pack://application:,,,/ZoDream.Studio;component/Themes/StoragePicker.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
-
-    
 </ResourceDictionary>

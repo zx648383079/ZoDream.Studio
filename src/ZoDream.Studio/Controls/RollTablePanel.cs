@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using ZoDream.Shared.Utils;
+using ZoDream.Studio.Extensions;
 
 namespace ZoDream.Studio.Controls
 {
@@ -21,8 +22,6 @@ namespace ZoDream.Studio.Controls
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(RollTablePanel), new FrameworkPropertyMetadata(typeof(RollTablePanel)));
         }
-
-
 
         public double ItemHeight {
             get { return (double)GetValue(ItemHeightProperty); }
@@ -85,7 +84,7 @@ namespace ZoDream.Studio.Controls
             }
             if (HorizontalBar != null)
             {
-                HorizontalBar.Maximum = 100;
+                HorizontalBar.Maximum = 1000;
                 HorizontalBar.ValueChanged += HorizontalBar_ValueChanged;
             }
             if (VerticalBar != null)
@@ -100,6 +99,7 @@ namespace ZoDream.Studio.Controls
                 BoxPanel.MouseLeftButtonDown += BoxPanel_MouseLeftButtonDown;
                 BoxPanel.MouseLeftButtonUp += BoxPanel_MouseLeftButtonUp;
                 BoxPanel.MouseMove += BoxPanel_MouseMove;
+                BoxPanel.MouseWheel += BoxPanel_MouseWheel;
             }
             if (HeaderBar != null)
             {
@@ -108,7 +108,6 @@ namespace ZoDream.Studio.Controls
             AddLineMask();
             HeaderLoadOverride(HeaderBar);
         }
-
 
         private void AddLineMask()
         {
@@ -140,38 +139,101 @@ namespace ZoDream.Studio.Controls
                 HorizontalBar!.ActualHeight - Ruler!.ActualHeight, ItemHeight, true, VerticalOffset));
         }
 
+        private void BoxPanel_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (MoveItem != null)
+            {
+                return;
+            }
+            ScrollVertical(-e.Delta);
+        }
 
         private void HeaderBar_OnScroll(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            VerticalOffset = e.NewValue;
-            VerticalBar!.Value = e.NewValue / ItemHeight;
-            UpdateSize();
+            ScrollVertical(e.NewValue - VerticalOffset);
+        }
+
+        private void ScrollVertical(double offset)
+        {
+            if (offset == 0)
+            {
+                return;
+            }
+            var val = VerticalOffset + offset;
+            if (val < 0)
+            {
+                val = 0;
+                offset = -VerticalOffset;
+            }
+            VerticalOffset = val;
+            HeaderBar!.Offset = VerticalOffset;
+            VerticalBar!.Value = VerticalOffset / ItemHeight;
+            MoveItems(0, offset);
+        }
+
+        private void ScrollHorizontal(double offset)
+        {
+            if (offset == 0)
+            {
+                return;
+            }
+            var val = HorizontalOffset + offset;
+            if (val < 0)
+            {
+                val = 0;
+                offset = -HorizontalOffset;
+            }
+            if (val + ActualWidth > HorizontalBar!.Maximum)
+            {
+                // HorizontalBar.Maximum += ActualWidth * 2;
+            }
+            HorizontalOffset = val;
+            HorizontalBar!.Value = HorizontalOffset;
+            Ruler!.Offset = HorizontalOffset;
+            MoveItems(offset, 0);
         }
 
         private void BoxPanel_MouseMove(object sender, MouseEventArgs e)
         {
             var p1 = e.GetPosition(this);
             MoveLineMask(p1.Y);
-            MouseHelper.MouseMove(p1.X, p1.Y);
+            MouseHelper.MouseMove(p1);
             if (MoveItem == null || e.LeftButton != MouseButtonState.Pressed)
             {
                 return;
             }
             var x = Canvas.GetLeft(MoveItem);
             var diffX = MouseHelper.OffsetX;
+            var targetX = .0;
+            var targetY = .0;
             switch (MoveStatus)
             {
                 case MoveStatus.Move:
                     var y = Canvas.GetTop(MoveItem);
-                    Canvas.SetLeft(MoveItem, diffX + x);
-                    Canvas.SetTop(MoveItem, MouseHelper.OffsetY + y);
+                    targetX = x + diffX;
+                    if (targetX + HorizontalOffset < 0)
+                    {
+                        targetX = -HorizontalOffset;
+                    }
+                    Canvas.SetLeft(MoveItem, targetX);
+                    targetY = MouseHelper.OffsetY + y;
+                    if (targetY + VerticalOffset < 0)
+                    {
+                        targetY = - VerticalOffset;
+                    }
+                    Canvas.SetTop(MoveItem, targetY);
                     break;
                 case MoveStatus.SizeRight:
-                    MoveItem.Width = MoveItem.ActualWidth + diffX;
+                    MoveItem.Width = Math.Max(MoveItem.ActualWidth + diffX, ItemWidthGap);
                     break;
                 case MoveStatus.SizeLeft:
-                    MoveItem.Width = MoveItem.ActualWidth - diffX;
-                    Canvas.SetLeft(MoveItem, x + diffX);
+                    MoveItem.Width = Math.Max(MoveItem.ActualWidth - diffX, ItemWidthGap);
+                    targetX = x + diffX;
+                    if (targetX + HorizontalOffset < 0)
+                    {
+                        targetX = 0;
+                    }
+                    Canvas.SetLeft(MoveItem, targetX);
                     break;
                 default:
                     break;
@@ -181,7 +243,7 @@ namespace ZoDream.Studio.Controls
         private void BoxPanel_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var p = e.GetPosition(this);
-            MouseHelper.MouseUp(p.X, p.Y);
+            MouseHelper.MouseUp(p);
             if (MoveItem != null)
             {
                 if (MoveStatus == MoveStatus.Move)
@@ -190,6 +252,14 @@ namespace ZoDream.Studio.Controls
                         MouseHelper.IsGlobeTop, VerticalOffset);
                     var x = GetStepChange(Canvas.GetLeft(MoveItem),
                         MouseHelper.IsGlobeLeft, HorizontalOffset);
+                    if (x + HorizontalOffset < 0)
+                    {
+                        x = -HorizontalOffset;
+                    }
+                    if (y + VerticalOffset < 0)
+                    {
+                        x = -VerticalOffset;
+                    }
                     MoveItemOverride(MoveItem, x, y);
                     Canvas.SetTop(MoveItem, y);
                     Canvas.SetLeft(MoveItem, x);
@@ -231,16 +301,12 @@ namespace ZoDream.Studio.Controls
 
         private void VerticalBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            VerticalOffset = Math.Min(e.NewValue * ItemHeight, MaxVerticalItemCount * ItemHeight - ActualHeight);
-            HeaderBar!.Offset = VerticalOffset;
-            UpdateSize();
+            ScrollVertical(Math.Min(e.NewValue * ItemHeight, MaxVerticalItemCount * ItemHeight - ActualHeight) - VerticalOffset);
         }
 
         private void HorizontalBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            HorizontalOffset = e.NewValue;
-            Ruler!.Offset = e.NewValue;
-            UpdateSize();
+            ScrollHorizontal(e.NewValue -  HorizontalOffset);
         }
 
         private void Ruler_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -248,9 +314,61 @@ namespace ZoDream.Studio.Controls
             // UpdateSize();
         }
 
-        private void UpdateSize()
-        {
 
+        public void AddItem(FrameworkElement element, double x, double y)
+        {
+            Canvas.SetTop(element, y - VerticalOffset);
+            Canvas.SetLeft(element, x - HorizontalOffset);
+            BoxPanel!.Children.Add(element);
+        }
+
+        public void RemoveItem(FrameworkElement element)
+        {
+            BoxPanel!.Children.Add(element);
+        }
+
+        public void Clear()
+        {
+            if (BoxPanel is null)
+            {
+                return;
+            }
+            for (var i = BoxPanel.Children.Count - 1; i >= 0; i--)
+            {
+                if (BoxPanel.Children[i] == LineMask)
+                {
+                    continue;
+                }
+                BoxPanel.Children.RemoveAt(i);
+            }
+        }
+
+        private void MoveItems(double hOffset, double vOffset)
+        {
+            if (BoxPanel is null)
+            {
+                return;
+            }
+            foreach (var item in BoxPanel.Children)
+            {
+                if (item == LineMask)
+                {
+                    if (vOffset != 0)
+                    {
+                        Canvas.SetTop(LineMask, Canvas.GetTop(LineMask) - vOffset);
+                    }
+                } else if (item is FrameworkElement o)
+                {
+                    if (vOffset != 0)
+                    {
+                        Canvas.SetTop(o, Canvas.GetTop(o) - vOffset);
+                    }
+                    if (hOffset != 0)
+                    {
+                        Canvas.SetLeft(o, Canvas.GetLeft(o) - hOffset);
+                    }
+                }
+            }
         }
 
         private void Add(Point point)
@@ -361,8 +479,7 @@ namespace ZoDream.Studio.Controls
         private void MoveItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             MoveItem = (FrameworkElement)sender;
-            var p = e.GetPosition(this);
-            MouseHelper.MouseDown(1, p.X, p.Y);
+            MouseHelper.MouseDown(1, e.GetPosition(this));
         }
 
         private void MoveItem_MouseMove(object sender, MouseEventArgs e)

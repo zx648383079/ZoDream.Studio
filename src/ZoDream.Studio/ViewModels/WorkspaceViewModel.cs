@@ -35,10 +35,6 @@ namespace ZoDream.Studio.ViewModels
 
         public IPlayer<PianoKey>? Player { get; private set; }
 
-        public ProjectItem Project { get; private set; } = new();
-
-        public string ProjectFileName { get; private set; } = string.Empty;
-
         private bool playVisible;
 
         public bool PlayVisible {
@@ -81,7 +77,7 @@ namespace ZoDream.Studio.ViewModels
 
         private void TapSave(object? _)
         {
-
+            App.ViewModel?.SaveProjectAsync();
         }
 
         private void TapExport(object? _)
@@ -102,17 +98,11 @@ namespace ZoDream.Studio.ViewModels
         private void TapSetting(object? _)
         {
             ShellManager.GoToAsync("setting");
-            //var model = new SettingViewModel();
-            //var page = new SettingWindow(model);
-            //page.Show();
-            //model.PropertyChanged += (_, e) => {
-
-            //};
         }
 
         private void TapAdd(object? _)
         {
-            if (Project is null)
+            if (App.ViewModel?.Project is null)
             {
                 var newPage = new ProjectWindow();
                 newPage.ShowDialog();
@@ -135,19 +125,14 @@ namespace ZoDream.Studio.ViewModels
 
         public void ApplyQueryAttributes(IDictionary<string, object> queries)
         {
-            if (queries.TryGetValue("file", out var file) && file is string i)
+            TrackItems.Clear();
+            if (App.ViewModel?.Project is not null)
             {
-                ProjectFileName = i;
+                foreach (var item in App.ViewModel.Project.TrackItems)
+                {
+                    TrackItems.Add(item);
+                }
             }
-            if (queries.TryGetValue("project", out var project) && project is ProjectItem o)
-            {
-                Project = o;
-            }
-            foreach (var item in Project.TrackItems)
-            {
-                TrackItems.Add(item);
-            }
-            App.ViewModel!.Project = Project;
             PlayVisible = true;
             Paused = true;
             PauseVisible = false;

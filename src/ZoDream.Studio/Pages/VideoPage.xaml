@@ -6,13 +6,21 @@
       xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
       xmlns:ctl="clr-namespace:ZoDream.Studio.Controls"
       xmlns:vm="clr-namespace:ZoDream.Studio.ViewModels"
+      xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:bhv="clr-namespace:ZoDream.Studio.Behaviors"
       xmlns:local="clr-namespace:ZoDream.Studio.Pages"
+      x:Name="root"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="VideoPage">
 
     <Page.Resources>
-        <ResourceDictionary Source="/Themes/SettingSkin.xaml"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Themes/SettingSkin.xaml"/>
+                <ResourceDictionary Source="/Themes/MainSkin.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Page.Resources>
 
     <Page.DataContext>
@@ -20,13 +28,17 @@
     </Page.DataContext>
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
             <RowDefinition/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="48"/>
         </Grid.RowDefinitions>
-        <Grid Background="{DynamicResource PrimaryBrush}">
+        <Grid Grid.ColumnSpan="2" Background="{DynamicResource PrimaryBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition/>
@@ -39,19 +51,73 @@
         <ctl:PreviewImage ImageWidth="{Binding MediaWidth}" 
                           ImageHeight="{Binding MediaHeight}" 
                           ImageSource="{Binding ImageBitmap}" Grid.Row="1"/>
-        <Grid  Grid.Row="2">
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="80"/>
+            </Grid.ColumnDefinitions>
+            <ctl:RangeProgressBar Max="{Binding FrameCount}" 
+                                  Value="{Binding FrameCurrent,Mode=TwoWay}"
+                                  Begin="{Binding BeginFrame}"
+                                  End="{Binding EndFrame}"
+                                  RangeVisible="{Binding RangeVisible}"
+                                  />
+            <TextBlock Grid.Column="1" Text="{Binding TimeTip}" VerticalAlignment="Center"/>
+        </Grid>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="3">
+            <sctl:IconButton Icon="&#xE100;" Label="上一帧" Command="{Binding PreviousCommand}" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter}}"/>
+            <sctl:IconButton Icon="&#xE102;" Label="播放" Command="{Binding PlayCommand}" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter}}"/>
+            <sctl:IconButton Icon="&#xE103;" Label="停止" Command="{Binding StopCommand}" 
+                             Visibility="{Binding Paused,Converter={StaticResource ToggleConverter},ConverterParameter=False}"/>
+            <sctl:IconButton Icon="&#xE101;" Label="下一帧" Command="{Binding NextCommand}" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter}}"/>
+            <sctl:IconToggleButton Value="{Binding AudioVolume}" OnLabel="&#xE15D;" OffLabel="&#xE198;" Width="50"/>
+            <sctl:IconButton Icon="&#xE126;" Label="起点" Command="{Binding BeginCommand}" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter}}"/>
+            <sctl:IconButton Icon="&#xE127;" Label="终点" Command="{Binding EndCommand}" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter}}"/>
+        </StackPanel>
+        <ListBox ItemsSource="{Binding FrameItems}" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" 
+                 Style="{StaticResource SearchList}">
+            <Behaviors:Interaction.Behaviors>
+                <bhv:ListItemDoubleClickBehavior Command="{Binding PreviewRangeCommand}"/>
+            </Behaviors:Interaction.Behaviors>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                        <Button Content="&#xE106;"
+                                        Command="{Binding ElementName=root, Path=DataContext.RemoveRangeCommand}"      
+                                        CommandParameter="{Binding}"
+                                        Grid.Column="1" 
+                                        Style="{StaticResource IconBtn}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Grid Grid.Column="1" Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <Slider Maximum="{Binding FrameCount}" Value="{Binding FrameCurrent,Mode=TwoWay}"/>
-            <TextBlock Grid.Column="1" Text="{Binding TimeTip}"/>
+            <TextBox Text="{Binding BeginFrame}" Style="{StaticResource SearchTb}">
+                <Behaviors:Interaction.Behaviors>
+                    <bhv:KeyboardConfirmBehavior Command="{Binding PreviewCommand}"/>
+                </Behaviors:Interaction.Behaviors>
+            </TextBox>
+            <TextBlock Text="~" Grid.Column="1" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding EndFrame}" Style="{StaticResource SearchTb}" 
+                     Grid.Column="2">
+                <Behaviors:Interaction.Behaviors>
+                    <bhv:KeyboardConfirmBehavior Command="{Binding PreviewCommand}"/>
+                </Behaviors:Interaction.Behaviors>
+            </TextBox>
+            <sctl:IconButton Icon="&#xE109;" Label="添加"
+                             Command="{Binding AddRangeCommand}"
+                             Grid.Column="3"/>
         </Grid>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="3">
-            <sctl:IconButton Icon="&#xE100;" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter}}"/>
-            <sctl:IconButton Icon="&#xE102;" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter}}"/>
-            <sctl:IconButton Icon="&#xE103;" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter},ConverterParameter=false}"/>
-            <sctl:IconButton Icon="&#xE101;" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter}}"/>
-        </StackPanel>
     </Grid>
 </Page>

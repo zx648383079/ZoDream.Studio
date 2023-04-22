@@ -3,6 +3,7 @@
                     xmlns:local="clr-namespace:ZoDream.Studio.Controls"
                     xmlns:ctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls">
     <Style TargetType="{x:Type local:TrackPanel}">
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:TrackPanel}">

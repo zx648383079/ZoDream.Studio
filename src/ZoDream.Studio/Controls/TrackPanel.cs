@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using ZoDream.Shared.Models;
+using ZoDream.Shared.Utils;
+using ZoDream.Studio.Extensions;
 
 namespace ZoDream.Studio.Controls
 {
@@ -85,7 +79,7 @@ namespace ZoDream.Studio.Controls
         public static readonly DependencyProperty ItemsSourceProperty =
             DependencyProperty.Register("ItemsSource", typeof(IList<TrackItem>), typeof(TrackPanel), new PropertyMetadata(null));
 
-
+        private readonly MouseHelper MouseHelper = new();
         private Canvas? BoxPanel;
         private RulePanel? Ruler;
         private ScrollBar? HorizontalBar;
@@ -94,7 +88,6 @@ namespace ZoDream.Studio.Controls
         private double HorizontalOffset = .0;
         private double VerticalOffset = .0;
         private TrackBar? MoveBar;
-        private Point MoveLast = new();
 
 
         public override void OnApplyTemplate()
@@ -167,12 +160,27 @@ namespace ZoDream.Studio.Controls
             Canvas.SetTop(row, y);
             BoxPanel!.Children.Add(row);
             row.MouseLeftButtonDown += Row_MouseLeftButtonDown;
-            row.MouseMove += Row_MouseMove;
-            row.MouseLeftButtonUp += Row_MouseLeftButtonUp;
         }
 
-        private void Row_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        protected override void OnMouseMove(MouseEventArgs e)
         {
+            base.OnMouseMove(e);
+            var p = e.GetPosition(this);
+            MouseHelper.MouseMove(p);
+            if (MoveBar == null)
+            {
+                return;
+            }
+            var x = Canvas.GetLeft(MoveBar);
+            var y = Canvas.GetTop(MoveBar);
+            Canvas.SetLeft(MoveBar, Math.Max(MouseHelper.OffsetX + x, HeaderWidth));
+            Canvas.SetTop(MoveBar, MouseHelper.OffsetY + y);
+        }
+
+        protected override void OnMouseUp(MouseButtonEventArgs e)
+        {
+            base.OnMouseUp(e);
+            MouseHelper.MouseUp(e.GetPosition(this));
             if (MoveBar == null)
             {
                 return;
@@ -183,24 +191,10 @@ namespace ZoDream.Studio.Controls
             MoveBar = null;
         }
 
-        private void Row_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (MoveBar == null)
-            {
-                return;
-            }
-            var x = Canvas.GetLeft(MoveBar);
-            var y = Canvas.GetTop(MoveBar);
-            var p = e.GetPosition(this);
-            Canvas.SetLeft(MoveBar, p.X - MoveLast.X + x);
-            Canvas.SetTop(MoveBar, p.Y - MoveLast.Y + y);
-            MoveLast = p;
-        }
-
         private void Row_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            MouseHelper.MouseDown(1, e.GetPosition(this));
             MoveBar = (TrackBar)sender;
-            MoveLast = e.GetPosition(this);
             Cursor = Cursors.SizeAll;
             MoveBar.Opacity = .5;
         }
@@ -244,7 +238,13 @@ namespace ZoDream.Studio.Controls
 
         private void MoveRow(int index, double x, double y)
         {
-            var to = (int)Math.Max(Math.Floor((y + VerticalOffset) / RowHeight), 0);
+            var count = (y + VerticalOffset) / RowHeight;
+            var to = Math.Min(
+                (int)Math.Max(MouseHelper.IsGlobeTop ? Math.Floor(count) : Math.Ceiling(count), 0), GetMaxRow());
+            //if (index == to)
+            //{
+            //    return;
+            //}
             var toY = y + HorizontalOffset - HeaderWidth;
             foreach (var item in BoxPanel!.Children)
             {
@@ -281,6 +281,19 @@ namespace ZoDream.Studio.Controls
                     UpdateRow(row);
                 }
             }
+        }
+
+        private int GetMaxRow()
+        {
+            var max = 0;
+            foreach (var item in BoxPanel!.Children)
+            {
+                if (item is TrackHeader header && header.RowIndex > max)
+                {
+                    max = header.RowIndex;
+                }
+            }
+            return max;
         }
 
         private bool InRange(int i, int min, int max)
