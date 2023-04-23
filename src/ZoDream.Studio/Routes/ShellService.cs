@@ -68,7 +68,7 @@ namespace ZoDream.Studio.Routes
                 };
                 return;
             }
-            await GoToAsync(routeName);
+            await LoadAsync(routeName);
             if (Current is not null && Current.DataContext is IQueryAttributable o)
             {
                 o.ApplyQueryAttributes(queries);
@@ -85,8 +85,26 @@ namespace ZoDream.Studio.Routes
             if (InnerFrame is null)
             {
                 AsyncNavigateFn = () => {
-                    _ = GoToAsync(routeName);
+                    _ = LoadAsync(routeName);
                 };
+                return;
+            }
+            await LoadAsync(routeName);
+            if (Current is not null && Current.DataContext is IQueryAttributable o)
+            {
+                o.ApplyQueryAttributes();
+            }
+        }
+
+        private async Task LoadAsync(string routeName)
+        {
+            if (CurrentRoute is not null && CurrentRoute.Name == routeName)
+            {
+                return;
+            }
+            Current = null;
+            if (InnerFrame is null)
+            {
                 return;
             }
             if (!Routes.TryGetValue(routeName, out var route))
@@ -103,7 +121,8 @@ namespace ZoDream.Studio.Routes
                 if (hIndex < 0)
                 {
                     HistoryRoutes.Add(route.Name);
-                } else if (hIndex < HistoryRoutes.Count - 1)
+                }
+                else if (hIndex < HistoryRoutes.Count - 1)
                 {
                     HistoryRoutes.RemoveRange(hIndex + 1, HistoryRoutes.Count - hIndex - 1);
                 }

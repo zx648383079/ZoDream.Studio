@@ -11,6 +11,7 @@ using ZoDream.Shared.Models;
 using ZoDream.Shared.Players;
 using ZoDream.Shared.Storage;
 using ZoDream.Shared.ViewModel;
+using ZoDream.Studio.Controls;
 using ZoDream.Studio.Pages;
 using ZoDream.Studio.Routes;
 
@@ -27,13 +28,10 @@ namespace ZoDream.Studio.ViewModels
             AddCommand = new RelayCommand(TapAdd);
             ExportCommand = new RelayCommand(TapExport);
             SaveCommand = new RelayCommand(TapSave);
-            Player = new MidiPlayer();
-            LoadAsync();
+            ItemActionCommand = new RelayCommand(TapItemAction);
         }
 
         #region 属性
-
-        public IPlayer<PianoKey>? Player { get; private set; }
 
         private bool playVisible;
 
@@ -75,6 +73,36 @@ namespace ZoDream.Studio.ViewModels
         public ICommand ExportCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
 
+        public ICommand ItemActionCommand { get; private set; }
+
+        private void TapItemAction(object? arg)
+        {
+            if (arg is TrackActionEventArgs o)
+            {
+                if (o.IsEdit)
+                {
+                    switch (o.Data.Type)
+                    {
+                        case TrackType.Image:
+                            break;
+                        case TrackType.Video:
+                            ShellManager.GoToAsync("video", new Dictionary<string, object>
+                            {
+                                {"file", (o.Data.Data as VideoTrackItem).FileName}
+                            });
+                            break;
+                        case TrackType.Text:
+                            break;
+                        default:
+                            break;
+                    }
+                } else
+                {
+                    TrackItems.Remove(o.Data);
+                }
+            }
+        }
+
         private void TapSave(object? _)
         {
             App.ViewModel?.SaveProjectAsync();
@@ -87,12 +115,12 @@ namespace ZoDream.Studio.ViewModels
 
         private void TapPlay(object? _)
         {
-
+            App.ViewModel!.PreviewView.Show();
         }
 
         private void TapPause(object? _)
         {
-
+            App.ViewModel!.PreviewView.Close();
         }
 
         private void TapSetting(object? _)
@@ -117,13 +145,8 @@ namespace ZoDream.Studio.ViewModels
         #endregion
 
 
-        public async void LoadAsync()
-        {
-            await Player!.ReadyAsync();
-        }
 
-
-        public void ApplyQueryAttributes(IDictionary<string, object> queries)
+        public void ApplyQueryAttributes(IDictionary<string, object>? queries = null)
         {
             TrackItems.Clear();
             if (App.ViewModel?.Project is not null)
@@ -136,11 +159,6 @@ namespace ZoDream.Studio.ViewModels
             PlayVisible = true;
             Paused = true;
             PauseVisible = false;
-        }
-
-        ~WorkspaceViewModel()
-        {
-            Player?.Dispose();
         }
     }
 }

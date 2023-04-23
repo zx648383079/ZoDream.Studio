@@ -27,4 +27,18 @@ namespace ZoDream.Studio.Controls
         public bool IsPressed { get; private set; }
         public bool Handle { get; set; } = false;
     }
+
+    public class TrackActionEventArgs
+    {
+        public TrackActionEventArgs(ProjectTrackItem data, bool isEdit)
+        {
+            Data = data;
+            IsEdit = isEdit;
+        }
+
+        public ProjectTrackItem Data { get; private set; }
+
+        public bool IsEdit { get; private set; }
+        public bool Handle { get; set; } = false;
+    }
 }

@@ -12,7 +12,7 @@ using ZoDream.Studio.Routes;
 
 namespace ZoDream.Studio.ViewModels
 {
-    public class MainViewModel: BindableBase
+    public class MainViewModel: BindableBase, IDisposable
     {
         public MainViewModel()
         {
@@ -25,7 +25,19 @@ namespace ZoDream.Studio.ViewModels
         public AppOption Option { get; private set; } = new();
 
         public string ProjectFileName { get; set; } = string.Empty;
+
         public ProjectItem? Project { get; set; }
+
+        private PreviewProjectViewModel? previewView;
+
+        public PreviewProjectViewModel PreviewView {
+            get {
+                previewView ??= new PreviewProjectViewModel();
+                return previewView;
+            }
+            set { previewView = value; }
+        }
+
 
 
         public async Task LoadAsync()
@@ -86,6 +98,11 @@ namespace ZoDream.Studio.ViewModels
         {
             ProjectFileName = fileName;
             Project = project;
+        }
+
+        public void Dispose()
+        {
+            PreviewView.Dispose();
         }
     }
 }

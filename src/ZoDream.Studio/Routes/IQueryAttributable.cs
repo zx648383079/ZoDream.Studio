@@ -8,6 +8,6 @@ namespace ZoDream.Studio.Routes
 {
     public interface IQueryAttributable
     {
-        public void ApplyQueryAttributes(IDictionary<string, object> queries);
+        public void ApplyQueryAttributes(IDictionary<string, object>? queries = null);
     }
 }

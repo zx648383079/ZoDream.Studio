@@ -49,13 +49,13 @@
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="音乐" VerticalAlignment="Center"/>
-                            <ctl:IconToggleButton Grid.Column="1" OnLabel="&#xE72E;" 
+                            <TextBlock Text="{TemplateBinding Header}" VerticalAlignment="Center"/>
+                            <ctl:IconToggleButton Value="{TemplateBinding IsLocked}" Grid.Column="1" OnLabel="&#xE72E;"
                                                   OffLabel="&#xE785;" ToolTip="锁定" Width="{TemplateBinding Height}"/>
-                            <ctl:IconToggleButton Grid.Column="2" OnLabel="&#xE9A9;" 
+                            <ctl:IconToggleButton  Value="{TemplateBinding IsHidden}" Grid.Column="2" OnLabel="&#xE9A9;" 
                                                   OffLabel="&#xE9A8;" ToolTip="显示隐藏" Width="{TemplateBinding Height}"/>
-                            <ctl:IconButton Grid.Column="3" Icon="&#xE104;" Width="{TemplateBinding Height}"/>
-                            <ctl:IconButton Grid.Column="4" Icon="&#xE107;" Width="{TemplateBinding Height}"/>
+                            <ctl:IconButton Grid.Column="3" Icon="&#xE104;" Command="{TemplateBinding ActionCommand}" CommandParameter="1" Width="{TemplateBinding Height}"/>
+                            <ctl:IconButton Grid.Column="4" Icon="&#xE107;" Command="{TemplateBinding ActionCommand}" Width="{TemplateBinding Height}"/>
                         </Grid>
                     </Border>
                 </ControlTemplate>

@@ -48,12 +48,12 @@ namespace ZoDream.Studio.Controls
     ///
     /// </summary>
     [TemplatePart(Name = PianoPanelName, Type = typeof(Canvas))]
-    public class PianoPanel : Control, IRollHeaderBar
+    public class PianoKeyboardPanel : Control, IRollHeaderBar
     {
         public const string PianoPanelName = "PART_PianoPanel";
-        static PianoPanel()
+        static PianoKeyboardPanel()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(PianoPanel), new FrameworkPropertyMetadata(typeof(PianoPanel)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(PianoKeyboardPanel), new FrameworkPropertyMetadata(typeof(PianoKeyboardPanel)));
         }
 
 
@@ -65,7 +65,7 @@ namespace ZoDream.Studio.Controls
 
         // Using a DependencyProperty as the backing store for WhiteKeyWidth.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty WhiteKeyWidthProperty =
-            DependencyProperty.Register("WhiteKeyWidth", typeof(int), typeof(PianoPanel), new PropertyMetadata(0));
+            DependencyProperty.Register("WhiteKeyWidth", typeof(int), typeof(PianoKeyboardPanel), new PropertyMetadata(0));
 
 
 
@@ -77,7 +77,7 @@ namespace ZoDream.Studio.Controls
 
         // Using a DependencyProperty as the backing store for BlackKeyWidth.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty BlackKeyWidthProperty =
-            DependencyProperty.Register("BlackKeyWidth", typeof(int), typeof(PianoPanel), new PropertyMetadata(0));
+            DependencyProperty.Register("BlackKeyWidth", typeof(int), typeof(PianoKeyboardPanel), new PropertyMetadata(0));
 
 
 
@@ -89,7 +89,7 @@ namespace ZoDream.Studio.Controls
 
         // Using a DependencyProperty as the backing store for Orientation.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty OrientationProperty =
-            DependencyProperty.Register("Orientation", typeof(Orientation), typeof(PianoPanel), new PropertyMetadata(Orientation.Horizontal));
+            DependencyProperty.Register("Orientation", typeof(Orientation), typeof(PianoKeyboardPanel), new PropertyMetadata(Orientation.Horizontal));
 
 
 
@@ -102,9 +102,9 @@ namespace ZoDream.Studio.Controls
 
         // Using a DependencyProperty as the backing store for BeginKey.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty BeginKeyProperty =
-            DependencyProperty.Register("BeginKey", typeof(object), typeof(PianoPanel), new PropertyMetadata(60, (d, e) =>
+            DependencyProperty.Register("BeginKey", typeof(object), typeof(PianoKeyboardPanel), new PropertyMetadata(60, (d, e) =>
             {
-                (d as PianoPanel)?.UpdateBeginKey();
+                (d as PianoKeyboardPanel)?.UpdateBeginKey();
             }));
 
 
@@ -117,9 +117,9 @@ namespace ZoDream.Studio.Controls
 
         // Using a DependencyProperty as the backing store for Offset.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty OffsetProperty =
-            DependencyProperty.Register("Offset", typeof(double), typeof(PianoPanel), new PropertyMetadata(.0, (d, e) =>
+            DependencyProperty.Register("Offset", typeof(double), typeof(PianoKeyboardPanel), new PropertyMetadata(.0, (d, e) =>
             {
-                (d as PianoPanel)?.UpdateKey();
+                (d as PianoKeyboardPanel)?.UpdateKey();
             }));
 
 
@@ -133,7 +133,7 @@ namespace ZoDream.Studio.Controls
 
         // Using a DependencyProperty as the backing store for IsSameGap.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsSameGapProperty =
-            DependencyProperty.Register("IsSameGap", typeof(bool), typeof(PianoPanel), new PropertyMetadata(false));
+            DependencyProperty.Register("IsSameGap", typeof(bool), typeof(PianoKeyboardPanel), new PropertyMetadata(false));
 
 
 
@@ -146,9 +146,9 @@ namespace ZoDream.Studio.Controls
 
         // Using a DependencyProperty as the backing store for Min.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MinProperty =
-            DependencyProperty.Register("Min", typeof(object), typeof(PianoPanel), new PropertyMetadata(0, (d, e) =>
+            DependencyProperty.Register("Min", typeof(object), typeof(PianoKeyboardPanel), new PropertyMetadata(0, (d, e) =>
             {
-                (d as PianoPanel)?.DrawKey();
+                (d as PianoKeyboardPanel)?.DrawKey();
             }));
 
 
@@ -162,9 +162,9 @@ namespace ZoDream.Studio.Controls
 
         // Using a DependencyProperty as the backing store for Max.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MaxProperty =
-            DependencyProperty.Register("Max", typeof(object), typeof(PianoPanel), new PropertyMetadata(131, (d, e) =>
+            DependencyProperty.Register("Max", typeof(object), typeof(PianoKeyboardPanel), new PropertyMetadata(131, (d, e) =>
             {
-                (d as PianoPanel)?.DrawKey();
+                (d as PianoKeyboardPanel)?.DrawKey();
             }));
 
         private Canvas? BoxPanel;
@@ -273,6 +273,10 @@ namespace ZoDream.Studio.Controls
             return PianoHelper.Get(offset);
         }
 
+        public double ToOffset(PianoKey key)
+        {
+            return PianoHelper.GetOffsetToMax(key);
+        }
 
         public void Press(PianoKey key)
         {

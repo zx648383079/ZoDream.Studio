@@ -33,6 +33,6 @@
                 <sctl:IconButton x:Name="OptionBtn" Command="{Binding SettingCommand}" Icon="&#xE115;" Label="设置"/>
             </StackPanel>
         </Grid>
-        <ctl:TrackPanel Grid.Row="1"/>
+        <ctl:TrackPanel Grid.Row="1" ItemsSource="{Binding TrackItems}" Command="{Binding ItemActionCommand}"/>
     </Grid>
 </Page>

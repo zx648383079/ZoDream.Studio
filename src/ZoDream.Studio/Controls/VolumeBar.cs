@@ -118,5 +118,19 @@ namespace ZoDream.Studio.Controls
                 fn.Invoke(val.ToString(), j * KeySize - offset);
             }
         }
+
+        public int GetVolume(double y)
+        {
+            return Max - (int)Math.Floor((y + Offset) / KeySize);
+        }
+
+        public double GetVolumeOffset(int volume)
+        {
+            return GetVolumeY(volume) - Offset;
+        }
+        public double GetVolumeY(int volume)
+        {
+            return (Max - volume) * KeySize;
+        }
     }
 }

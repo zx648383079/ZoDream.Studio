@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ZoDream.Shared.Models;
+using ZoDream.Shared.ViewModel;
 
 namespace ZoDream.Studio.Controls
 {
@@ -51,6 +53,98 @@ namespace ZoDream.Studio.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(TrackHeader), new FrameworkPropertyMetadata(typeof(TrackHeader)));
         }
 
+        public TrackHeader()
+        {
+            ActionCommand = new RelayCommand(o => {
+                Command?.Execute(new TrackActionEventArgs(Data, o is string i && i == "1"));
+            });
+        }
+
+        public string Header {
+            get { return (string)GetValue(HeaderProperty); }
+            set { SetValue(HeaderProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Header.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty HeaderProperty =
+            DependencyProperty.Register("Header", typeof(string), typeof(TrackHeader), new PropertyMetadata(string.Empty));
+
+
+
+        public bool IsLocked {
+            get { return (bool)GetValue(IsLockedProperty); }
+            set { SetValue(IsLockedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsLocked.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsLockedProperty =
+            DependencyProperty.Register("IsLocked", typeof(bool), typeof(TrackHeader), new PropertyMetadata(false, (d, s) => {
+                (d as TrackHeader)?.SyncData();
+            }));
+
+
+
+
+        public bool IsHidden {
+            get { return (bool)GetValue(IsHiddenProperty); }
+            set { SetValue(IsHiddenProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsHidden.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsHiddenProperty =
+            DependencyProperty.Register("IsHidden", typeof(bool), typeof(TrackHeader), new PropertyMetadata(false));
+
+
+
+
+        public ICommand Command {
+            get { return (ICommand)GetValue(CommandProperty); }
+            set { SetValue(CommandProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Command.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CommandProperty =
+            DependencyProperty.Register("Command", typeof(ICommand), typeof(TrackHeader), new PropertyMetadata(null));
+
+
+
+        public ICommand ActionCommand {
+            get { return (ICommand)GetValue(ActionCommandProperty); }
+            set { SetValue(ActionCommandProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ActionCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ActionCommandProperty =
+            DependencyProperty.Register("ActionCommand", typeof(ICommand), typeof(TrackHeader), new PropertyMetadata(null));
+
+
+
+
+        private ProjectTrackItem data;
+
+        public ProjectTrackItem Data {
+            get { return data; }
+            set { 
+                data = value;
+                IsHidden = value.IsHidden;
+                IsLocked = value.IsLocked;
+                Header = value.Name;
+            }
+        }
+
+
+
         public int RowIndex { get; set; }
+
+
+        private void SyncData()
+        {
+            if (Data is null)
+            {
+                return;
+            }
+            Data.IsLocked = IsLocked;
+            Data.IsHidden = IsHidden;
+        }
     }
 }

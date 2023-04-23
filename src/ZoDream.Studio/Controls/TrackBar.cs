@@ -51,15 +51,46 @@ namespace ZoDream.Studio.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(TrackBar), new FrameworkPropertyMetadata(typeof(TrackBar)));
         }
 
+
+
+        public double Begin {
+            get { return (double)GetValue(BeginProperty); }
+            set { SetValue(BeginProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Begin.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty BeginProperty =
+            DependencyProperty.Register("Begin", typeof(double), typeof(TrackBar), new PropertyMetadata(.0));
+
+
+
+        public double End {
+            get { return (double)GetValue(EndProperty); }
+            set { SetValue(EndProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for End.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty EndProperty =
+            DependencyProperty.Register("End", typeof(double), typeof(TrackBar), new PropertyMetadata(.0));
+
+
+
         public int RowIndex { get; set; }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
             var pen = new Pen(BorderBrush, BorderThickness.Top);
-            drawingContext.DrawRectangle(Background, pen, new Rect(0, 0, ActualWidth, ActualHeight));
-            var begin = 30;
-            var end = 120;
+            var begin = Begin;
+            var end = End;
+            if (end < begin || end == 0)
+            {
+                end = ActualWidth;
+            }
+            if (begin > 0 || end <  ActualWidth)
+            {
+                drawingContext.DrawRectangle(Background, pen, new Rect(0, 0, ActualWidth, ActualHeight));
+            }
             drawingContext.DrawRectangle(Foreground, pen, new Rect(begin, 0, end, ActualHeight));
         }
 

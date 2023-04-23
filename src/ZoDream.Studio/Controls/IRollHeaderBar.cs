@@ -9,7 +9,7 @@ namespace ZoDream.Studio.Controls
 {
     public interface IRollHeaderBar
     {
-
+        public double ActualWidth { get; }
         public double Offset { get; set; }
         public event RoutedPropertyChangedEventHandler<double>? OnScroll;
     }

@@ -16,6 +16,9 @@
     <Window.Resources>
         <ResourceDictionary Source="/Themes/SettingSkin.xaml"/>
     </Window.Resources>
+    <Window.DataContext>
+        <vm:AddTextViewModel/>
+    </Window.DataContext>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -34,18 +37,18 @@
                     Style="{StaticResource WindowIconBtn}"/>
         </Grid>
         <StackPanel Grid.Row="1" Margin="10,0">
-            <TextBox Height="120" Padding="5"/>
+            <TextBox Text="{Binding Content}" Height="120" Padding="5"/>
             <TextBlock Text="{Binding ElementName=VolumeTb,Path=Value, StringFormat='音量({0:F0})'}" 
                        Style="{StaticResource InputHeaderTb}"/>
-            <Slider x:Name="VolumeTb" Maximum="127" SmallChange="1" Value="100"/>
+            <Slider x:Name="VolumeTb" Value="{Binding Volume}" Maximum="127" SmallChange="1"/>
             <TextBlock Text="持续时间/ms" Style="{StaticResource InputHeaderTb}"/>
-            <sctl:NumberInput/>
+            <sctl:NumberInput Value="{Binding Duration}"/>
         </StackPanel>
         
         <StackPanel Grid.Row="2" 
                     Style="{StaticResource DialogFooter}">
-            <Button Content="确定" Style="{StaticResource DialogFooterBtn}"/>
-            <Button Content="取消" Style="{StaticResource DialogFooterBtn}"/>
+            <Button x:Name="ConfirmBtn" Content="确定" Click="ConfirmBtn_Click" Style="{StaticResource DialogFooterBtn}"/>
+            <Button Content="取消" Click="CloseBtn_Click" Style="{StaticResource DialogFooterBtn}"/>
         </StackPanel>
     </Grid>
 </Window>

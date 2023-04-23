@@ -41,10 +41,10 @@ namespace ZoDream.Studio.ViewModels
 
         }
 
-        public void ApplyQueryAttributes(IDictionary<string, object> queries)
+        public void ApplyQueryAttributes(IDictionary<string, object>? queries = null)
         {
             object? arg;
-            if (queries.TryGetValue("file", out arg) && arg is string file)
+            if (queries is not null && queries.TryGetValue("file", out arg) && arg is string file)
             {
                 try
                 {

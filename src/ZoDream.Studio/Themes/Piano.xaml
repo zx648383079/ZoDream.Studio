@@ -3,10 +3,10 @@
                     xmlns:ctl="clr-namespace:ZoDream.Studio.Controls"
                     xmlns:cvt="clr-namespace:ZoDream.Studio.Converters">
     <cvt:PianoKeyConverter x:Key="PianoKey"/>
-    <Style TargetType="{x:Type ctl:PianoPanel}">
+    <Style TargetType="{x:Type ctl:PianoKeyboardPanel}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ctl:PianoPanel}">
+                <ControlTemplate TargetType="{x:Type ctl:PianoKeyboardPanel}">
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">

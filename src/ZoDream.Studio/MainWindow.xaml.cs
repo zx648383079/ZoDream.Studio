@@ -54,6 +54,7 @@ namespace ZoDream.Studio
         private void Window_Unloaded(object sender, RoutedEventArgs e)
         {
             ShellManager.UnBind();
+            ViewModel.Dispose();
         }
     }
 }

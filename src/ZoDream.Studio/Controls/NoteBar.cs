@@ -45,15 +45,13 @@ namespace ZoDream.Studio.Controls
     ///
     /// </summary>
     [TemplatePart(Name = BorderName, Type = typeof(FrameworkElement))]
-    public class NoteBar : Control
+    public class NoteBar : Control, IRollItem
     {
         public const string BorderName = "PART_Border";
         static NoteBar()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(NoteBar), new FrameworkPropertyMetadata(typeof(NoteBar)));
         }
-
-
 
         public string Label
         {
@@ -64,6 +62,9 @@ namespace ZoDream.Studio.Controls
         // Using a DependencyProperty as the backing store for Label.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty LabelProperty =
             DependencyProperty.Register("Label", typeof(string), typeof(NoteBar), new PropertyMetadata(string.Empty));
+
+
+        public object? Data { get; set; }
 
 
         public override void OnApplyTemplate()

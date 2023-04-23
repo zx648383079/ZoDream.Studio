@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Speech.Synthesis;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using ZoDream.Shared.Models;
 using ZoDream.Shared.ViewModel;
 using ZoDream.Studio.Pages;
 using ZoDream.Studio.Routes;
@@ -29,6 +32,15 @@ namespace ZoDream.Studio.ViewModels
             set => Set(ref paused, value);
         }
 
+        private ObservableCollection<TextPromptItem> promptItems = new();
+
+        public ObservableCollection<TextPromptItem> PromptItems {
+            get => promptItems;
+            set => Set(ref promptItems, value);
+        }
+
+
+
         public ICommand PlayCommand { get; private set; }
         public ICommand StopCommand { get; private set; }
         public ICommand BackCommand { get; private set; }
@@ -40,10 +52,28 @@ namespace ZoDream.Studio.ViewModels
             ShellManager.GoBackAsync();
         }
 
-        private void TapAdd(object? _)
+        private void TapAdd(object? arg)
         {
+            var offset = 0;
             var page = new AddTextDialog();
-            page.ShowDialog();
+            if (arg is int o)
+            {
+                page.ViewModel.Volume = o;
+            } else if (arg is Point p) {
+                page.ViewModel.Volume = (int)p.Y;
+                offset = (int)p.X;
+            }
+            if (page.ShowDialog() != true)
+            {
+                return;
+            }
+            PromptItems.Add(new TextPromptItem()
+            {
+                Content = page.ViewModel.Content,
+                Volume = page.ViewModel.Volume,
+                Duration = page.ViewModel.Duration,
+                Offset = offset
+            });
         }
 
         private void TapConfirm(object? _)

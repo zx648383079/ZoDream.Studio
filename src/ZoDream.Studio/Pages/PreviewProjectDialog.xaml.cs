@@ -16,25 +16,18 @@ using ZoDream.Studio.ViewModels;
 namespace ZoDream.Studio.Pages
 {
     /// <summary>
-    /// AddTextDialog.xaml 的交互逻辑
+    /// PreviewProjectDialog.xaml 的交互逻辑
     /// </summary>
-    public partial class AddTextDialog : Window
+    public partial class PreviewProjectDialog : Window
     {
-        public AddTextDialog()
+        public PreviewProjectDialog()
         {
             InitializeComponent();
         }
 
-        public AddTextViewModel ViewModel => (AddTextViewModel)DataContext;
-
-        private void CloseBtn_Click(object sender, RoutedEventArgs e)
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            DialogResult = false;
-        }
-
-        private void ConfirmBtn_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = true;
+            DragMove();
         }
     }
 }

@@ -18,7 +18,7 @@
         <ComboBox x:Name="TypeTb" SelectionChanged="TypeTb_SelectionChanged" SelectedIndex="0" 
                   VerticalContentAlignment="Center"/>
         <ctl:PianoScrollViewer x:Name="PianoViewer" Grid.Row="1"/>
-        <ctl:PianoPanel x:Name="PianoTb" Background="#fff" 
+        <ctl:PianoKeyboardPanel x:Name="PianoTb" Background="#fff" 
                         Grid.Row="2" OnPress="PianoTb_OnPress" OnRelease="PianoTb_OnRelease"/>
     </Grid>
 </Window>

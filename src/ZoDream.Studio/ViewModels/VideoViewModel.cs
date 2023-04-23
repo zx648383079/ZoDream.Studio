@@ -11,6 +11,8 @@ using ZoDream.Studio.Extensions;
 using System.Collections.ObjectModel;
 using ZoDream.Shared.Models;
 using System.Windows.Threading;
+using System.Linq;
+using System.IO;
 
 namespace ZoDream.Studio.ViewModels
 {
@@ -168,7 +170,11 @@ namespace ZoDream.Studio.ViewModels
 
         private void TapAsBegin(object? _)
         {
-            BeginFrame = FrameCurrent;
+            BeginFrame = Math.Max(FrameCurrent, 0);
+            if (BeginFrame > EndFrame)
+            {
+                RangeVisible = false;
+            }
         }
 
         private void TapAsEnd(object? _)
@@ -250,7 +256,30 @@ namespace ZoDream.Studio.ViewModels
 
         private void TapConfirm(object? _)
         {
-
+            if (FrameItems.Count < 1)
+            {
+                System.Windows.MessageBox.Show("请添加分段");
+                return;
+            }
+            ProjectItem project = App.ViewModel!.Project!;
+            var exist = new List<VideoTrackItem>();
+            foreach (var item in project.TrackItems)
+            {
+                if (!item.IsLocked && item.Data is VideoTrackItem v && 
+                    v.FileName == MediaFile)
+                {
+                    exist.Add(v);
+                }
+            }
+            var prefix = Path.GetFileNameWithoutExtension(MediaFile);
+            project.Prepend(FrameItems.Where(item => !exist.Contains(item))
+                .Select(item => new ProjectTrackItem()
+            {
+                Name = $"{prefix}_{item.Name}",
+                Type = TrackType.Video,
+                Data = item
+            }));
+            ShellManager.GoBackAsync();
         }
 
         private void TapPlay(object? _)
@@ -279,10 +308,10 @@ namespace ZoDream.Studio.ViewModels
             }
         }
 
-        public void ApplyQueryAttributes(IDictionary<string, object> queries)
+        public void ApplyQueryAttributes(IDictionary<string, object>? queries = null)
         {
             object? arg;
-            if (queries.TryGetValue("file", out arg) && arg is string file)
+            if (queries is not null && queries.TryGetValue("file", out arg) && arg is string file)
             {
                 _ = LoadFileAsync(file);
             }
@@ -303,6 +332,14 @@ namespace ZoDream.Studio.ViewModels
             MediaWidth = MediaInfo.PrimaryVideoStream.Width;
             MediaHeight = MediaInfo.PrimaryVideoStream.Height;
             FrameCurrent = 0;
+            FrameItems.Clear();
+            foreach (var item in App.ViewModel!.Project!.TrackItems)
+            {
+                if (!item.IsLocked && item.Data is VideoTrackItem v && v.FileName == file)
+                {
+                    FrameItems.Add(v);
+                }
+            }
         }
 
         private void LoadFrameImage(int frame)

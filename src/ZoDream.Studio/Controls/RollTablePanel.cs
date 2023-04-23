@@ -135,8 +135,27 @@ namespace ZoDream.Studio.Controls
                 return;
             }
             LineMask.Width = ActualWidth;
-            Canvas.SetTop(LineMask, GetStepChange(y - 
-                HorizontalBar!.ActualHeight - Ruler!.ActualHeight, ItemHeight, true, VerticalOffset));
+            Canvas.SetTop(LineMask, GetStepChange(GlobeYTo(y), ItemHeight, true, VerticalOffset));
+        }
+
+        /// <summary>
+        /// 当前控件的坐标转Canvas坐标
+        /// </summary>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        private double GlobeYTo(double y)
+        {
+            return y - HorizontalBar!.ActualHeight - Ruler!.ActualHeight;
+        }
+
+        /// <summary>
+        /// 当前控件的坐标转Canvas坐标
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
+        private double GlobeXTo(double x)
+        {
+            return x - HeaderBar!.ActualWidth;
         }
 
         private void BoxPanel_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -234,6 +253,7 @@ namespace ZoDream.Studio.Controls
                         targetX = 0;
                     }
                     Canvas.SetLeft(MoveItem, targetX);
+                    
                     break;
                 default:
                     break;
@@ -248,8 +268,8 @@ namespace ZoDream.Studio.Controls
             {
                 if (MoveStatus == MoveStatus.Move)
                 {
-                    var y = GetStepChange(Canvas.GetTop(MoveItem), 30,
-                        MouseHelper.IsGlobeTop, VerticalOffset);
+                    var y = GetStepChange(GlobeYTo(p.Y), 30,
+                        true, VerticalOffset);
                     var x = GetStepChange(Canvas.GetLeft(MoveItem),
                         MouseHelper.IsGlobeLeft, HorizontalOffset);
                     if (x + HorizontalOffset < 0)
@@ -260,13 +280,14 @@ namespace ZoDream.Studio.Controls
                     {
                         x = -VerticalOffset;
                     }
-                    MoveItemOverride(MoveItem, x, y);
+                    MoveItemOverride(MoveItem, x + HorizontalOffset, y + VerticalOffset);
                     Canvas.SetTop(MoveItem, y);
                     Canvas.SetLeft(MoveItem, x);
                 }
                 else if (MoveStatus == MoveStatus.SizeRight || MoveStatus == MoveStatus.SizeLeft)
                 {
                     LastKeyWidth = MoveItem.Width = GetStepChange(MoveItem.Width, MouseHelper.IsGlobeLeft);
+                    ResizeItemOverride(MoveItem, MoveItem.Width, Canvas.GetLeft(MoveItem) + HorizontalOffset);
                 }
             }
             MoveItem = null;
@@ -314,12 +335,31 @@ namespace ZoDream.Studio.Controls
             // UpdateSize();
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="x">绝对值</param>
+        /// <param name="y">绝对值</param>
         public void AddItem(FrameworkElement element, double x, double y)
         {
+            UpdateItem(element, x, y);
+            BoxPanel!.Children.Add(element);
+            element.MouseMove -= MoveItem_MouseMove;
+            element.MouseLeftButtonDown -= MoveItem_MouseLeftButtonDown;
+            element.MouseRightButtonDown -= MoveItem_MouseRightButtonDown;
+            element.MouseLeave -= MoveItem_MouseLeave;
+            element.MouseMove += MoveItem_MouseMove;
+            element.MouseLeftButtonDown += MoveItem_MouseLeftButtonDown;
+            element.MouseRightButtonDown += MoveItem_MouseRightButtonDown;
+            element.MouseLeave += MoveItem_MouseLeave;
+        }
+
+        public virtual void UpdateItem(FrameworkElement element, double x, double y)
+        {
+            element.Height = ItemHeight;
             Canvas.SetTop(element, y - VerticalOffset);
             Canvas.SetLeft(element, x - HorizontalOffset);
-            BoxPanel!.Children.Add(element);
         }
 
         public void RemoveItem(FrameworkElement element)
@@ -329,17 +369,28 @@ namespace ZoDream.Studio.Controls
 
         public void Clear()
         {
+            EachChildren<UIElement>((item, i) => {
+                BoxPanel!.Children.RemoveAt(i);
+            });
+        }
+
+        protected void EachChildren<T>(Action<T, int> fn)
+        {
             if (BoxPanel is null)
             {
                 return;
             }
             for (var i = BoxPanel.Children.Count - 1; i >= 0; i--)
             {
-                if (BoxPanel.Children[i] == LineMask)
+                var item = BoxPanel.Children[i];
+                if (item == LineMask)
                 {
                     continue;
                 }
-                BoxPanel.Children.RemoveAt(i);
+                if (item is T o)
+                {
+                    fn.Invoke(o, i);
+                }
             }
         }
 
@@ -377,44 +428,89 @@ namespace ZoDream.Studio.Controls
             {
                 return;
             }
-            var y = GetStepChange(point.Y, ItemHeight, true, VerticalOffset);
-            var x = GetBarLeftByMouse(point.X);
+            var y = GetStepChange(point.Y, ItemHeight, true, VerticalOffset) + VerticalOffset;
+            var x = GetBarLeftByMouse(point.X) + HorizontalOffset;
             var bar = GetContainerForItemOverride(x, y);
             if (bar is null)
             {
                 return;
             }
-            bar.Height = ItemHeight;
             bar.Width = GetBarWidth();
-            Canvas.SetLeft(bar, x);
-            Canvas.SetTop(bar, y);
-            
-            BoxPanel.Children.Add(bar);
-            bar.MouseMove += MoveItem_MouseMove;
-            bar.MouseLeftButtonDown += MoveItem_MouseLeftButtonDown;
-            bar.MouseRightButtonDown += MoveItem_MouseRightButtonDown;
-            bar.MouseLeave += MoveItem_MouseLeave;
+            AddItem(bar, x, y);
         }
 
         /// <summary>
         /// 根据坐标创建元素
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="x">绝对位置</param>
+        /// <param name="y">绝对位置</param>
         /// <returns></returns>
         protected virtual FrameworkElement? GetContainerForItemOverride(double x, double y)
         {
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="x">绝对位置</param>
+        /// <param name="y">绝对位置</param>
         protected virtual void MoveItemOverride(FrameworkElement item, double x, double y)
         {
             
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="width"></param>
+        /// <param name="x">绝对位置</param>
+        protected virtual void ResizeItemOverride(FrameworkElement item, double width, double x)
+        {
+
+        }
+
         protected virtual void HeaderLoadOverride(IRollHeaderBar? bar)
         {
 
+        }
+        /// <summary>
+        /// 转换成正式值
+        /// </summary>
+        /// <param name="val">绝对坐标</param>
+        /// <returns></returns>
+        protected virtual int ToHorizontalValue(double val)
+        {
+            return (int)(val / ItemWidthGap);
+        }
+        /// <summary>
+        /// 转换成绝对坐标
+        /// </summary>
+        /// <param name="val">真实值</param>
+        /// <returns></returns>
+        protected virtual double FromHorizontalValue(int val)
+        {
+            return val * ItemWidthGap;
+        }
+        /// <summary>
+        /// 转换成正式值
+        /// </summary>
+        /// <param name="val">绝对坐标</param>
+        /// <returns></returns>
+        protected virtual int ToVerticalValue(double val)
+        {
+            return MaxVerticalItemCount - (int)(val / ItemHeight);
+        }
+        /// <summary>
+        /// 转换成绝对坐标
+        /// </summary>
+        /// <param name="val">真实值</param>
+        /// <returns></returns>
+        protected virtual double FromVerticalValue(int val)
+        {
+            return (MaxVerticalItemCount - val) * ItemHeight;
         }
 
         private double GetBarLeft(double x)

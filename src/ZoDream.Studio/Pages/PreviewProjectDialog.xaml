@@ -1,0 +1,35 @@
+﻿<Window x:Class="ZoDream.Studio.Pages.PreviewProjectDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ctl="clr-namespace:ZoDream.Studio.Controls"
+        xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
+        xmlns:vm="clr-namespace:ZoDream.Studio.ViewModels"
+        xmlns:local="clr-namespace:ZoDream.Studio.Pages"
+        mc:Ignorable="d"
+        Title="预览项目" 
+        Height="400" 
+        Width="600" WindowStartupLocation="CenterScreen"
+        Style="{StaticResource CustomWindow}"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="48"/>
+        </Grid.RowDefinitions>
+        <ctl:PreviewImage/>
+        <ctl:RangeProgressBar Grid.Row="1"/>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <sctl:IconButton Icon="&#xE100;" Label="上一帧" Command="{Binding PreviousCommand}" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter}}"/>
+            <sctl:IconButton Icon="&#xE102;" Label="播放" Command="{Binding PlayCommand}" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter}}"/>
+            <sctl:IconButton Icon="&#xE103;" Label="暂停" Command="{Binding PauseCommand}" 
+                             Visibility="{Binding Paused,Converter={StaticResource ToggleConverter},ConverterParameter=False}"/>
+            <sctl:IconButton Icon="&#xE15B;" Label="停止" Command="{Binding StopCommand}" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter}}"/>
+            <sctl:IconButton Icon="&#xE101;" Label="下一帧" Command="{Binding NextCommand}" Visibility="{Binding Paused,Converter={StaticResource ToggleConverter}}"/>
+            <sctl:IconToggleButton Value="{Binding AudioVolume}" OnLabel="&#xE15D;" OffLabel="&#xE198;" Width="50"/>
+        </StackPanel>
+    </Grid>
+</Window>

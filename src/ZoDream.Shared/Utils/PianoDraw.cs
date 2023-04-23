@@ -24,7 +24,7 @@ namespace ZoDream.Shared.Utils
             }
         }
         /// <summary>
-        /// 全部为正数，为距离top 的距离
+        /// 全部为正数，为距离 top 的距离
         /// </summary>
         public double Offset { get; set; }
 
