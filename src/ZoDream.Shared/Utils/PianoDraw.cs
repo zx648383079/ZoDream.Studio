@@ -155,6 +155,22 @@ namespace ZoDream.Shared.Utils
             return new double[] {y, BarLength - Offset - x - w, h, w};
         }
 
+        /// <summary>
+        /// 根据 key 获取相对位置
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public double GetKeyPosition(PianoKey key)
+        {
+            Invalidate();
+            var x = GetOffsetFromMin(key);
+            if (IsHorizontal)
+            {
+                return x - Offset;
+            }
+            return BarLength - Offset - x - GetKeyWidth(key);
+        }
+
         #region 计算方法
 
 

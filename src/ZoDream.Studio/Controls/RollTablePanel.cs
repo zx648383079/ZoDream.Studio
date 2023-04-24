@@ -299,7 +299,8 @@ namespace ZoDream.Studio.Controls
             {
                 return;
             }
-            Add(e.GetPosition(BoxPanel));
+            var p = e.GetPosition(this);
+            Add(GlobeXTo(p.X), GlobeYTo(p.Y));
         }
 
         private void BoxPanel_MouseLeave(object sender, MouseEventArgs e)
@@ -355,7 +356,7 @@ namespace ZoDream.Studio.Controls
             element.MouseLeave += MoveItem_MouseLeave;
         }
 
-        public virtual void UpdateItem(FrameworkElement element, double x, double y)
+        public void UpdateItem(FrameworkElement element, double x, double y)
         {
             element.Height = ItemHeight;
             Canvas.SetTop(element, y - VerticalOffset);
@@ -364,7 +365,7 @@ namespace ZoDream.Studio.Controls
 
         public void RemoveItem(FrameworkElement element)
         {
-            BoxPanel!.Children.Add(element);
+            BoxPanel!.Children.Remove(element);
         }
 
         public void Clear()
@@ -424,18 +425,23 @@ namespace ZoDream.Studio.Controls
 
         private void Add(Point point)
         {
+            Add(point.X, point.Y);
+        }
+        private void Add(double x, double y)
+        {
             if (BoxPanel == null)
             {
                 return;
             }
-            var y = GetStepChange(point.Y, ItemHeight, true, VerticalOffset) + VerticalOffset;
-            var x = GetBarLeftByMouse(point.X) + HorizontalOffset;
-            var bar = GetContainerForItemOverride(x, y);
+            y = GetStepChange(y, ItemHeight, true, VerticalOffset) + VerticalOffset;
+            x = GetStepChange(x, ItemWidthGap, true, HorizontalOffset) + HorizontalOffset;
+            var width = GetBarWidth();
+            var bar = GetContainerForItemOverride(x, y, width);
             if (bar is null)
             {
                 return;
             }
-            bar.Width = GetBarWidth();
+            bar.Width = width;
             AddItem(bar, x, y);
         }
 
@@ -445,7 +451,7 @@ namespace ZoDream.Studio.Controls
         /// <param name="x">绝对位置</param>
         /// <param name="y">绝对位置</param>
         /// <returns></returns>
-        protected virtual FrameworkElement? GetContainerForItemOverride(double x, double y)
+        protected virtual FrameworkElement? GetContainerForItemOverride(double x, double y, double width)
         {
             return null;
         }
@@ -470,6 +476,11 @@ namespace ZoDream.Studio.Controls
         protected virtual void ResizeItemOverride(FrameworkElement item, double width, double x)
         {
 
+        }
+
+        protected virtual void RemoveItemOverride(FrameworkElement item)
+        {
+            RemoveItem(item);
         }
 
         protected virtual void HeaderLoadOverride(IRollHeaderBar? bar)
@@ -513,15 +524,6 @@ namespace ZoDream.Studio.Controls
             return (MaxVerticalItemCount - val) * ItemHeight;
         }
 
-        private double GetBarLeft(double x)
-        {
-            return GetStepChange(x, ItemWidthGap, true);
-        }
-
-        private double GetBarLeftByMouse(double x)
-        {
-            return GetBarLeft(x + HorizontalOffset);
-        }
 
         private double GetStepChange(double val, bool isFloor = true)
         {
@@ -569,7 +571,7 @@ namespace ZoDream.Studio.Controls
 
         private void MoveItem_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            BoxPanel!.Children.Remove((UIElement)sender);
+            RemoveItemOverride((FrameworkElement)sender);
         }
 
         private void MoveItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

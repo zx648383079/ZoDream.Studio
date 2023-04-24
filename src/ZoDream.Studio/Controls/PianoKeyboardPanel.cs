@@ -167,9 +167,22 @@ namespace ZoDream.Studio.Controls
                 (d as PianoKeyboardPanel)?.DrawKey();
             }));
 
+
+
+        public bool Touchable {
+            get { return (bool)GetValue(TouchableProperty); }
+            set { SetValue(TouchableProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Touchable.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TouchableProperty =
+            DependencyProperty.Register("Touchable", typeof(bool), typeof(PianoKeyboardPanel), new PropertyMetadata(true));
+
+
+
         private Canvas? BoxPanel;
         private bool IsLazy = true;
-        private PianoDraw PianoHelper = new();
+        private readonly PianoDraw PianoHelper = new();
         public readonly PianoKey DefaultBeginKey = PianoKey.Create127(60);
 
         public event RoutedPropertyChangedEventHandler<double>? OnScroll;
@@ -268,14 +281,18 @@ namespace ZoDream.Studio.Controls
             return Convert.ToInt32(Math.Min((Orientation == Orientation.Horizontal ? ActualWidth : ActualHeight) / GetWhiteKeyWidth() * 1.5, 4));
         }
 
-        public PianoKey Get(double offset)
+        public PianoKey Get(double offset, bool isRelative = true)
         {
-            return PianoHelper.Get(offset);
+            return PianoHelper.Get(offset, isRelative);
         }
 
         public double ToOffset(PianoKey key)
         {
             return PianoHelper.GetOffsetToMax(key);
+        }
+        public double GetKeyPosition(PianoKey key)
+        {
+            return PianoHelper!.GetKeyPosition(key);
         }
 
         public void Press(PianoKey key)
@@ -390,11 +407,19 @@ namespace ZoDream.Studio.Controls
             }
             SyncSize();
             BoxPanel.Children.Clear();
+            //var binding = new Binding
+            //{
+            //    Source = this,
+            //    Mode = BindingMode.OneWay,
+            //    Path = new PropertyPath("Touchable")
+            //};
             for (int i = GetMin().ToKey127(); i <= GetMax().ToKey127(); i++)
             {
                 var key = PianoKey.Create127(i);
                 var keyBtn = key.Scale > 0 ? new PianoBlackKey() : new PianoWhiteKey();
                 keyBtn.Value = key;
+                // keyBtn.SetBinding(TouchableProperty, binding);
+                keyBtn.Touchable = Touchable;
                 UpdateKeyRect(keyBtn);
                 Panel.SetZIndex(keyBtn, key.Scale * 55);
                 BoxPanel.Children.Add(keyBtn);
@@ -450,6 +475,8 @@ namespace ZoDream.Studio.Controls
                 UpdateKeyRect(item);
             }
         }
+
+        
     }
 
     

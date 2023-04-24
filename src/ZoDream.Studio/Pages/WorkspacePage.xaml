@@ -6,11 +6,17 @@
       xmlns:ctl="clr-namespace:ZoDream.Studio.Controls"
       xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
       xmlns:vm="clr-namespace:ZoDream.Studio.ViewModels"
+      xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:bhv="clr-namespace:ZoDream.Studio.Behaviors"
       xmlns:local="clr-namespace:ZoDream.Studio.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="WorkspacePage">
+      Title="WorkspacePage" AllowDrop="True">
 
+    <Behaviors:Interaction.Behaviors>
+        <bhv:DragFileBehavior Command="{Binding DragCommand}"/>
+    </Behaviors:Interaction.Behaviors>
+    
     <Page.Resources>
         <ResourceDictionary Source="/Themes/MainSkin.xaml"/>
     </Page.Resources>
@@ -28,8 +34,8 @@
                 <sctl:IconButton x:Name="PlayBtn" Command="{Binding PlayCommand}" Icon="&#xE102;" Label="播放" Visibility="{Binding PlayVisible, Converter={StaticResource ToggleConverter}}"/>
                 <sctl:IconButton x:Name="StopBtn" Command="{Binding PauseCommand}" Icon="&#xE103;" Label="停止" Visibility="{Binding PauseVisible, Converter={StaticResource ToggleConverter}}"/>
                 <sctl:IconButton x:Name="AddBtn" Command="{Binding AddCommand}" Icon="&#xE109;" Label="添加"  Visibility="{Binding Paused, Converter={StaticResource ToggleConverter}}"/>
-                <sctl:IconButton Command="{Binding SaveCommand}" Icon="&#xE105;" Label="保存"  Visibility="{Binding Paused, Converter={StaticResource ToggleConverter}}"/>
-                <sctl:IconButton Command="{Binding ExportCommand}" Icon="&#xEDE1;" Label="导出"  Visibility="{Binding Paused, Converter={StaticResource ToggleConverter}}"/>
+                <sctl:IconButton Command="{Binding SaveCommand}" Icon="&#xE105;" Label="保存"  Visibility="{Binding PlayVisible, Converter={StaticResource ToggleConverter}}"/>
+                <sctl:IconButton Command="{Binding ExportCommand}" Icon="&#xEDE1;" Label="导出"  Visibility="{Binding PlayVisible, Converter={StaticResource ToggleConverter}}"/>
                 <sctl:IconButton x:Name="OptionBtn" Command="{Binding SettingCommand}" Icon="&#xE115;" Label="设置"/>
             </StackPanel>
         </Grid>

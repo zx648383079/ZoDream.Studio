@@ -29,6 +29,7 @@ namespace ZoDream.Studio.ViewModels
             ExportCommand = new RelayCommand(TapExport);
             SaveCommand = new RelayCommand(TapSave);
             ItemActionCommand = new RelayCommand(TapItemAction);
+            DragCommand = new RelayCommand(TapDragFile);
         }
 
         #region 属性
@@ -74,6 +75,19 @@ namespace ZoDream.Studio.ViewModels
         public ICommand SaveCommand { get; private set; }
 
         public ICommand ItemActionCommand { get; private set; }
+
+        public ICommand DragCommand { get; private set; }
+
+        private void TapDragFile(object? arg)
+        {
+            if (arg is IEnumerable<string> items)
+            {
+                foreach (var item in items)
+                {
+                    // TODO
+                }
+            }
+        }
 
         private void TapItemAction(object? arg)
         {
@@ -156,7 +170,7 @@ namespace ZoDream.Studio.ViewModels
                     TrackItems.Add(item);
                 }
             }
-            PlayVisible = true;
+            PlayVisible = TrackItems.Count > 0;
             Paused = true;
             PauseVisible = false;
         }

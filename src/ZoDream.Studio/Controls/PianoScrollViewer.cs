@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Melanchall.DryWetMidi.Interaction;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -14,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using ZoDream.Shared.Models;
 
 namespace ZoDream.Studio.Controls
 {
@@ -75,8 +77,44 @@ namespace ZoDream.Studio.Controls
 
 
 
+
+        public double KeySize {
+            get { return (double)GetValue(KeySizeProperty); }
+            set { SetValue(KeySizeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for KeySize.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty KeySizeProperty =
+            DependencyProperty.Register("KeySize", typeof(double), typeof(PianoScrollViewer), new PropertyMetadata(30.0));
+
+
+
+        public IEnumerable<NoteItem> ItemsSource {
+            get { return (IEnumerable<NoteItem>)GetValue(ItemsSourceProperty); }
+            set { SetValue(ItemsSourceProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ItemsSource.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ItemsSourceProperty =
+            DependencyProperty.Register("ItemsSource", typeof(IEnumerable<NoteItem>), typeof(PianoScrollViewer), new PropertyMetadata(null));
+
+
+
+        public PianoKeyboardPanel TargetKeyboard {
+            get { return (PianoKeyboardPanel)GetValue(TargetKeyboardProperty); }
+            set { SetValue(TargetKeyboardProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for TargetKeyboard.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TargetKeyboardProperty =
+            DependencyProperty.Register("TargetKeyboard", typeof(PianoKeyboardPanel), typeof(PianoScrollViewer), new PropertyMetadata(null));
+
+
+
+        private PianoKeyScrollItem[] NoteItems = Array.Empty<PianoKeyScrollItem>();
         // private DispatcherTimer? DispatcherTimer;
-        private double TempY = 0;
+        private double Offset = 0;
+        private readonly double OffsetToYScale = 5;
 
         protected override void OnRender(DrawingContext drawingContext)
         {
@@ -85,28 +123,75 @@ namespace ZoDream.Studio.Controls
             var font = new Typeface(FontFamily, FontStyle, FontWeight, FontStretch);
             var maxHeight = ActualHeight;
             var maxWidth = ActualWidth;
-            for (int i = 0; i < 1; i++)
+            var endCount = 0;
+            foreach (var item in NoteItems)
             {
-                var x = 0;
-                var y = TempY;
-                var w = 30;
-                var h = 100;
-                if (y > maxHeight || x  > maxWidth || x + w < 0)
+                DrawKey(drawingContext, item, maxWidth, maxHeight, pen, font);
+                if (item.Status == KeyStates.Toggled)
                 {
-                    continue;
+                    endCount++;
                 }
-                drawingContext.DrawRectangle(NoteBackground, pen, new Rect(x, y, w, h));
-                var ft = new FormattedText(
-                            "C0", CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
-                            font, FontSize, Foreground, 1.25);
-                var fontY = Math.Min(y + h, maxHeight) - ft.Height;
-                drawingContext.DrawText(ft, new Point(x + (w - ft.Width) / 2, fontY));
+            }
+            if (endCount >= NoteItems.Length)
+            {
+                Stop();
             }
         }
 
-        public void Start()
+        private void DrawKey(DrawingContext context, PianoKeyScrollItem data, double maxWidth, double maxHeight, Pen pen, Typeface font)
+        {
+            if (data.Status == KeyStates.Toggled)
+            {
+                return;
+            }
+            if (Offset > data.Data.End)
+            {
+                TargetKeyboard?.Release(data.Data.Key);
+                // 释放事件
+                data.Status = KeyStates.Toggled;
+                return;
+            }
+            var note = data.Data;
+            var h = note.Duration * OffsetToYScale;
+            var y = maxHeight + (Offset - note.Begin) * OffsetToYScale;
+            var bottomY = y + h;
+            if (bottomY < 0)
+            {
+                return;
+            }
+            if (bottomY >= maxHeight && data.Status == KeyStates.None)
+            {
+                TargetKeyboard?.Press(data.Data.Key);
+                // 按下事件
+                data.Status = KeyStates.Down;
+            }
+            var x = TargetKeyboard?.GetKeyPosition(note.Key) ?? 0;
+            var w = KeySize;
+            if (x > maxWidth || x + w < 0)
+            {
+                return;
+            }
+            context.DrawRectangle(NoteBackground, pen, new Rect(x, y, w, h));
+            var ft = new FormattedText(
+                        note.Key.ToString(), CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                        font, FontSize, Foreground, 1.25);
+            var fontY = Math.Min(y + h, maxHeight) - ft.Height;
+            context.DrawText(ft, new Point(x + (w - ft.Width) / 2, fontY));
+        }
+
+        public void Start(int offset)
         {
             Stop();
+            if (ItemsSource is null)
+            {
+                return;
+            }
+            Offset = offset;
+            NoteItems = ItemsSource.Select(item => new PianoKeyScrollItem(item)).ToArray();
+            if (NoteItems.Length < 0)
+            {
+                return;
+            }
             CompositionTarget.Rendering += CompositionTarget_Rendering;
             //if (DispatcherTimer != null)
             //{
@@ -115,28 +200,48 @@ namespace ZoDream.Studio.Controls
             //}
             //DispatcherTimer = new DispatcherTimer
             //{
-            //    Interval = new TimeSpan(0, 0, 0, 0, 50)
+            //    Interval = new TimeSpan(0, 0, 0, 0, 500)
             //};
             //DispatcherTimer.Tick += DispatcherTimer_Tick;
             //DispatcherTimer.Start();
         }
 
+        public void Start()
+        {
+            Start(0);
+        }
+
         private void CompositionTarget_Rendering(object? sender, EventArgs e)
         {
-            TempY += 1;
-            InvalidateVisual();
+            OnTimerTick();
         }
 
         private void DispatcherTimer_Tick(object? sender, EventArgs e)
         {
-            TempY += 1;
+            OnTimerTick();
+        }
+
+        private void OnTimerTick()
+        {
+            Offset += .2;
             InvalidateVisual();
         }
 
         public void Stop()
         {
-            CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            // CompositionTarget.Rendering -= CompositionTarget_Rendering;
             // DispatcherTimer?.Stop();
         }
+    }
+
+    class PianoKeyScrollItem
+    {
+        public PianoKeyScrollItem(NoteItem data)
+        {
+            Data = data;
+        }
+        public NoteItem Data { get; set; }
+
+        public KeyStates Status { get; set; }
     }
 }

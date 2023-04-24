@@ -3,6 +3,12 @@
                     xmlns:cvt="clr-namespace:ZoDream.Studio.Converters">
     <cvt:BoolConverter x:Key="ToggleConverter"/>
     <FontFamily x:Key="IconFontFamily">Segoe MDL2 Assets</FontFamily>
+    <Style x:Key="IconBtn" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Width" Value="30"/>
+        <Setter Property="FontFamily" Value="{StaticResource IconFontFamily}"/>
+    </Style>
     <Style x:Key="CustomWindow" TargetType="Window">
         <Setter Property="WindowStyle" Value="None"/>
         <Setter Property="Topmost" Value="True"/>

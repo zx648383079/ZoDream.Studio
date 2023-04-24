@@ -74,6 +74,16 @@ namespace ZoDream.Studio.Controls
         public static readonly DependencyProperty ValueProperty =
             DependencyProperty.Register("Value", typeof(PianoKey), typeof(PianoWhiteKey), new PropertyMetadata(PianoKey.Create127(60)));
 
+        public bool Touchable {
+            get { return (bool)GetValue(TouchableProperty); }
+            set { SetValue(TouchableProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Touchable.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TouchableProperty =
+            DependencyProperty.Register("Touchable", typeof(bool), typeof(PianoWhiteKey), new PropertyMetadata(true));
+
+
 
         public event PianoKeyEventHandler? OnPress;
         public event PianoKeyEventHandler? OnRelease;
@@ -93,12 +103,20 @@ namespace ZoDream.Studio.Controls
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
+            if (!Touchable)
+            {
+                return;
+            }
             TapPress();
         }
 
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
+            if (!Touchable)
+            {
+                return;
+            }
             TapRelease();
         }
     }

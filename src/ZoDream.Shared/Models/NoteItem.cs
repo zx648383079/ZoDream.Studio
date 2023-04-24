@@ -15,6 +15,11 @@ namespace ZoDream.Shared.Models
         public int Begin { get; set; }
         public int End { get; set; }
 
-        public int Duration => End - Begin;
+        public int Duration {
+            get => End - Begin;
+            set {
+                End = Begin + value;
+            }
+        }
     }
 }

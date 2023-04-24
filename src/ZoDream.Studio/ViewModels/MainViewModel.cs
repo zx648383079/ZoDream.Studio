@@ -50,6 +50,11 @@ namespace ZoDream.Studio.ViewModels
             ShellManager.GoToAsync("startup");
         }
 
+        public async Task SaveAsync()
+        {
+            await AppData.SaveAsync(Option);
+        }
+
         public async Task LoadProjectAsync(string fileName)
         {
             var data = await Reader.ReadAsync(fileName);

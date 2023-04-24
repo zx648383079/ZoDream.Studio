@@ -4,6 +4,20 @@ using System.Text;
 
 namespace ZoDream.Shared.Models
 {
+
+    public class AudioSourceFileItem
+    {
+        public string Name { get; set; } = string.Empty;
+
+        public string Description { get; set; } = string.Empty;
+
+        public string Author { get; set; } = string.Empty;
+
+        public bool IsSystem { get; set; }
+
+        public string FileName { get; set; } = string.Empty;
+    }
+
     public class AudioSource
     {
         public string Name { get; set; } = string.Empty;
@@ -56,4 +70,6 @@ namespace ZoDream.Shared.Models
 
         public uint Loop { get; set; }
     }
+
+
 }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ZoDream.Shared.Models;
 using ZoDream.Shared.ViewModel;
 using ZoDream.Studio.Pages;
 using ZoDream.Studio.Routes;
@@ -30,6 +32,15 @@ namespace ZoDream.Studio.ViewModels
             set => Set(ref paused, value);
         }
 
+        private ObservableCollection<NoteItem> noteItems = new();
+
+        public ObservableCollection<NoteItem> NoteItems {
+            get => noteItems;
+            set => Set(ref noteItems, value);
+        }
+
+
+
         public ICommand PlayCommand { get; private set; }
         public ICommand StopCommand { get; private set; }
         public ICommand BackCommand { get; private set; }
@@ -40,7 +51,10 @@ namespace ZoDream.Studio.ViewModels
 
         private void TapPreview(object? _)
         {
-            var page = new PianoWindow();
+            var page = new PianoWindow
+            {
+                NoteItems = NoteItems
+            };
             page.ShowDialog();
         }
 

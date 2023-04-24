@@ -45,6 +45,7 @@ namespace ZoDream.Studio.Controls
 
 
         private PianoKeyboardPanel? PianoBar;
+        private bool IsLoading = false;
 
         protected override void HeaderLoadOverride(IRollHeaderBar? bar)
         {
@@ -53,21 +54,53 @@ namespace ZoDream.Studio.Controls
 
         protected override void MoveItemOverride(FrameworkElement item, double x, double y)
         {
-            if (PianoBar != null && item is NoteBar o)
+            if (PianoBar != null && item is NoteBar o && o.Data is NoteItem data)
             {
-                o.Label = PianoBar.Get(y).ToString();
+                data.Key = PianoBar.Get(y, false);
+                o.Label = data.Key.ToString();
             }
         }
 
-        protected override FrameworkElement? GetContainerForItemOverride(double x, double y)
+        protected override void ResizeItemOverride(FrameworkElement item, double width, double x)
+        {
+            base.ResizeItemOverride(item, width, x);
+            if (item is NoteBar o && o.Data is NoteItem data)
+            {
+                data.Begin = ToHorizontalValue(x);
+                data.Duration = ToHorizontalValue(width);
+            }
+        }
+
+        protected override void RemoveItemOverride(FrameworkElement item)
+        {
+            IsLoading = true;
+            if (ItemsSource != null && item is NoteBar o && o.Data is NoteItem i)
+            {
+                ItemsSource.Remove(i);
+            }
+            IsLoading = false;
+            base.RemoveItemOverride(item);
+        }
+
+        protected override FrameworkElement? GetContainerForItemOverride(double x, double y, double width)
         {
             if (ItemsSource is null)
             {
                 return null;
             }
+            IsLoading = true;
+            var data = new NoteItem()
+            {
+                Begin = ToHorizontalValue(x),
+                Key = PianoBar!.Get(y, false),
+                Duration = ToHorizontalValue(width),
+            };
+            ItemsSource.Add(data);
+            IsLoading = false;
             return new NoteBar()
             {
-                Label = PianoBar!.Get(y).ToString()
+                Label = data.Key.ToString(),
+                Data = data,
             };
         }
 
@@ -128,6 +161,10 @@ namespace ZoDream.Studio.Controls
 
         private void RefreshItems()
         {
+            if (IsLoading)
+            {
+                return;
+            }
             var items = ItemsSource!.ToList();
             var targetItems = new List<NoteBar>();
             EachChildren<NoteBar>((item, i) => {

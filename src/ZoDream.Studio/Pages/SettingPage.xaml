@@ -7,6 +7,7 @@
       xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
       xmlns:vm="clr-namespace:ZoDream.Studio.ViewModels"
       xmlns:local="clr-namespace:ZoDream.Studio.Pages"
+      x:Name="root"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SettingPage">
@@ -42,12 +43,21 @@
                     <ctl:InputCard Header="关于" Command="{Binding StepCommand}" CommandParameter="9"/>
                 </StackPanel>
                 <StackPanel Visibility="{Binding Step,Converter={StaticResource ToggleConverter},ConverterParameter=1}">
-                    <ctl:InputCard Header="项目名"/>
-                    <ctl:InputCard Header="画面尺寸"/>
+                    <ctl:InputExpander Header="项目名" Text="{Binding ProjectName}">
+                        <TextBox Text="{Binding ProjectName}" Style="{StaticResource LineTb}"/>
+                    </ctl:InputExpander>
+                    <ctl:InputExpander Header="画面尺寸" Text="{Binding ScreenSize}">
+                        <ctl:InputCard Header="宽" IconVisible="Collapsed">
+                            <sctl:NumberInput Value="{Binding ScreenWidth}" Width="120"/>
+                        </ctl:InputCard>
+                        <ctl:InputCard Header="高" IconVisible="Collapsed">
+                            <sctl:NumberInput Value="{Binding ScreenHeight}" Width="120"/>
+                        </ctl:InputCard>
+                    </ctl:InputExpander>
                 </StackPanel>
                 <StackPanel Visibility="{Binding Step,Converter={StaticResource ToggleConverter},ConverterParameter=4}">
-                    <ctl:InputCard Header="缓存路径"/>
-                    <ctl:InputCard Header="FFMpeg路径"/>
+                    <ctl:InputCard Header="缓存路径" Description="使用过程中需要缓存一些内容" Content="{Binding TempFolder}" Command="{Binding TempCommand}"/>
+                    <ctl:InputCard Header="FFMpeg路径" Description="ffmpeg 的 bin 文件夹" Content="{Binding BinFolder}" Command="{Binding BinCommand}"/>
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
@@ -56,10 +66,38 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
-            <ListBox/>
+            <ListBox ItemsSource="{Binding AudioItems}" HorizontalContentAlignment="Stretch">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{Binding Name}" FontSize="20" VerticalAlignment="Bottom"/>
+                            <TextBlock Text="{Binding Author}" 
+                                                   FontSize="12"
+                                                   Grid.Column="1" 
+                                                   HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                            <TextBlock Text="{Binding Description}" 
+                                                   Grid.Row="1" Grid.ColumnSpan="2"/>
+                            <Button Content="&#xE106;"
+                                        Command="{Binding ElementName=root, Path=DataContext.AudioDeleteCommand}"      
+                                        CommandParameter="{Binding}"
+                                        Grid.Column="2" Grid.RowSpan="2"
+                                        Style="{StaticResource IconBtn}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                 <Button Content="创建" Command="{Binding CreateVoiceCommand}" Style="{StaticResource ListActionBtn}"/>
-                <Button Content="导入"  Style="{StaticResource ListActionBtn}"/>
+                <Button Content="导入" Command="{Binding AudioImportCommand}" Style="{StaticResource ListActionBtn}"/>
                 <Button Content="删除"  Style="{StaticResource ListActionBtn}"/>
             </StackPanel>
         </Grid>
@@ -68,9 +106,47 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
-            <ListBox/>
+            <ListBox ItemsSource="{Binding PluginItems}" HorizontalContentAlignment="Stretch">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{Binding Name}" FontSize="20" VerticalAlignment="Bottom"/>
+                            <TextBlock Text="{Binding Author}" 
+                                                   FontSize="12"
+                                                   Grid.Column="1" 
+                                                   HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                            <TextBlock Text="{Binding Version}"
+                                                   FontSize="12"
+                                                   Grid.Column="1" HorizontalAlignment="Right"/>
+                            <TextBlock Text="{Binding Description}" 
+                                                   Grid.Row="1" Grid.ColumnSpan="2"/>
+                            <Button Content="安装" 
+                                    Command="{Binding ElementName=root, Path=DataContext.PluginToggleCommand}"      
+                                        CommandParameter="{Binding}"
+                                                Visibility="{Binding IsActive, Converter={StaticResource ToggleConverter},ConverterParameter=False}"
+                                                Grid.Column="2" Grid.RowSpan="2"/>
+                            <Button Content="卸载" 
+                                    Command="{Binding ElementName=root, Path=DataContext.PluginToggleCommand}"      
+                                    CommandParameter="{Binding}"
+                                                Background="Red"
+                                                Foreground="White"
+                                                Visibility="{Binding IsActive, Converter={StaticResource ToggleConverter}}"
+                                                Grid.Column="2" Grid.RowSpan="2"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                <Button Content="导入"  Style="{StaticResource ListActionBtn}"/>
+                <Button Content="导入" Command="{Binding PluginImportCommand}" Style="{StaticResource ListActionBtn}"/>
                 <Button Content="删除"  Style="{StaticResource ListActionBtn}"/>
             </StackPanel>
         </Grid>

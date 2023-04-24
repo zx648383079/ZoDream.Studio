@@ -11,7 +11,11 @@
       x:Name="root"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="StartupPage">
+      Title="StartupPage" AllowDrop="True">
+
+    <Behaviors:Interaction.Behaviors>
+        <bhv:DragFileBehavior Command="{Binding DragCommand}"/>
+    </Behaviors:Interaction.Behaviors>
 
     <Page.Resources>
         <ResourceDictionary Source="/Themes/MainSkin.xaml"/>
@@ -19,7 +23,7 @@
     <Page.DataContext>
         <vm:StartupViewModel/>
     </Page.DataContext>
-    
+
     <Grid>
         <Grid>
             <Grid.ColumnDefinitions>

@@ -107,7 +107,5 @@ namespace ZoDream.Shared.Players
                 midiOutClose(Driver);
             }
         }
-
-
     }
 }

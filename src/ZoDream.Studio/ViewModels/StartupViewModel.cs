@@ -21,6 +21,7 @@ namespace ZoDream.Studio.ViewModels
             NewCommand = new RelayCommand(TapNew);
             HistoryDeleteCommand = new RelayCommand(TapHistoryDelete);
             HistoryOpenCommand = new RelayCommand(TapHistoryOpen);
+            DragCommand = new RelayCommand(TapOpenDrag);
             if (App.ViewModel != null)
             {
                 foreach (var item in App.ViewModel.Option.Histories)
@@ -46,6 +47,18 @@ namespace ZoDream.Studio.ViewModels
 
         public ICommand HistoryDeleteCommand { get; private set; }
 
+        public ICommand DragCommand { get; private set; }
+        private void TapOpenDrag(object? arg)
+        {
+            if (arg is IEnumerable<string> items)
+            {
+                foreach (var item in items)
+                {
+                    _ = App.ViewModel?.LoadProjectAsync(item);
+                    return;
+                }
+            }
+        }
 
         private void TapOpen(object? _)
         {

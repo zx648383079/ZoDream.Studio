@@ -8,17 +8,21 @@
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Unloaded="Window_Unloaded"
-        Title="Piano" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="Piano" Height="450" Width="800" 
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BodyBrush}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="*" MaxHeight="200"/>
         </Grid.RowDefinitions>
         <ComboBox x:Name="TypeTb" SelectionChanged="TypeTb_SelectionChanged" SelectedIndex="0" 
                   VerticalContentAlignment="Center"/>
-        <ctl:PianoScrollViewer x:Name="PianoViewer" Grid.Row="1"/>
-        <ctl:PianoKeyboardPanel x:Name="PianoTb" Background="#fff" 
+        <ctl:PianoScrollViewer x:Name="PianoViewer" TargetKeyboard="{Binding PianoTb}" Grid.Row="1"/>
+        <ctl:PianoKeyboardPanel x:Name="PianoTb" 
+                                Touchable="False"
+                                Background="#fff" 
                         Grid.Row="2" OnPress="PianoTb_OnPress" OnRelease="PianoTb_OnRelease"/>
     </Grid>
 </Window>

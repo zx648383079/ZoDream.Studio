@@ -35,6 +35,6 @@
             </StackPanel>
             <sctl:IconButton Grid.Column="4" Command="{Binding ConfirmCommand}" Icon="&#xE10B;" Label="确认"/>
         </Grid>
-        <ctl:PianoRollPanel Grid.Row="1"/>
+        <ctl:PianoRollPanel Grid.Row="1" ItemsSource="{Binding NoteItems}"/>
     </Grid>
 </Page>

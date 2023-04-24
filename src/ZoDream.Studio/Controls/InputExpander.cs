@@ -84,6 +84,19 @@ namespace ZoDream.Studio.Controls
 
 
 
+
+        public string Text {
+            get { return (string)GetValue(TextProperty); }
+            set { SetValue(TextProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TextProperty =
+            DependencyProperty.Register("Text", typeof(string), typeof(InputExpander), new PropertyMetadata(string.Empty));
+
+
+
+
         public string Description {
             get { return (string)GetValue(DescriptionProperty); }
             set { SetValue(DescriptionProperty, value); }
@@ -118,7 +131,7 @@ namespace ZoDream.Studio.Controls
 
         // Using a DependencyProperty as the backing store for IconVisible.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IconVisibleProperty =
-            DependencyProperty.Register("IconVisible", typeof(Visibility), typeof(InputExpander), new PropertyMetadata(Visibility.Hidden));
+            DependencyProperty.Register("IconVisible", typeof(Visibility), typeof(InputExpander), new PropertyMetadata(Visibility.Collapsed));
 
 
 
@@ -130,7 +143,7 @@ namespace ZoDream.Studio.Controls
 
         // Using a DependencyProperty as the backing store for MetaVisible.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MetaVisibleProperty =
-            DependencyProperty.Register("MetaVisible", typeof(Visibility), typeof(InputExpander), new PropertyMetadata(Visibility.Hidden));
+            DependencyProperty.Register("MetaVisible", typeof(Visibility), typeof(InputExpander), new PropertyMetadata(Visibility.Collapsed));
 
 
 
@@ -198,6 +211,7 @@ namespace ZoDream.Studio.Controls
                 ActionIconVisible = Visibility.Collapsed,
                 Background = new SolidColorBrush(Colors.Transparent),
                 BorderThickness = new Thickness(0, 1, 0, 0),
+                CornerRadius = new CornerRadius(0, 0, CornerRadius.BottomRight, CornerRadius.BottomLeft)
             };
         }
 

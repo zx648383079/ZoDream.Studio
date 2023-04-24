@@ -27,7 +27,8 @@ namespace ZoDream.Studio.Pages
         }
 
         private IPlayer<PianoKey>? Player;
-        private byte PlayerChanel  = 0;
+        private byte PlayerChanel = 0;
+        public IEnumerable<NoteItem> NoteItems { get; set; }
 
         private void PianoTb_OnPress(object sender, Controls.PianoKeyEventArgs e)
         {
@@ -39,11 +40,18 @@ namespace ZoDream.Studio.Pages
             Player?.Stop(PlayerChanel, e.Key);
         }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            _ = LoadAsync();
+        }
+
+        private async Task LoadAsync()
         {
             Player = new WinPlayer();
             await Player.ReadyAsync();
             TypeTb.ItemsSource = Player.ChannelItems;
+            PianoViewer.TargetKeyboard = PianoTb;
+            PianoViewer.ItemsSource = NoteItems;
             PianoViewer.Start();
         }
 

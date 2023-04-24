@@ -58,7 +58,7 @@ namespace ZoDream.Studio.Controls
             }
         }
 
-        protected override FrameworkElement? GetContainerForItemOverride(double x, double y)
+        protected override FrameworkElement? GetContainerForItemOverride(double x, double y, double width)
         {
             AddCommand?.Execute(new Point(
                 ToHorizontalValue(x)

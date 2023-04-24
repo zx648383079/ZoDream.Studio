@@ -132,7 +132,7 @@ namespace ZoDream.Studio.Controls
 
         // Using a DependencyProperty as the backing store for IconVisible.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IconVisibleProperty =
-            DependencyProperty.Register("IconVisible", typeof(Visibility), typeof(InputCard), new PropertyMetadata(Visibility.Hidden));
+            DependencyProperty.Register("IconVisible", typeof(Visibility), typeof(InputCard), new PropertyMetadata(Visibility.Collapsed));
 
 
 
@@ -144,7 +144,7 @@ namespace ZoDream.Studio.Controls
 
         // Using a DependencyProperty as the backing store for MetaVisible.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MetaVisibleProperty =
-            DependencyProperty.Register("MetaVisible", typeof(Visibility), typeof(InputCard), new PropertyMetadata(Visibility.Hidden));
+            DependencyProperty.Register("MetaVisible", typeof(Visibility), typeof(InputCard), new PropertyMetadata(Visibility.Collapsed));
 
 
 
