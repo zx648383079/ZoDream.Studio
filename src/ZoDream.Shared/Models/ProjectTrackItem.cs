@@ -14,7 +14,10 @@ namespace ZoDream.Shared.Models
 
         public string Color { get; set; } = string.Empty;
 
-        public int Offset { get; set; }
+        /// <summary>
+        /// ms
+        /// </summary>
+        public long Offset { get; set; }
 
         public bool IsLocked { get; set; }
 
@@ -23,5 +26,34 @@ namespace ZoDream.Shared.Models
         public TrackType Type { get; set; }
 
         public ITrackItem? Data { get; set; }
+
+        public static TrackType GetType(ITrackItem? data)
+        {
+            if (data == null)
+            {
+                return TrackType.Unknown;
+            }
+            if (data is VideoTrackItem)
+            {
+                return TrackType.Video;
+            }
+            if (data is ImageTrackItem)
+            {
+                return TrackType.Image;
+            }
+            if (data is AudioTrackItem)
+            {
+                return TrackType.Audio;
+            }
+            if (data is TextTrackItem)
+            {
+                return TrackType.Text;
+            }
+            if (data is MidiTrackItem)
+            {
+                return TrackType.Midi;
+            }
+            return TrackType.Unknown;
+        }
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZoDream.Shared.Models
 {
-    public class VideoTrackItem: ITrackItem
+    public class VideoTrackItem: IFileTrackItem
     {
         public string FileName { get; set; } = string.Empty;
 
@@ -13,6 +13,10 @@ namespace ZoDream.Shared.Models
         public int BeginFrame { get; set; }
 
         public int EndFrame { get; set; }
+        /// <summary>
+        /// 是否是静音
+        /// </summary>
+        public bool IsMute { get; set; }
 
         public TimeSpan Duration { get; set; }
     }

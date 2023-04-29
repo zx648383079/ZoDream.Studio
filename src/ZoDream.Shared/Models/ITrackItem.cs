@@ -11,4 +11,9 @@ namespace ZoDream.Shared.Models
 
         public TimeSpan Duration { get; }
     }
+
+    public interface IFileTrackItem: ITrackItem
+    {
+        public string FileName { get; set; }
+    }
 }

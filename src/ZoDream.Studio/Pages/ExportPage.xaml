@@ -22,6 +22,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid Background="{DynamicResource PrimaryBrush}">
@@ -30,61 +31,64 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition/>
-                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <sctl:IconButton Command="{Binding BackCommand}" Icon="&#xE112;" Label="返回"/>
             <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
                 <sctl:IconButton Command="{Binding StartCommand}" Icon="&#xE102;" Label="播放" Visibility="{Binding Paused, Converter={StaticResource ToggleConverter}}"/>
                 <sctl:IconButton Command="{Binding StopCommand}" Icon="&#xE15B;" Label="停止" Visibility="{Binding Paused, Converter={StaticResource ToggleConverter},ConverterParameter=False}"/>
             </StackPanel>
-            <sctl:IconButton Grid.Column="4" Command="{Binding ConfirmCommand}" Icon="&#xE10B;" Label="确认"/>
         </Grid>
-        <ScrollViewer Grid.Row="1">
+        <ProgressBar Value="{Binding TaskProgress}" Grid.Row="1" 
+                     Visibility="{Binding Paused, Converter={StaticResource ToggleConverter},ConverterParameter=False}"/>
+        <ScrollViewer Grid.Row="2">
             <StackPanel>
-                <ctl:InputCard Icon="&#xE781;"
-                    Header="导出路径" ActionIconVisible="Collapsed">
-                    <sctl:FileInput Width="200"/>
-                </ctl:InputCard>
+                <ctl:InputExpander Icon="&#xE781;"
+                    Header="导出路径" Text="{Binding FileName}">
+                    <sctl:FileInput FileName="{Binding FileName}" Filter="{Binding FileFilter}" IsSavePicker="True" Width="200"/>
+                </ctl:InputExpander>
                 <ctl:InputCard Icon="&#xE781;"
                     Header="导出格式" ActionIconVisible="Collapsed">
-                    <ComboBox MinWidth="80"/>
+                    <ComboBox MinWidth="80" ItemsSource="{Binding FormatItems}"/>
                 </ctl:InputCard>
                 <ctl:InputCard Header="静音" ActionIconVisible="Collapsed">
-                    <sctl:SwitchInput/>
+                    <sctl:SwitchInput Value="{Binding IsMute}"/>
                 </ctl:InputCard>
-                <ctl:InputExpander Header="视频尺寸">
+                <ctl:InputExpander Header="视频尺寸" Text="{Binding ScreenSize}">
                     <ctl:InputCard Header="宽">
-                        <sctl:NumberInput Width="80"/>
+                        <sctl:NumberInput Width="80" Value="{Binding ScreenWidth}"/>
                     </ctl:InputCard>
                     <ctl:InputCard Header="高">
-                        <sctl:NumberInput  Width="80"/>
+                        <sctl:NumberInput  Width="80" Value="{Binding ScreenHeight}"/>
                     </ctl:InputCard>
                 </ctl:InputExpander>
                 <TextBlock Text="视频属性" Style="{StaticResource HeaderTb}"/>
                 <ctl:InputCard 
                     Header="视频编码器">
-                    <ComboBox MinWidth="80"/>
+                    <ComboBox MinWidth="80" ItemsSource="{Binding VideoCodecItems}" 
+                              DisplayMemberPath="Name" SelectedIndex="{Binding VideoCodecIndex}"/>
                 </ctl:InputCard>
-                <ctl:InputCard 
-                    Header="帧率">
-                    <Slider Width="200"/>
-                </ctl:InputCard>
-                <ctl:InputCard 
-                    Header="质量">
-                    <Slider Width="200"/>
-                </ctl:InputCard>
+                <ctl:InputExpander Header="帧率" Text="{Binding VideoFrameRate}">
+                    <Slider Width="200" Maximum="100" Value="{Binding VideoFrameRate}"/>
+                </ctl:InputExpander>
+                <ctl:InputExpander 
+                    Header="质量" Text="{Binding VideoQuality}">
+                    <Slider Width="200" Value="{Binding VideoQuality}"/>
+                </ctl:InputExpander>
                 <TextBlock Text="音频属性" Style="{StaticResource HeaderTb}"/>
                 <ctl:InputCard 
                     Header="音频编码器">
-                    <ComboBox MinWidth="80"/>
+                    <ComboBox MinWidth="80" ItemsSource="{Binding AudioCodecItems}" 
+                              DisplayMemberPath="Name" SelectedIndex="{Binding AudioCodecIndex}"/>
                 </ctl:InputCard>
                 <ctl:InputCard 
                     Header="音频质量">
-                    <ComboBox MinWidth="80"/>
+                    <ComboBox MinWidth="80" ItemsSource="{Binding AudioQualityItems}" 
+                              SelectedIndex="{Binding AudioQualityIndex}"/>
                 </ctl:InputCard>
                 <ctl:InputCard 
                     Header="音频采样率">
-                    <ComboBox MinWidth="80"/>
+                    <ComboBox MinWidth="80" ItemsSource="{Binding AudioSamplingRateItems}"
+                              IsEditable="True" Text="{Binding AudioSamplingRate}"/>
                 </ctl:InputCard>
             </StackPanel>
         </ScrollViewer>

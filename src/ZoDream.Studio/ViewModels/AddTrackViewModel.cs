@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using ZoDream.Shared.Readers;
 using ZoDream.Shared.ViewModel;
 using ZoDream.Studio.Routes;
 
@@ -73,7 +74,7 @@ namespace ZoDream.Studio.ViewModels
             {
                 Title = "选择视频文件",
                 RestoreDirectory = true,
-                Filter = "视频文件|*.mp4;*.mov|所有文件|*.*",
+                Filter = $"视频文件|{FileExtension.FormatFilter(FileExtension.VideoFile)}|所有文件|*.*",
             };
             if (picker.ShowDialog() != true)
             {
@@ -92,7 +93,7 @@ namespace ZoDream.Studio.ViewModels
             {
                 Title = "选择音频文件",
                 RestoreDirectory = true,
-                Filter = "音频文件|*.mp3;*.flac|所有文件|*.*",
+                Filter = $"音频文件|{FileExtension.FormatFilter(FileExtension.AudioFile)}|所有文件|*.*",
             };
             if (picker.ShowDialog() != true)
             {
@@ -111,7 +112,7 @@ namespace ZoDream.Studio.ViewModels
             {
                 Title = "选择图片文件",
                 RestoreDirectory = true,
-                Filter = "图片文件|*.png;*.jpg|所有文件|*.*",
+                Filter = $"图片文件|{FileExtension.FormatFilter(FileExtension.ImageFile)}|所有文件|*.*",
             };
             if (picker.ShowDialog() != true)
             {

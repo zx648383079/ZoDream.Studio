@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -48,7 +49,7 @@ namespace ZoDream.Studio.Controls
 
         // Using a DependencyProperty as the backing store for ItemWidthGap.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemWidthGapProperty =
-            DependencyProperty.Register("ItemWidthGap", typeof(double), typeof(TrackPanel), new PropertyMetadata(10.0));
+            DependencyProperty.Register("ItemWidthGap", typeof(double), typeof(TrackPanel), new PropertyMetadata(20.0));
 
 
 
@@ -112,6 +113,7 @@ namespace ZoDream.Studio.Controls
                 VerticalBar.Maximum = 100;
                 VerticalBar.ValueChanged += VerticalBar_ValueChanged;
             }
+            RefreshHorizontal();
         }
 
         private void VerticalBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -161,14 +163,25 @@ namespace ZoDream.Studio.Controls
             MoveBar.Opacity = 1;
             MoveRow(MoveBar.RowIndex, Canvas.GetLeft(MoveBar), Canvas.GetTop(MoveBar));
             MoveBar = null;
+            RefreshHorizontal();
         }
 
+        /// <summary>
+        /// 坐标转 offset/ms
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
         protected virtual int ToHorizontalValue(double val)
         {
             return (int)((val + HorizontalOffset - HeaderWidth) / ItemWidthGap) * ItemWidthScale;
         }
 
-        protected virtual double FromHorizontalValue(int val)
+        /// <summary>
+        /// offset/ms 转换为 坐标 
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        protected virtual double FromHorizontalValue(double val)
         {
             return val * ItemWidthGap / ItemWidthScale + HeaderWidth - HorizontalOffset;
         }
@@ -211,7 +224,7 @@ namespace ZoDream.Studio.Controls
                 }
                 if (item is TrackBar row)
                 {
-                    UpdateRow(row);
+                    UpdateRow(row, GetTrackData(row.RowIndex));
                 }
             }
         }
@@ -236,10 +249,29 @@ namespace ZoDream.Studio.Controls
             Canvas.SetTop(header, FromVerticalValue(header.RowIndex));
         }
 
-        private void UpdateRow(TrackBar row, ProjectTrackItem data)
+        private void UpdateRow(TrackBar row, ProjectTrackItem? data)
         {
-            Canvas.SetLeft(row, FromHorizontalValue(data.Offset));
+            if (data is not null)
+            {
+                Canvas.SetLeft(row, FromHorizontalValue(data.Offset));
+            }
             Canvas.SetTop(row, FromVerticalValue(row.RowIndex));
+        }
+
+        private ProjectTrackItem? GetTrackData(int index)
+        {
+            if (ItemsSource is null)
+            {
+                return null;
+            }
+            foreach (var item in ItemsSource)
+            {
+                if (item.Index == index)
+                {
+                    return item;
+                }
+            }
+            return null;
         }
 
         private void MoveRow(int index, double x, double y)
@@ -252,15 +284,7 @@ namespace ZoDream.Studio.Controls
             //    return;
             //}
             var toY = y + HorizontalOffset - HeaderWidth;
-            ProjectTrackItem? data = null;
-            foreach (var item in ItemsSource!)
-            {
-                if (item.Index == index)
-                {
-                    data = item;
-                    break;
-                }
-            }
+            ProjectTrackItem? data = GetTrackData(index);
             if (data is null)
             {
                 return;
@@ -277,6 +301,7 @@ namespace ZoDream.Studio.Controls
                     } else if (InRange(header.RowIndex, index, to))
                     {
                         header.RowIndex += (index < to ? -1 : 1);
+                        Debug.WriteLine(header.RowIndex);
                     } else
                     {
                         continue;
@@ -322,9 +347,9 @@ namespace ZoDream.Studio.Controls
         {
             if (min > max)
             {
-                return i < min && i > max;
+                return i <= min && i >= max;
             }
-            return i < max && i > min;
+            return i <= max && i >= min;
         }
 
         protected void EachChildren(Action<TrackHeader, TrackBar, int> fn)
@@ -415,9 +440,23 @@ namespace ZoDream.Studio.Controls
             RefreshItems();
         }
 
+        private void RefreshHorizontal()
+        {
+            if (HorizontalBar is null || ItemsSource is null)
+            {
+                return;
+            }
+            var len = ProjectItem.GetDurationMilliseconds(ItemsSource) / ItemWidthScale + 50;
+            if (HorizontalBar.Maximum < len)
+            {
+                HorizontalBar.Maximum = len;
+            }
+        }
+
         private void RefreshItems()
         {
             var items = ItemsSource!.ToList();
+            RefreshHorizontal();
             var targetItems = new List<TrackHeader>();
             var targetBarItems = new List<TrackBar>();
             EachChildren((header, bar, index) => {

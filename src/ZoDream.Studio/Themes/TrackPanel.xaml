@@ -24,7 +24,7 @@
                             <GridSplitter Width="1" Grid.RowSpan="2" HorizontalAlignment="Right"/>
                             <ScrollBar x:Name="PART_HorizontalBar" Grid.Column="1" Orientation="Horizontal"/>
                             <ScrollBar x:Name="PART_VerticalBar" Grid.Column="2" Grid.Row="2" Orientation="Vertical"/>
-                            <local:RulePanel x:Name="PART_Rule" Grid.Column="1" Grid.Row="1"/>
+                            <local:RulePanel x:Name="PART_Rule" Gap="{TemplateBinding ItemWidthGap}" Grid.Column="1" Grid.Row="1"/>
                             <Canvas x:Name="PART_TrackPanel" ClipToBounds="True" Grid.Row="2" Grid.ColumnSpan="2"/>
                         </Grid>
                     </Border>

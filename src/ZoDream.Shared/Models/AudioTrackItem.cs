@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZoDream.Shared.Models
 {
-    public class AudioTrackItem: ITrackItem
+    public class AudioTrackItem: IFileTrackItem
     {
         public string FileName { get; set; } = string.Empty;
 

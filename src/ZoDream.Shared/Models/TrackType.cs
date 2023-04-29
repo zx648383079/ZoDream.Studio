@@ -9,6 +9,8 @@ namespace ZoDream.Shared.Models
         Unknown,
         Image,
         Video,
+        Audio,
         Text,
+        Midi,
     }
 }

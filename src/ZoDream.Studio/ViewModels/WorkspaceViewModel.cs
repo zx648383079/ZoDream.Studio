@@ -1,17 +1,15 @@
-﻿using System;
+﻿using FFMpegCore;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using ZoDream.Shared.Models;
-using ZoDream.Shared.Players;
-using ZoDream.Shared.Storage;
+using ZoDream.Shared.Readers;
 using ZoDream.Shared.ViewModel;
 using ZoDream.Studio.Controls;
+using ZoDream.Studio.Extensions;
 using ZoDream.Studio.Pages;
 using ZoDream.Studio.Routes;
 
@@ -84,8 +82,60 @@ namespace ZoDream.Studio.ViewModels
             {
                 foreach (var item in items)
                 {
+                    _ = AddTrackFileAsync(item);
                     // TODO
                 }
+            }
+        }
+
+        private async Task AddTrackFileAsync(string item)
+        {
+            if (!File.Exists(item))
+            {
+                return;
+            }
+            var ext = Path.GetExtension(item);
+            var name = Path.GetFileNameWithoutExtension(item);
+            if (FileExtension.IsExtension(ext, FileExtension.VideoFile))
+            {
+                var mediaInfo = await FFProbe.AnalyseAsync(item);
+                if (mediaInfo != null)
+                {
+                    Add(new VideoTrackItem()
+                    {
+                        FileName = item,
+                        Name = name,
+                        BeginFrame = 0,
+                        IsMute = mediaInfo.AudioStreams.Count == 0,
+                        EndFrame = (int)mediaInfo.FrameCount(),
+                        Duration = mediaInfo.Duration,
+                    });
+                    return;
+                }
+            }
+            if (FileExtension.IsExtension(ext, FileExtension.AudioFile))
+            {
+                var mediaInfo = await FFProbe.AnalyseAsync(item);
+                if (mediaInfo != null)
+                {
+                    Add(new AudioTrackItem()
+                    {
+                        FileName = item,
+                        Name = name,
+                        BeginAt = TimeSpan.Zero,
+                        EndAt = mediaInfo.Duration,
+                    });
+                    return;
+                }
+            }
+            if (FileExtension.IsExtension(ext, FileExtension.ImageFile))
+            {
+                Add(new ImageTrackItem()
+                {
+                    FileName = item,
+                    Name = name,
+                    Duration = TimeSpan.FromSeconds(10)
+                });
             }
         }
 
@@ -98,11 +148,21 @@ namespace ZoDream.Studio.ViewModels
                     switch (o.Data.Type)
                     {
                         case TrackType.Image:
+                            ShellManager.GoToAsync("image", new Dictionary<string, object>
+                            {
+                                {"file", (o.Data.Data as ImageTrackItem)!.FileName}
+                            });
+                            break;
+                        case TrackType.Audio:
+                            ShellManager.GoToAsync("audio", new Dictionary<string, object>
+                            {
+                                {"file", (o.Data.Data as AudioTrackItem)!.FileName}
+                            });
                             break;
                         case TrackType.Video:
                             ShellManager.GoToAsync("video", new Dictionary<string, object>
                             {
-                                {"file", (o.Data.Data as VideoTrackItem).FileName}
+                                {"file", (o.Data.Data as VideoTrackItem)!.FileName}
                             });
                             break;
                         case TrackType.Text:
@@ -158,7 +218,23 @@ namespace ZoDream.Studio.ViewModels
         }
         #endregion
 
+        public void Add(ProjectTrackItem item)
+        {
+            TrackItems.Add(item);
+            App.ViewModel!.Project!.TrackItems.Add(item);
+            PlayVisible = Paused;
+        }
 
+        public void Add(ITrackItem item)
+        {
+            Add(new ProjectTrackItem()
+            {
+                Index = TrackItems.Count,
+                Name = item.Name,
+                Data = item,
+                Type = ProjectTrackItem.GetType(item)
+            });
+        }
 
         public void ApplyQueryAttributes(IDictionary<string, object>? queries = null)
         {

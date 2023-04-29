@@ -1,5 +1,7 @@
-﻿using System;
+﻿using FFMpegCore;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,11 +49,31 @@ namespace ZoDream.Studio.ViewModels
             {
                 Option = option;
             }
+            ResetOption();
             ShellManager.GoToAsync("startup");
+        }
+
+
+        public void ResetOption()
+        {
+            GlobalFFOptions.Configure(arg => {
+                if (!string.IsNullOrWhiteSpace(Option.BinFolder))
+                {
+                    arg.BinaryFolder = Option.BinFolder;
+                }
+                arg.TemporaryFilesFolder = string.IsNullOrWhiteSpace(Option.TempFolder) ?
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp")
+                : Option.TempFolder;
+                if (Directory.Exists(arg.TemporaryFilesFolder))
+                {
+                    Directory.CreateDirectory(arg.TemporaryFilesFolder);
+                }
+            });
         }
 
         public async Task SaveAsync()
         {
+            ResetOption();
             await AppData.SaveAsync(Option);
         }
 

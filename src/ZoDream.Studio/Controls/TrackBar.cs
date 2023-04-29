@@ -73,8 +73,6 @@ namespace ZoDream.Studio.Controls
         public static readonly DependencyProperty EndProperty =
             DependencyProperty.Register("End", typeof(double), typeof(TrackBar), new PropertyMetadata(.0));
 
-
-
         public int RowIndex { get; set; }
 
         protected override void OnRender(DrawingContext drawingContext)
