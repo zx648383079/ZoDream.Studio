@@ -11,12 +11,14 @@ namespace ZoDream.Studio.ViewModels
     {
         public static EncoderItem[] VideoEncoderItems = new[]
         {
+            new EncoderItem("原视频编码", "copy"),
             new EncoderItem("H.264 (x264)", "libx264"),
             new EncoderItem("H.265 (x265)", "libx265"),
         };
 
         public static EncoderItem[] AudioEncoderItems = new[]
         {
+            new EncoderItem("原音频编码", "copy"),
             new EncoderItem("AAC", "aac"),
         };
 

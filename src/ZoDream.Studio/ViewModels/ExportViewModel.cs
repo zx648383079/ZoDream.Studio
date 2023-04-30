@@ -100,6 +100,14 @@ namespace ZoDream.Studio.ViewModels
             set => Set(ref isMute, value);
         }
 
+        private bool isFastest = true;
+
+        public bool IsFastest {
+            get => isFastest;
+            set => Set(ref isFastest, value);
+        }
+
+
         private int videoFrameRate = 30;
 
         public int VideoFrameRate {
@@ -130,8 +138,10 @@ namespace ZoDream.Studio.ViewModels
 
         public string ScreenSize => $"{screenWidth}x{screenHeight}";
 
-        private int videoQuality;
-
+        private int videoQuality = 22;
+        /// <summary>
+        /// 越小质量越好
+        /// </summary>
         public int VideoQuality {
             get => videoQuality;
             set => Set(ref videoQuality, value);
@@ -213,7 +223,8 @@ namespace ZoDream.Studio.ViewModels
                             .WithVideoCodec(videoCodec)
                             .Resize(ScreenWidth, ScreenHeight)
                             .WithAudioSamplingRate(AudioSamplingRate)
-                            .UsingShortest();
+                            .WithConstantRateFactor(VideoQuality)
+                            .UsingShortest(!IsFastest);
                     });
                     processor.CancellableThrough(out CancelFn);
                     processor.NotifyOnProgress(progress => {
