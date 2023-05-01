@@ -48,7 +48,7 @@
                 </ctl:InputExpander>
                 <ctl:InputCard Icon="&#xE781;"
                     Header="导出格式" ActionIconVisible="Collapsed">
-                    <ComboBox MinWidth="80" ItemsSource="{Binding FormatItems}"/>
+                    <ComboBox MinWidth="80" ItemsSource="{Binding FormatItems}" SelectedIndex="FormatIndex"/>
                 </ctl:InputCard>
                 <ctl:InputCard Header="转换速度" ActionIconVisible="Collapsed">
                     <sctl:SwitchInput Value="{Binding IsFastest}" OnLabel="快速" OffLabel="慢速"/>

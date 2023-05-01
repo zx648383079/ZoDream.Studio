@@ -56,6 +56,13 @@ namespace ZoDream.Studio.ViewModels
             set => Set(ref formatItems, value);
         }
 
+        private int formatIndex = 5;
+
+        public int FormatIndex {
+            get => formatIndex;
+            set => Set(ref formatIndex, value);
+        }
+
         private EncoderItem[] videoCodecItems = FFMpegConstants.VideoEncoderItems;
 
         public EncoderItem[] VideoCodecItems {
@@ -212,8 +219,8 @@ namespace ZoDream.Studio.ViewModels
                         }
                         command.AddFileInput(ConvertToTs(item, ref tempFiles));
                     }
-                    var audioCodec = FFMpeg.GetCodec(AudioCodecItems[AudioCodecIndex].Value);
-                    var videoCodec = FFMpeg.GetCodec(VideoCodecItems[VideoCodecIndex].Value);
+                    var audioCodec = AudioCodecItems[AudioCodecIndex].Value;//FFMpeg.GetCodec(AudioCodecItems[AudioCodecIndex].Value);
+                    var videoCodec = VideoCodecItems[VideoCodecIndex].Value;//FFMpeg.GetCodec(VideoCodecItems[VideoCodecIndex].Value);
                     var audioQuality = Enum.Parse<AudioQuality>(AudioQualityItems[AudioQualityIndex]);
                     var processor = command.OutputToFile(FileName, overwrite: true, delegate (FFMpegArgumentOptions options)
                     {
@@ -273,6 +280,10 @@ namespace ZoDream.Studio.ViewModels
                 return;
             }
             FileName = project.OutputFileName;
+            if (string.IsNullOrWhiteSpace(FileName))
+            {
+                // FileName = $"{project.Name}.{FormatItems[FormatIndex].ToLower()}";
+            }
             ScreenHeight = project.ScreenHeight;
             ScreenWidth = project.ScreenWidth;
         }
