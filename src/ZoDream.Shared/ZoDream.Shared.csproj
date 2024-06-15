@@ -8,9 +8,9 @@
 
   <ItemGroup>
     <PackageReference Include="FFMpegCore" Version="5.1.0" />
-    <PackageReference Include="Melanchall.DryWetMidi" Version="6.1.4" />
+    <PackageReference Include="Melanchall.DryWetMidi" Version="7.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Speech" Version="7.0.0" />
+    <PackageReference Include="System.Speech" Version="8.0.0" />
   </ItemGroup>
 
 </Project>

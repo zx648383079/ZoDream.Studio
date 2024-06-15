@@ -90,12 +90,12 @@ namespace ZoDream.Studio.ViewModels
 
             // Create a PromptBuilder object and add content.  
             var style = new PromptBuilder();
-            style.AppendText("Your order for");
-            style.StartStyle(new PromptStyle(PromptRate.Slow));
-            style.AppendText("one kitchen sink and one faucet");
-            style.EndStyle();
-            style.AppendText("has been confirmed.");
-
+            foreach (var item in PromptItems)
+            {
+                style.StartStyle(new PromptStyle(PromptVolume.Default));
+                style.AppendText(item.Content);
+                style.EndStyle();
+            }
             // Speak the contents of the SSML prompt.  
             synth.Speak(style);
         }

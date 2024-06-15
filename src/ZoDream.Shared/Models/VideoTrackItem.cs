@@ -19,5 +19,7 @@ namespace ZoDream.Shared.Models
         public bool IsMute { get; set; }
 
         public TimeSpan Duration { get; set; }
+
+        public double BeginAt => Duration.TotalMilliseconds * BeginFrame / (EndFrame - BeginFrame);
     }
 }

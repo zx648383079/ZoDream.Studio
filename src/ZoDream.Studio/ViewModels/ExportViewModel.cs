@@ -2,13 +2,13 @@
 using FFMpegCore.Enums;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ZoDream.Shared.Models;
-using ZoDream.Shared.Readers;
 using ZoDream.Shared.ViewModel;
 using ZoDream.Studio.Routes;
 using FileExtension = ZoDream.Shared.Readers.FileExtension;
@@ -99,6 +99,29 @@ namespace ZoDream.Studio.ViewModels
             get => fileName;
             set => Set(ref fileName, value);
         }
+
+        private bool isAutoDuration = true;
+
+        public bool IsAutoDuration {
+            get => isAutoDuration;
+            set {
+                Set(ref isAutoDuration, value);
+                OnPropertyChanged(nameof(DurationText));
+            }
+        }
+
+        private TimeSpan duration;
+
+        public TimeSpan Duration {
+            get => duration;
+            set {
+                Set(ref duration, value);
+                OnPropertyChanged(nameof(DurationText));
+            }
+        }
+
+        public string DurationText => IsAutoDuration ? "自动" : Duration.ToString();
+
 
         private bool isMute;
 
@@ -198,7 +221,7 @@ namespace ZoDream.Studio.ViewModels
         private void TapStart(object? _)
         {
             var project = App.ViewModel?.Project;
-            var option = App.ViewModel!.Option;
+            string tempFolder = App.ViewModel!.TempFolder;
             if (project == null || project.TrackItems.Count < 1)
             {
                 return;
@@ -206,43 +229,7 @@ namespace ZoDream.Studio.ViewModels
             Task.Factory.StartNew(() => {
                 Paused = false;
                 TaskProgress = 0;
-                var tempFiles = new List<string>();
-                var first = project.TrackItems.Order(project).First();
-                try
-                {
-                    var command = FFMpegArguments.FromFileInput(ConvertToTs(first, ref tempFiles));
-                    foreach (var item in project.TrackItems)
-                    {
-                        if (item == first)
-                        {
-                            continue;
-                        }
-                        command.AddFileInput(ConvertToTs(item, ref tempFiles));
-                    }
-                    var audioCodec = AudioCodecItems[AudioCodecIndex].Value;//FFMpeg.GetCodec(AudioCodecItems[AudioCodecIndex].Value);
-                    var videoCodec = VideoCodecItems[VideoCodecIndex].Value;//FFMpeg.GetCodec(VideoCodecItems[VideoCodecIndex].Value);
-                    var audioQuality = Enum.Parse<AudioQuality>(AudioQualityItems[AudioQualityIndex]);
-                    var processor = command.OutputToFile(FileName, overwrite: true, delegate (FFMpegArgumentOptions options)
-                    {
-                        options.CopyChannel().WithAudioCodec(audioCodec)
-                            .WithAudioBitrate(audioQuality)
-                            .WithVideoBitrate(videoFrameRate)
-                            .WithVideoCodec(videoCodec)
-                            .Resize(ScreenWidth, ScreenHeight)
-                            .WithAudioSamplingRate(AudioSamplingRate)
-                            .WithConstantRateFactor(VideoQuality)
-                            .UsingShortest(!IsFastest);
-                    });
-                    processor.CancellableThrough(out CancelFn);
-                    processor.NotifyOnProgress(progress => {
-                        TaskProgress = progress;
-                    }, project.Duration);
-                    processor.ProcessSynchronously();
-                }
-                finally
-                {
-                    CleanUp(tempFiles);
-                }
+                StartExport(project, IsAutoDuration ? project.Duration : Duration, tempFolder);
                 TaskProgress = 100;
                 Paused = true;
             });
@@ -262,7 +249,168 @@ namespace ZoDream.Studio.ViewModels
             }
         }
 
-        private string ConvertToTs(ProjectTrackItem trackItem, ref List<string> tempFiles)
+        private void StartExport(ProjectItem project, TimeSpan maxDuration, string tempFolder)
+        {
+            var tempFile = ExportVideo(project.TrackItems, maxDuration, tempFolder);
+            if (Paused)
+            {
+                return;
+            }
+            if (!IsMute)
+            {
+                tempFile = ExportAudio(project.TrackItems, tempFile, maxDuration, tempFolder);
+            }
+            
+            if (string.IsNullOrEmpty(tempFile))
+            {
+                return;
+            }
+            if (tempFile.StartsWith(tempFolder))
+            {
+                File.Move(tempFile, FileName);
+                return;
+            }
+            File.Copy(tempFile, FileName, true);
+        }
+
+        private string ExportVideo(List<ProjectTrackItem> items, TimeSpan maxDuration, string tempFolder)
+        {
+            var filterItems = items.Where(item => {
+                return item.Type switch
+                {
+                    TrackType.Video or TrackType.Image => true,
+                    _ => false
+                };
+            });
+            return ExportConcatFile(filterItems, maxDuration, tempFolder);
+        }
+
+        private string ExportConcatFile(IEnumerable<ProjectTrackItem> items, TimeSpan maxDuration, string tempFolder)
+        {
+            var start = 0d;
+            var end = maxDuration.TotalNanoseconds;
+            var index = -1;
+            var max = end;
+            var fileItems = new List<string>();
+            var tempFiles = new List<string>();
+            while (end >= max)
+            {
+                ProjectTrackItem? current = null;
+                index = -1;
+                foreach (var item in items)
+                {
+                    var itemEnd = item.Offset + item.Data!.Duration.TotalMilliseconds;
+                    if (item.Offset <= start && itemEnd > start && (index < 0 || index > item.Index))
+                    {
+                        start = Math.Max(item.Offset, start);
+                        end = Math.Min(start + item.Data!.Duration.TotalMilliseconds, max);
+                        index = item.Index;
+                        current = item;
+                        continue;
+                    }
+                    if (item.Offset > start && item.Offset < end && (index > item.Index))
+                    {
+                        end = item.Offset;
+                    }
+                }
+                if (current != null)
+                {
+                    fileItems.Add(ConvertToTs(current, start, end, tempFolder, ref tempFiles));
+                    continue;
+                }
+                fileItems.Add(ConvertBgToTs(end - start, tempFolder, ref tempFiles));
+            }
+            try
+            {
+                var command = FFMpegArguments.FromConcatInput(fileItems);
+                var audioCodec = AudioCodecItems[AudioCodecIndex].Value;//FFMpeg.GetCodec(AudioCodecItems[AudioCodecIndex].Value);
+                var videoCodec = VideoCodecItems[VideoCodecIndex].Value;//FFMpeg.GetCodec(VideoCodecItems[VideoCodecIndex].Value);
+                var audioQuality = Enum.Parse<AudioQuality>(AudioQualityItems[AudioQualityIndex]);
+                var processor = command!.OutputToFile(FileName, overwrite: true, delegate (FFMpegArgumentOptions options)
+                {
+                    options.CopyChannel().WithAudioCodec(audioCodec)
+                        .WithAudioBitrate(audioQuality)
+                        .WithVideoBitrate(videoFrameRate)
+                        .WithVideoCodec(videoCodec)
+                        .Resize(ScreenWidth, ScreenHeight)
+                        .WithAudioSamplingRate(AudioSamplingRate)
+                        .WithConstantRateFactor(VideoQuality)
+                        .UsingShortest(!IsFastest);
+                });
+                processor.CancellableThrough(out CancelFn);
+                processor.NotifyOnProgress(progress => {
+                    TaskProgress = progress;
+                }, maxDuration);
+                processor.ProcessSynchronously();
+            }
+            finally
+            {
+                CleanUp(tempFiles);
+            }
+            return string.Empty;
+        }
+
+        private string ExportAudio(List<ProjectTrackItem> items, string videoFileName, 
+            TimeSpan maxDuration, string tempFolder)
+        {
+            var filterItems = items.Where(item => {
+                return item.Type switch
+                {
+                    TrackType.Midi or TrackType.Audio => true,
+                    _ => false
+                };
+            });
+            if (string.IsNullOrEmpty(videoFileName))
+            {
+                return ExportConcatFile(filterItems, maxDuration, tempFolder);
+            }
+            var tempFiles = new List<string>();
+            try
+            {
+                var command = FFMpegArguments.FromFileInput(videoFileName);
+                foreach (var item in filterItems)
+                {
+                    if (Paused)
+                    {
+                        CleanUp(tempFiles);
+                        return string.Empty;
+                    }
+                    var tempFile = ConvertToTs(item, tempFolder, ref tempFiles);
+                    command.AddFileInput(tempFile, false, args => {
+                        var start = TimeSpan.FromMilliseconds(item.Offset);
+                        args.Seek(start);
+                        args.EndSeek(TimeSpan.FromMilliseconds(Math.Min(item.Offset +
+                            item.Data!.Duration.TotalMilliseconds, maxDuration.TotalMilliseconds)));
+                    });
+                }
+                var audioCodec = AudioCodecItems[AudioCodecIndex].Value;//FFMpeg.GetCodec(AudioCodecItems[AudioCodecIndex].Value);
+                var videoCodec = VideoCodecItems[VideoCodecIndex].Value;//FFMpeg.GetCodec(VideoCodecItems[VideoCodecIndex].Value);
+                var audioQuality = Enum.Parse<AudioQuality>(AudioQualityItems[AudioQualityIndex]);
+                var processor = command!.OutputToFile(FileName, overwrite: true, delegate (FFMpegArgumentOptions options)
+                {
+                    options.CopyChannel().WithAudioCodec(audioCodec)
+                        .WithAudioBitrate(audioQuality)
+                        .WithVideoBitrate(videoFrameRate)
+                        .WithVideoCodec(videoCodec)
+                        .Resize(ScreenWidth, ScreenHeight)
+                        .WithAudioSamplingRate(AudioSamplingRate)
+                        .WithConstantRateFactor(VideoQuality)
+                        .UsingShortest(!IsFastest);
+                });
+                processor.CancellableThrough(out CancelFn);
+                processor.NotifyOnProgress(progress => {
+                    TaskProgress = progress;
+                }, maxDuration);
+                processor.ProcessSynchronously();
+            }
+            finally
+            {
+                CleanUp(tempFiles);
+            }
+            return string.Empty;
+        }
+
+        private string ConvertToTs(ProjectTrackItem trackItem, string tempFolder, ref List<string> tempFiles)
         {
             if (trackItem.Data is IFileTrackItem o)
             {
@@ -270,6 +418,69 @@ namespace ZoDream.Studio.ViewModels
             }
             // tempFiles.Add();
             return string.Empty;
+        }
+
+        private string ConvertToTs(ProjectTrackItem trackItem, double start, double end, string tempFolder, ref List<string> tempFiles)
+        {
+            string tempFile;
+            if (trackItem.Data is IFileTrackItem o)
+            {
+                tempFile = o.FileName;
+            } else
+            {
+                // 生成文件
+                // tempFiles.Add();
+                tempFile = string.Empty;
+            }
+            if (trackItem.Type == TrackType.Image)
+            {
+                tempFile = Path.Combine(tempFolder, $"temp_{start}-{end}.mp4");
+                tempFiles.Add(tempFile);
+                FFMpeg.JoinImageSequence(tempFile, end- start, ((ImageTrackItem)trackItem.Data).FileName);
+                return tempFile;
+            }
+            if (trackItem.Offset == start)
+            {
+                var info = FFProbe.Analyse(tempFile);
+                if (info.Duration.TotalMilliseconds == end - start)
+                {
+                    return tempFile;
+                }
+            }
+            var subTempFile = Path.Combine(tempFolder, $"temp_{start}-{end}.mp4");
+            var i = start - trackItem.Offset;
+            if (trackItem.Data is VideoTrackItem v)
+            {
+                i += v.BeginAt;
+            } else if (trackItem.Data is AudioTrackItem a)
+            {
+                i += a.BeginAt.TotalMilliseconds;
+            }
+            FFMpeg.SubVideo(tempFile, subTempFile, 
+                TimeSpan.FromMilliseconds(i),
+                TimeSpan.FromMilliseconds(i + end - start));
+            tempFiles.Add(subTempFile);
+            return subTempFile;
+        }
+
+        private string ConvertBgToTs(double duration, string tempFolder, ref List<string> tempFiles)
+        {
+            var tempFile = Path.Combine(tempFolder, $"empty_{duration}.mp4");
+            if (File.Exists(tempFile))
+            {
+                return tempFile;
+            }
+            var tempImgFile = Path.Combine(tempFolder, $"empty_bg.bmp");
+            tempFiles.Add(tempFile);
+            if (!File.Exists(tempImgFile))
+            {
+                tempFiles.Add(tempImgFile);
+                // 转换空白背景
+                var bitmap = new Bitmap(ScreenWidth, ScreenHeight);
+                bitmap.Save(tempImgFile, ImageFormat.Bmp);
+            }
+            FFMpeg.JoinImageSequence(tempFile, duration, tempImgFile);
+            return tempFile;
         }
 
         public void ApplyQueryAttributes(IDictionary<string, object>? queries = null)
@@ -280,12 +491,14 @@ namespace ZoDream.Studio.ViewModels
                 return;
             }
             FileName = project.OutputFileName;
+            Duration = project.Duration;
             if (string.IsNullOrWhiteSpace(FileName))
             {
                 // FileName = $"{project.Name}.{FormatItems[FormatIndex].ToLower()}";
             }
             ScreenHeight = project.ScreenHeight;
             ScreenWidth = project.ScreenWidth;
+
         }
     }
 }

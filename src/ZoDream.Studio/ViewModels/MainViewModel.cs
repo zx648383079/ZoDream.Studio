@@ -54,6 +54,10 @@ namespace ZoDream.Studio.ViewModels
         }
 
 
+        public string TempFolder => string.IsNullOrWhiteSpace(Option.TempFolder) ?
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp")
+                : Option.TempFolder;
+
         public void ResetOption()
         {
             GlobalFFOptions.Configure(arg => {
@@ -61,9 +65,7 @@ namespace ZoDream.Studio.ViewModels
                 {
                     arg.BinaryFolder = Option.BinFolder;
                 }
-                arg.TemporaryFilesFolder = string.IsNullOrWhiteSpace(Option.TempFolder) ?
-                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp")
-                : Option.TempFolder;
+                arg.TemporaryFilesFolder = TempFolder;
                 if (Directory.Exists(arg.TemporaryFilesFolder))
                 {
                     Directory.CreateDirectory(arg.TemporaryFilesFolder);
